@@ -6,7 +6,6 @@
 <title>PPC Gadget — RSA Builder Pro</title>
 <link rel="icon" href="/favicon.png" />
 <style>
-  /* =============== THEMES =============== */
   :root{
     --bg:#0b0e13; --panel:#121621; --panel2:#0f1422; --line:#202635;
     --text:#e8ecf3; --muted:#9aa3b7; --brand:#6DBE45;
@@ -23,7 +22,7 @@
   }
   [data-theme="cyberpunk"]{
     --bg:#0a0c12; --panel:#0e1220; --panel2:#0c0f1a; --line:#23283b;
-    --text:#e6f7ff; --muted:#7bd4ff; --brand:#ff2bd6; /* neon magenta */
+    --text:#e6f7ff; --muted:#7bd4ff; --brand:#ff2bd6;
     --chip:#121830; --chipText:#8feaff;
     --ok:#00ffcc; --warn:#ffd166; --bad:#ff6b6b;
 
@@ -62,7 +61,6 @@
   .tab.active{background:var(--panel2)}
   .hidden{display:none}
 
-  /* Lists */
   .list{margin:10px 0 0;padding:0;list-style:none;border:1px dashed var(--line);border-radius:12px}
   .list li{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:10px;padding:8px 10px;border-top:1px dashed var(--line)}
   .list li:first-child{border-top:none}
@@ -78,7 +76,6 @@
   [data-theme="cyberpunk"] .pin button{border-color:#25305b;background:#141a33;color:#9fd8ff}
   .pin button.active{background:#1e7a27;border-color:#155a1c;color:#fff;font-weight:600}
 
-  /* Previews */
   .previews{display:grid;grid-template-columns:1fr 380px;gap:14px}
   .preview-card{background:var(--preview-bg);color:var(--preview-text);border-radius:12px;border:1px solid #e3e6ef;padding:14px}
   [data-theme="cyberpunk"] .preview-card{border-color:#1f2642}
@@ -97,7 +94,6 @@
   .muted{color:#5f6368}
   .mobile-frame{max-width:360px;border:10px solid #e7eaef;border-radius:24px;margin:0 auto;background:#fff}
   .badge{font-size:11px;border:1px solid #dfe3ec;border-radius:6px;padding:2px 6px;color:#5a657c}
-  .ext-h{font-weight:700;margin:12px 0 6px;font-size:13px}
   .sitelinks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .sitelink{font-size:13px;color:#1a0dab}
   .price-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -136,36 +132,33 @@
   </div>
 
   <div class="grid">
-    <!-- LEFT: BULK -->
+    <!-- BULK -->
     <section id="bulkPane" class="card">
       <h2>Bulk Inputs</h2>
       <div class="content">
         <div class="row">
           <div>
             <label>Headlines (one per line) <span class="pill">max 15 • ≤ 30</span></label>
-            <textarea id="bulkHeads" placeholder="Headline 1&#10;Headline 2&#10;…"></textarea>
+            <textarea id="bulkHeads"></textarea>
           </div>
           <div>
             <label>Descriptions (one per line) <span class="pill">max 4 • ≤ 90</span></label>
-            <textarea id="bulkDescs" placeholder="Description 1&#10;Description 2"></textarea>
+            <textarea id="bulkDescs"></textarea>
           </div>
         </div>
 
         <div class="row" style="margin-top:10px">
           <div>
             <label>Callouts (one per line) <span class="pill">≤ 25</span></label>
-            <textarea id="bulkCallouts" placeholder="Free Estimates&#10;Fully Insured"></textarea>
+            <textarea id="bulkCallouts"></textarea>
           </div>
           <div>
             <label>Structured Snippet Values (one per line) <span class="pill">≤ 10 • ≤ 25</span></label>
-            <textarea id="bulkSnips" placeholder="Installation&#10;Repair"></textarea>
+            <textarea id="bulkSnips"></textarea>
             <div class="row" style="margin-top:8px">
               <select id="snippetHeader">
-                <option value="Services">Services</option>
-                <option value="Types">Types</option>
-                <option value="Brands">Brands</option>
-                <option value="Styles">Styles</option>
-                <option value="Areas">Areas</option>
+                <option value="Services">Services</option><option value="Types">Types</option>
+                <option value="Brands">Brands</option><option value="Styles">Styles</option><option value="Areas">Areas</option>
               </select>
               <input id="displayPath1" type="text" placeholder="Path 1" />
             </div>
@@ -180,23 +173,23 @@
 
         <div class="row">
           <div>
-            <label>Sitelinks (bulk)</label>
-            <textarea id="bulkSitelinks" placeholder="Use blocks separated by blank lines. Each block:&#10;Title&#10;Description line 1&#10;Description line 2&#10;URL (optional)&#10;&#10;Example:&#10;Financing Options&#10;Flexible monthly payments&#10;Get approved today&#10;https://example.com/finance"></textarea>
+            <label>Sitelinks (blocks separated by blank lines)</label>
+            <textarea id="bulkSitelinks" placeholder="Title&#10;Desc line 1&#10;Desc line 2&#10;URL (optional)&#10;&#10;Next sitelink…"></textarea>
           </div>
           <div>
-            <label>Price Extension (bulk)</label>
-            <textarea id="bulkPrices" placeholder="One item per line: Header | Price | Unit&#10;Example:&#10;Stucco Repair | $199 | per visit&#10;Re-Stucco | $35 | per sq ft"></textarea>
+            <label>Price Extension (one per line: Header | Price | Unit)</label>
+            <textarea id="bulkPrices" placeholder="Stucco Repair | $199 | per visit"></textarea>
           </div>
         </div>
 
         <div class="row" style="margin-top:10px">
           <div>
-            <label>Promotion Extension</label>
-            <textarea id="bulkPromo" placeholder="Promotion text (e.g., Spring Sale 20% Off)"></textarea>
+            <label>Promotion</label>
+            <textarea id="bulkPromo" placeholder="Spring Sale — 20% Off"></textarea>
           </div>
           <div>
             <label>Image Extensions (URLs, one per line)</label>
-            <textarea id="bulkImages" placeholder="https://example.com/img1.jpg&#10;https://example.com/img2.jpg"></textarea>
+            <textarea id="bulkImages"></textarea>
           </div>
         </div>
 
@@ -213,16 +206,14 @@
 
         <div class="hr"></div>
         <button class="btn primary" id="applyBulk">Apply Bulk</button>
-        <span class="hint">Bulk will replace current lists (pins are cleared; set pins in Manual tab).</span>
+        <span class="hint">Bulk replaces current lists (pins cleared; set pins in Manual).</span>
       </div>
     </section>
 
-    <!-- LEFT: MANUAL -->
+    <!-- MANUAL -->
     <section id="manualPane" class="card hidden">
       <h2>Manual Inputs</h2>
       <div class="content">
-
-        <!-- headlines + descriptions -->
         <div class="row">
           <div>
             <label>Add Headline</label>
@@ -230,7 +221,7 @@
               <input id="headInput" type="text" placeholder="Headline…" />
               <button class="btn" id="addHeadBtn">Add</button>
             </div>
-            <div class="hint">Pin positions work like Google Ads. Pin 1/2/3 override order in previews.</div>
+            <div class="hint">Pin 1/2/3 behave like Google Ads and override order.</div>
             <ul id="headList" class="list"></ul>
           </div>
 
@@ -258,11 +249,8 @@
             <label>Structured Snippet</label>
             <div class="row">
               <select id="snippetHeaderM">
-                <option value="Services">Services</option>
-                <option value="Types">Types</option>
-                <option value="Brands">Brands</option>
-                <option value="Styles">Styles</option>
-                <option value="Areas">Areas</option>
+                <option value="Services">Services</option><option value="Types">Types</option>
+                <option value="Brands">Brands</option><option value="Styles">Styles</option><option value="Areas">Areas</option>
               </select>
               <input id="snipInput" type="text" placeholder="Snippet value…" />
             </div>
@@ -289,7 +277,6 @@
 
         <div class="hr"></div>
 
-        <!-- Extensions -->
         <div class="row">
           <div>
             <label>Sitelink</label>
@@ -316,11 +303,11 @@
         <div class="row" style="margin-top:10px">
           <div>
             <label>Promotion</label>
-            <input id="promoText" type="text" placeholder="e.g., Spring Sale — 20% Off with code SPRING20" />
+            <input id="promoText" type="text" placeholder="e.g., Spring Sale — 20% Off" />
           </div>
           <div>
             <label>Call & Location</label>
-            <input id="phone" type="text" placeholder="Phone (e.g., +1 555-123-4567)" />
+            <input id="phone" type="text" placeholder="Phone" />
             <input id="location" type="text" placeholder="Business • 123 Main St, City, ST" style="margin-top:6px" />
           </div>
         </div>
@@ -337,12 +324,11 @@
       </div>
     </section>
 
-    <!-- RIGHT: PREVIEWS -->
+    <!-- PREVIEWS -->
     <section class="card">
       <h2>Live Preview</h2>
       <div class="content previews">
 
-        <!-- Desktop -->
         <div class="preview-card">
           <div class="preview-header">
             <div class="g"></div>
@@ -351,32 +337,25 @@
               <span class="badge">Desktop</span>
             </div>
           </div>
-
           <div class="serp-url" id="pTitle">Your Business - example.com</div>
           <div class="serp-path">example.com/<span id="pPath1"></span><span id="pSlash1"></span><span id="pPath2"></span></div>
           <div class="serp-hline" id="pHeadsDesk"></div>
           <div class="serp-desc" id="pDescsDesk"></div>
 
-          <div class="ext-h">Sitelinks</div>
-          <div id="pSLDesk" class="sitelinks"></div>
+          <div class="sitelinks" id="pSLDesk"></div>
 
-          <div class="ext-h">Callouts & Snippet</div>
           <div class="callouts" id="pCalloutsDesk"></div>
           <div class="snip" id="pSnippetDesk"></div>
 
-          <div class="ext-h">Price</div>
-          <div id="pPriceDesk" class="price-grid"></div>
+          <div class="price-grid" id="pPriceDesk"></div>
 
-          <div class="ext-h">Promotion / Call / Location</div>
-          <div id="pPromoDesk" class="snip"></div>
-          <div id="pPhoneDesk" class="snip"></div>
-          <div id="pLocDesk" class="snip"></div>
+          <div class="snip" id="pPromoDesk"></div>
+          <div class="snip" id="pPhoneDesk"></div>
+          <div class="snip" id="pLocDesk"></div>
 
-          <div class="ext-h">Images</div>
-          <div id="pImgsDesk" class="img-ext"></div>
+          <div class="img-ext" id="pImgsDesk"></div>
         </div>
 
-        <!-- Mobile -->
         <div class="mobile-frame">
           <div class="preview-card" style="border:none">
             <div class="preview-header">
@@ -386,29 +365,23 @@
                 <span class="badge">Mobile</span>
               </div>
             </div>
-
             <div class="serp-url" id="pTitleM">Your Business - example.com</div>
             <div class="serp-path">example.com/<span id="pPath1M"></span><span id="pSlash1M"></span><span id="pPath2M"></span></div>
             <div class="serp-hline" id="pHeadsMob"></div>
             <div class="serp-desc" id="pDescsMob"></div>
 
-            <div class="ext-h">Sitelinks</div>
-            <div id="pSLMob" class="sitelinks"></div>
+            <div class="sitelinks" id="pSLMob"></div>
 
-            <div class="ext-h">Callouts & Snippet</div>
             <div class="callouts" id="pCalloutsMob"></div>
             <div class="snip" id="pSnippetMob"></div>
 
-            <div class="ext-h">Price</div>
-            <div id="pPriceMob" class="price-grid"></div>
+            <div class="price-grid" id="pPriceMob"></div>
 
-            <div class="ext-h">Promotion / Call / Location</div>
-            <div id="pPromoMob" class="snip"></div>
-            <div id="pPhoneMob" class="snip"></div>
-            <div id="pLocMob" class="snip"></div>
+            <div class="snip" id="pPromoMob"></div>
+            <div class="snip" id="pPhoneMob"></div>
+            <div class="snip" id="pLocMob"></div>
 
-            <div class="ext-h">Images</div>
-            <div id="pImgsMob" class="img-ext"></div>
+            <div class="img-ext" id="pImgsMob"></div>
           </div>
         </div>
 
@@ -418,7 +391,7 @@
 </div>
 
 <script>
-/* ============ STATE & HELPERS ============ */
+/* ---------- State ---------- */
 const LIMITS = { head:30, desc:90, call:25, snip:25, maxH:15, maxD:4, maxSV:10, maxSL:4 };
 const $ = id => document.getElementById(id);
 const L = s => (s||'').replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean);
@@ -430,21 +403,15 @@ const esc = t => t.replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"'
 let S = {
   theme:'dark',
   search:'',
-  heads:[], // {t, pin:0|1|2|3}
-  descs:[],
-  callouts:[],
-  snipHeader:'Services',
-  snipValues:[],
+  heads:[], descs:[], callouts:[],
+  snipHeader:'Services', snipValues:[],
   path1:'', path2:'',
-  sitelinks:[], // {t,d1,d2,url}
-  prices:[],    // {h,amt,unit}
-  promo:'',
-  phone:'',
-  loc:'',
+  sitelinks:[], prices:[],
+  promo:'', phone:'', loc:'',
   imgs:[]
 };
 
-/* ============ THEME/TABS ============ */
+/* ---------- Theme + Tabs ---------- */
 const themeSelect = $('themeSelect');
 function applyTheme(t){ document.documentElement.setAttribute('data-theme', t); S.theme=t; localStorage.setItem('ppc_theme', t); }
 function loadTheme(){ applyTheme(localStorage.getItem('ppc_theme') || 'dark'); themeSelect.value=S.theme; }
@@ -454,7 +421,7 @@ const bulkPane=$('bulkPane'), manualPane=$('manualPane'), tabBulk=$('tabBulk'), 
 tabBulk.onclick=()=>{tabBulk.classList.add('active');tabManual.classList.remove('active');bulkPane.classList.remove('hidden');manualPane.classList.add('hidden');}
 tabManual.onclick=()=>{tabManual.classList.add('active');tabBulk.classList.remove('active');manualPane.classList.remove('hidden');bulkPane.classList.add('hidden');}
 
-/* ============ PIN LOGIC ============ */
+/* ---------- Pins ---------- */
 function top3(){
   const out=[];
   for(let p=1;p<=3;p++){
@@ -467,20 +434,14 @@ function top3(){
   return out.slice(0,3);
 }
 
-/* ============ RENDER LISTS (Manual) ============ */
-function chip(len, lim){
-  const c = len===0?'warn':(len<=lim?'ok':(len<=lim+10?'warn':'bad'));
-  return `<span class="chip ${c}">${len}/${lim}</span>`;
-}
-
+/* ---------- Lists ---------- */
+function chip(len, lim){ const c=len===0?'warn':(len<=lim?'ok':(len<=lim+10?'warn':'bad')); return `<span class="chip ${c}">${len}/${lim}</span>`; }
 function renderHeads(){
   const ul=$('headList'); ul.innerHTML='';
   if(S.heads.length===0){ ul.innerHTML=`<li><span class="muted" style="grid-column:span 4">No headlines yet</span></li>`; return; }
   S.heads.forEach((h,i)=>{
     const li=document.createElement('li');
-    li.innerHTML = `
-      ${chip(h.t.length, LIMITS.head)}
-      <span>${esc(h.t)}</span>
+    li.innerHTML = `${chip(h.t.length, LIMITS.head)}<span>${esc(h.t)}</span>
       <div class="pin">
         <button data-pin="1" data-i="${i}" class="${h.pin===1?'active':''}">Pin 1</button>
         <button data-pin="2" data-i="${i}" class="${h.pin===2?'active':''}">Pin 2</button>
@@ -512,9 +473,8 @@ function renderSL(){
   const ul=$('slList'); ul.innerHTML='';
   if(S.sitelinks.length===0){ ul.innerHTML=`<li><span class="muted" style="grid-column:span 4">No sitelinks</span></li>`; return; }
   S.sitelinks.forEach((sl,i)=>{
-    const li=document.createElement('li');
-    li.style.gridTemplateColumns='1fr auto';
-    li.innerHTML = `<span><b>${esc(sl.t)}</b> — ${esc(sl.d1||'')} ${esc(sl.d2||'')} ${sl.url?(' ('+esc(sl.url)+')'):''}</span><div class="mini"><button class="btn" data-del="${i}">✕</button></div>`;
+    const li=document.createElement('li'); li.style.gridTemplateColumns='1fr auto';
+    li.innerHTML = `<span><b>${esc(sl.t)}</b> — ${esc(sl.d1||'')} ${esc(sl.d2||'')} ${sl.url?('('+esc(sl.url)+')'):''}</span><div class="mini"><button class="btn" data-del="${i}">✕</button></div>`;
     ul.appendChild(li);
   });
   ul.querySelectorAll('button[data-del]').forEach(b=>{ b.onclick=()=>{ S.sitelinks.splice(+b.dataset.del,1); renderSL(); render(); }; });
@@ -523,8 +483,7 @@ function renderPrices(){
   const ul=$('priceList'); ul.innerHTML='';
   if(S.prices.length===0){ ul.innerHTML=`<li><span class="muted" style="grid-column:span 4">No price items</span></li>`; return; }
   S.prices.forEach((p,i)=>{
-    const li=document.createElement('li');
-    li.style.gridTemplateColumns='1fr auto';
+    const li=document.createElement('li'); li.style.gridTemplateColumns='1fr auto';
     li.innerHTML = `<span><b>${esc(p.h)}</b> — ${esc(p.amt)} <span class="muted">${esc(p.unit||'')}</span></span><div class="mini"><button class="btn" data-del="${i}">✕</button></div>`;
     ul.appendChild(li);
   });
@@ -534,8 +493,7 @@ function renderImgs(){
   const ul=$('imgList'); ul.innerHTML='';
   if(S.imgs.length===0){ ul.innerHTML=`<li><span class="muted" style="grid-column:span 4">No images</span></li>`; return; }
   S.imgs.forEach((u,i)=>{
-    const li=document.createElement('li');
-    li.style.gridTemplateColumns='1fr auto';
+    const li=document.createElement('li'); li.style.gridTemplateColumns='1fr auto';
     li.innerHTML = `<span>${esc(u)}</span><div class="mini"><button class="btn" data-del="${i}">✕</button></div>`;
     ul.appendChild(li);
   });
@@ -549,90 +507,65 @@ function renderAllLists(){
   renderSL(); renderPrices(); renderImgs();
 }
 
-/* ============ PREVIEW RENDER ============ */
+/* ---------- Preview ---------- */
 function render(){
-  // Search + paths
   $('searchQuery').value = S.search;
   $('searchQueryMobile').value = S.search;
-  $('pPath1').textContent = S.path1||'';
-  $('pPath2').textContent = S.path2||'';
+  $('pPath1').textContent = S.path1||''; $('pPath2').textContent = S.path2||'';
   $('pSlash1').textContent = (S.path1 && S.path2) ? '/' : '';
-  $('pPath1M').textContent = S.path1||'';
-  $('pPath2M').textContent = S.path2||'';
+  $('pPath1M').textContent = S.path1||''; $('pPath2M').textContent = S.path2||'';
   $('pSlash1M').textContent = (S.path1 && S.path2) ? '/' : '';
 
   const H = top3();
   const D1 = S.descs[0] || 'Add a description (≤ 90 chars).';
   const D2 = S.descs[1] || '';
-
-  const heads = e => { e.innerHTML=''; if(H.length===0){e.innerHTML='<span class="serp-h">Add a headline…</span>'; return;} H.forEach(t=>{const s=document.createElement('span');s.className='serp-h';s.textContent=t;e.appendChild(s);}); };
+  const heads = e => { e.innerHTML=''; if(!H.length){e.innerHTML='<span class="serp-h">Add a headline…</span>';return;} H.forEach(t=>{const s=document.createElement('span');s.className='serp-h';s.textContent=t;e.appendChild(s);}); };
   heads($('pHeadsDesk')); heads($('pHeadsMob'));
-  const desc = D2?`${D1}  ${D2}`:D1;
+  const desc = D2 ? `${D1}  ${D2}` : D1;
   $('pDescsDesk').textContent=desc; $('pDescsMob').textContent=desc;
 
-  // Sitelinks
-  function drawSL(el){
-    el.innerHTML='';
-    S.sitelinks.slice(0,LIMITS.maxSL).forEach(sl=>{
-      const d=document.createElement('div'); d.className='sitelink';
-      d.innerHTML = `<div><b>${esc(sl.t||'')}</b></div><div class="muted">${esc(sl.d1||'')}</div><div class="muted">${esc(sl.d2||'')}</div>`;
-      el.appendChild(d);
-    });
-  }
-  drawSL($('pSLDesk')); drawSL($('pSLMob'));
-
-  // Callouts & Snippet
   const calls = S.callouts.join('  ·  ');
   $('pCalloutsDesk').textContent=calls; $('pCalloutsMob').textContent=calls;
   const snip = S.snipValues.length? `${S.snipHeader}: ${S.snipValues.join(' • ')}`:'';
   $('pSnippetDesk').textContent=snip; $('pSnippetMob').textContent=snip;
 
-  // Price
-  function drawPrice(el){
-    el.innerHTML='';
-    S.prices.forEach(p=>{
-      const c=document.createElement('div'); c.className='price-card';
-      c.innerHTML = `<div><b>${esc(p.h)}</b></div><div>${esc(p.amt)} <span class="muted">${esc(p.unit||'')}</span></div>`;
-      el.appendChild(c);
-    });
-  }
+  const drawSL = el => { el.innerHTML=''; S.sitelinks.slice(0,LIMITS.maxSL).forEach(sl=>{ const d=document.createElement('div'); d.className='sitelink'; d.innerHTML=`<div><b>${esc(sl.t)}</b></div><div class="muted">${esc(sl.d1||'')}</div><div class="muted">${esc(sl.d2||'')}</div>`; el.appendChild(d); }); };
+  drawSL($('pSLDesk')); drawSL($('pSLMob'));
+
+  const drawPrice = el => { el.innerHTML=''; S.prices.forEach(p=>{ const c=document.createElement('div'); c.className='price-card'; c.innerHTML=`<div><b>${esc(p.h)}</b></div><div>${esc(p.amt)} <span class="muted">${esc(p.unit||'')}</span></div>`; el.appendChild(c); }); };
   drawPrice($('pPriceDesk')); drawPrice($('pPriceMob'));
 
-  // Promo / phone / location
-  $('pPromoDesk').textContent = S.promo || '';
-  $('pPromoMob').textContent  = S.promo || '';
-  $('pPhoneDesk').textContent = S.phone ? `Call: ${S.phone}` : '';
-  $('pPhoneMob').textContent  = S.phone ? `Call: ${S.phone}` : '';
-  $('pLocDesk').textContent   = S.loc   || '';
-  $('pLocMob').textContent    = S.loc   || '';
+  $('pPromoDesk').textContent = S.promo||''; $('pPromoMob').textContent = S.promo||'';
+  $('pPhoneDesk').textContent = S.phone?`Call: ${S.phone}`:''; $('pPhoneMob').textContent = S.phone?`Call: ${S.phone}`:'';
+  $('pLocDesk').textContent   = S.loc||''; $('pLocMob').textContent = S.loc||'';
 
-  // Images
-  function drawImgs(el){
-    el.innerHTML='';
-    S.imgs.forEach(u=>{
-      const im=document.createElement('img'); im.src=u; im.alt='Ad image'; el.appendChild(im);
-    });
-  }
+  const drawImgs = el => { el.innerHTML=''; S.imgs.forEach(u=>{ const im=document.createElement('img'); im.src=u; im.alt='Ad image'; el.appendChild(im); }); };
   drawImgs($('pImgsDesk')); drawImgs($('pImgsMob'));
 }
 
-/* ============ SHARE / LOAD ============ */
+/* ---------- Share (to preview.html) ---------- */
 function share(){
   const payload = {
     theme:S.theme, q:S.search,
-    h:S.heads, d:clamp(S.descs,LIMITS.maxD), c:S.callouts,
-    sh:S.snipHeader, sv:clamp(S.snipValues,LIMITS.maxSV),
+    h:S.heads, d:S.descs.slice(0,LIMITS.maxD), c:S.callouts,
+    sh:S.snipHeader, sv:S.snipValues.slice(0,LIMITS.maxSV),
     p1:S.path1, p2:S.path2,
     sl:S.sitelinks, pr:S.prices,
     promo:S.promo, phone:S.phone, loc:S.loc, imgs:S.imgs
   };
   const hash = enc(payload);
-  location.hash = hash;
-  navigator.clipboard.writeText(location.href).then(()=>{
-    $('saveNote').textContent='Link copied (theme, pins, paths, extensions included).';
+  const url = `${location.origin}/preview.html#${hash}`;
+  // keep builder hash in sync too (optional)
+  history.replaceState(null,"",`#${hash}`);
+  navigator.clipboard.writeText(url).then(()=>{
+    $('saveNote').textContent='Preview link copied!';
     setTimeout(()=>{$('saveNote').textContent='';},3000);
+  }).catch(()=>{
+    $('saveNote').textContent=url;
   });
 }
+
+/* ---------- Load / Bulk / Manual / Misc ---------- */
 function load(){
   if(location.hash.length>1){
     try{
@@ -645,8 +578,7 @@ function load(){
       S.snipHeader=o.sh||'Services';
       S.snipValues=(o.sv||[]).slice(0,LIMITS.maxSV);
       S.path1=o.p1||''; S.path2=o.p2||'';
-      S.sitelinks=o.sl||[];
-      S.prices=o.pr||[];
+      S.sitelinks=o.sl||[]; S.prices=o.pr||[];
       S.promo=o.promo||''; S.phone=o.phone||''; S.loc=o.loc||'';
       S.imgs=o.imgs||[];
       $('snippetHeader').value=S.snipHeader; $('snippetHeaderM').value=S.snipHeader;
@@ -655,13 +587,12 @@ function load(){
       $('searchBulk').value=S.search; $('searchManual').value=S.search;
     }catch(e){}
   } else {
-    // Demo fill
     S.heads=[{t:"Local Stucco Contractors",pin:1},{t:"Get a Free Estimate Today",pin:2},{t:"Licensed & Insured Teams",pin:3},{t:"Trusted Local Experts",pin:0}];
     S.descs=["Hire licensed stucco contractors near you for quality results.","From homes to exteriors, we install and repair stucco right."];
     S.callouts=["Free Estimates","Fully Insured","Warranty Backed","Local Pros"];
     S.snipHeader='Services'; S.snipValues=["Installation","Repair","Re-Stucco","Exterior Stucco"];
     S.path1='home'; S.path2='stucco';
-    S.sitelinks=[{t:"Financing Options",d1:"Flexible monthly payments",d2:"Get approved today",url:""}, {t:"Project Gallery",d1:"See before & afters",d2:"Local homes we improved",url:""}];
+    S.sitelinks=[{t:"Financing Options",d1:"Flexible monthly payments",d2:"Get approved today",url:""},{t:"Project Gallery",d1:"See before & afters",d2:"Local homes we improved",url:""}];
     S.prices=[{h:"Stucco Repair",amt:"$199",unit:"per visit"},{h:"Re-Stucco",amt:"$35",unit:"per sq ft"}];
     S.promo="Spring Sale — 20% Off (SPRING20)";
     S.phone="+1 (555) 123-4567"; S.loc="PPC Gadget • 123 Main St, Phoenix, AZ";
@@ -672,31 +603,25 @@ function load(){
   renderAllLists(); render();
 }
 
-/* ============ EVENTS ============ */
 $('applyBulk').onclick=()=>{
   S.heads=clamp(L($('bulkHeads').value),LIMITS.maxH).map(t=>({t, pin:0}));
   S.descs=clamp(L($('bulkDescs').value),LIMITS.maxD);
   S.callouts=L($('bulkCallouts').value);
   S.snipValues=clamp(L($('bulkSnips').value),LIMITS.maxSV);
   S.snipHeader=$('snippetHeader').value;
-  S.path1=$('displayPath1').value.trim();
-  S.path2=$('displayPath2').value.trim();
+  S.path1=$('displayPath1').value.trim(); S.path2=$('displayPath2').value.trim();
   S.search=$('searchBulk').value;
 
-  // Sitelinks bulk: blocks separated by blank lines
   const raw=$('bulkSitelinks').value.replace(/\r/g,'').split(/\n\s*\n/).map(b=>b.trim()).filter(Boolean);
-  S.sitelinks = raw.slice(0,LIMITS.maxSL).map(b=>{ const lines=b.split('\n'); return {t:lines[0]||'', d1:lines[1]||'', d2:lines[2]||'', url:lines[3]||''}; });
-
-  // Prices
-  S.prices = L($('bulkPrices').value).map(row=>{ const [h,amt,unit]=row.split('|').map(x=>x?x.trim():''); return {h:h||'',amt:amt||'',unit:unit||''}; });
+  S.sitelinks = raw.slice(0,LIMITS.maxSL).map(b=>{ const l=b.split('\n'); return {t:l[0]||'', d1:l[1]||'', d2:l[2]||'', url:l[3]||''}; });
+  S.prices = L($('bulkPrices').value).map(r=>{ const [h,amt,unit]=(r||'').split('|').map(x=>x?x.trim():''); return {h:h||'',amt:amt||'',unit:unit||''}; });
 
   S.promo = $('bulkPromo').value.trim();
   S.imgs  = L($('bulkImages').value);
   S.phone = $('bulkPhone').value.trim();
   S.loc   = $('bulkLocation').value.trim();
 
-  renderAllLists(); render();
-  tabManual.click(); // jump to manual to pin/edit
+  renderAllLists(); render(); tabManual.click();
 };
 
 $('addHeadBtn').onclick=()=>{ const t=$('headInput').value.trim(); if(!t || S.heads.length>=LIMITS.maxH) return; S.heads.push({t, pin:0}); $('headInput').value=''; renderHeads(); render(); };
