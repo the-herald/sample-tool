@@ -41,6 +41,7 @@
   .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
   .btn{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.06));border:1px solid var(--line);color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer;font-size:14px}
   .btn.primary{background:linear-gradient(180deg,var(--brand),#2d8e1f);border-color:#237515;color:#fff}
+  .btn.linklike{background:transparent}
   .btn:active{transform:translateY(1px)}
   select, input[type="text"], textarea{
     width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;outline:none
@@ -71,8 +72,8 @@
   .mini{display:flex;gap:6px;align-items:center}
   .mini .btn{padding:4px 8px;font-size:12px}
   .pin{display:flex;gap:6px}
-  .pin button{border:1px solid #d8dbe5;background:#f5f7fb;color:#2b3a55;border-radius:10px;padding:4px 10px;font-size:12px;cursor:pointer}
-  [data-theme="dark"] .pin button{border-color:#2a3041;background:#161b29;color:#cdd4e6}
+  .pin button{border:1px solid #2a3041;background:#161b29;color:#cdd4e6;border-radius:10px;padding:4px 10px;font-size:12px;cursor:pointer}
+  [data-theme="light"] .pin button{border-color:#d8dbe5;background:#f5f7fb;color:#2b3a55}
   [data-theme="cyberpunk"] .pin button{border-color:#25305b;background:#141a33;color:#9fd8ff}
   .pin button.active{background:#1e7a27;border-color:#155a1c;color:#fff;font-weight:600}
 
@@ -100,7 +101,20 @@
   .price-card{border:1px solid #e4e7ef;border-radius:8px;padding:8px;font-size:12px}
   .img-ext{display:flex;gap:8px;flex-wrap:wrap}
   .img-ext img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid #e4e7ef}
+
+  /* Snippet sets */
+  .drawer{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-top:12px;overflow:hidden}
+  .drawer summary{cursor:pointer;list-style:none;padding:10px 12px;font-weight:600;border-bottom:1px solid var(--line)}
+  .drawer summary::-webkit-details-marker{display:none}
+  .drawer .inner{padding:12px}
+  .snipRow{display:grid;grid-template-columns:220px 1fr auto;gap:10px;align-items:start}
+  .delBtn{border:1px solid var(--line);background:transparent;color:#ff6b6d;padding:8px 10px;border-radius:10px;cursor:pointer}
+  .snipChips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .snipChip{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:6px 10px;border-radius:10px;cursor:pointer}
+  .snipChip.active{outline:2px solid var(--brand)}
+
   @media (max-width:1060px){.grid{grid-template-columns:1fr}.previews{grid-template-columns:1fr}}
+  @media (max-width:700px){.snipRow{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -111,6 +125,7 @@
       <h1>PPC Gadget — RSA Builder Pro</h1>
     </div>
     <div class="controls">
+      <a class="btn linklike" href="./multi.html">↗ Multi-Ad (Bulk)</a>
       <label style="display:flex;gap:8px;align-items:center">
         <span style="font-size:12px;color:var(--muted)">Theme</span>
         <select id="themeSelect">
@@ -132,33 +147,40 @@
   </div>
 
   <div class="grid">
-    <!-- BULK -->
+    <!-- LEFT: BULK -->
     <section id="bulkPane" class="card">
       <h2>Bulk Inputs</h2>
       <div class="content">
         <div class="row">
           <div>
             <label>Headlines (one per line) <span class="pill">max 15 • ≤ 30</span></label>
-            <textarea id="bulkHeads"></textarea>
+            <textarea id="bulkHeads" placeholder="Headline 1&#10;Headline 2&#10;…"></textarea>
           </div>
           <div>
             <label>Descriptions (one per line) <span class="pill">max 4 • ≤ 90</span></label>
-            <textarea id="bulkDescs"></textarea>
+            <textarea id="bulkDescs" placeholder="Description 1&#10;Description 2"></textarea>
           </div>
         </div>
 
         <div class="row" style="margin-top:10px">
           <div>
             <label>Callouts (one per line) <span class="pill">≤ 25</span></label>
-            <textarea id="bulkCallouts"></textarea>
+            <textarea id="bulkCallouts" placeholder="Free Estimates&#10;Fully Insured"></textarea>
           </div>
           <div>
-            <label>Structured Snippet Values (one per line) <span class="pill">≤ 10 • ≤ 25</span></label>
-            <textarea id="bulkSnips"></textarea>
+            <label>Structured Snippet Values (one per line) <span class="pill">Set 1 • ≤ 10</span></label>
+            <textarea id="bulkSnips" placeholder="Installation&#10;Repair"></textarea>
             <div class="row" style="margin-top:8px">
               <select id="snippetHeader">
-                <option value="Services">Services</option><option value="Types">Types</option>
-                <option value="Brands">Brands</option><option value="Styles">Styles</option><option value="Areas">Areas</option>
+                <option value="Services">Services</option>
+                <option value="Types">Types</option>
+                <option value="Brands">Brands</option>
+                <option value="Styles">Styles</option>
+                <option value="Areas">Areas</option>
+                <option value="Amenities">Amenities</option>
+                <option value="Programs">Programs</option>
+                <option value="Treatments">Treatments</option>
+                <option value="Materials">Materials</option>
               </select>
               <input id="displayPath1" type="text" placeholder="Path 1" />
             </div>
@@ -166,6 +188,7 @@
               <input id="displayPath2" type="text" placeholder="Path 2" />
               <input id="searchBulk" type="text" placeholder="Search query (optional)" />
             </div>
+            <div class="hint">Bulk goes into **Snippet Set 1**. You can add more sets in the Manual tab.</div>
           </div>
         </div>
 
@@ -174,7 +197,7 @@
         <div class="row">
           <div>
             <label>Sitelinks (blocks separated by blank lines)</label>
-            <textarea id="bulkSitelinks" placeholder="Title&#10;Desc line 1&#10;Desc line 2&#10;URL (optional)&#10;&#10;Next sitelink…"></textarea>
+            <textarea id="bulkSitelinks" placeholder="Title&#10;Description line 1&#10;Description line 2&#10;URL (optional)&#10;&#10;Next sitelink…"></textarea>
           </div>
           <div>
             <label>Price Extension (one per line: Header | Price | Unit)</label>
@@ -210,10 +233,12 @@
       </div>
     </section>
 
-    <!-- MANUAL -->
+    <!-- LEFT: MANUAL -->
     <section id="manualPane" class="card hidden">
       <h2>Manual Inputs</h2>
       <div class="content">
+
+        <!-- headlines + descriptions -->
         <div class="row">
           <div>
             <label>Add Headline</label>
@@ -221,7 +246,7 @@
               <input id="headInput" type="text" placeholder="Headline…" />
               <button class="btn" id="addHeadBtn">Add</button>
             </div>
-            <div class="hint">Pin 1/2/3 behave like Google Ads and override order.</div>
+            <div class="hint">Pin positions work like Google Ads. Pin 1/2/3 override order in previews.</div>
             <ul id="headList" class="list"></ul>
           </div>
 
@@ -245,19 +270,20 @@
             <ul id="callList" class="list"></ul>
           </div>
 
+          <!-- Dynamic Structured Snippets -->
           <div>
-            <label>Structured Snippet</label>
-            <div class="row">
-              <select id="snippetHeaderM">
-                <option value="Services">Services</option><option value="Types">Types</option>
-                <option value="Brands">Brands</option><option value="Styles">Styles</option><option value="Areas">Areas</option>
-              </select>
-              <input id="snipInput" type="text" placeholder="Snippet value…" />
+            <label>Structured Snippets</label>
+            <div class="snipChips" id="snipChipBar"></div>
+            <div class="drawer" id="snipDrawer">
+              <summary>Snippet Sets (click to expand/collapse)</summary>
+              <div class="inner" id="snipEditor">
+                <div style="margin-bottom:10px;display:flex;gap:10px;flex-wrap:wrap">
+                  <button class="btn" id="addSnipSetBtn">+ Add Snippet Set</button>
+                  <span class="hint">Up to 4 sets. Each set: pick a header and enter up to 10 values (one per line).</span>
+                </div>
+                <div id="snipSetWrap"></div>
+              </div>
             </div>
-            <div style="margin-top:8px">
-              <button class="btn" id="addSnipBtn">Add Value</button>
-            </div>
-            <ul id="snipList" class="list"></ul>
           </div>
         </div>
 
@@ -270,13 +296,14 @@
             </div>
           </div>
           <div>
-            <label>Search Query</label>
-            <input id="searchManual" type="text" placeholder="Search Google…" />
+            <label>Search Query (preview only)</label>
+            <input id="searchManual" type="text" placeholder="Type here or in the preview…" />
           </div>
         </div>
 
         <div class="hr"></div>
 
+        <!-- Extensions -->
         <div class="row">
           <div>
             <label>Sitelink</label>
@@ -300,18 +327,6 @@
           </div>
         </div>
 
-        <div class="row" style="margin-top:10px">
-          <div>
-            <label>Promotion</label>
-            <input id="promoText" type="text" placeholder="e.g., Spring Sale — 20% Off" />
-          </div>
-          <div>
-            <label>Call & Location</label>
-            <input id="phone" type="text" placeholder="Phone" />
-            <input id="location" type="text" placeholder="Business • 123 Main St, City, ST" style="margin-top:6px" />
-          </div>
-        </div>
-
         <div style="margin-top:10px">
           <label>Image URL</label>
           <div style="display:flex;gap:8px">
@@ -324,11 +339,12 @@
       </div>
     </section>
 
-    <!-- PREVIEWS -->
+    <!-- RIGHT: PREVIEWS -->
     <section class="card">
       <h2>Live Preview</h2>
       <div class="content previews">
 
+        <!-- Desktop -->
         <div class="preview-card">
           <div class="preview-header">
             <div class="g"></div>
@@ -337,25 +353,32 @@
               <span class="badge">Desktop</span>
             </div>
           </div>
+
           <div class="serp-url" id="pTitle">Your Business - example.com</div>
           <div class="serp-path">example.com/<span id="pPath1"></span><span id="pSlash1"></span><span id="pPath2"></span></div>
           <div class="serp-hline" id="pHeadsDesk"></div>
           <div class="serp-desc" id="pDescsDesk"></div>
 
-          <div class="sitelinks" id="pSLDesk"></div>
+          <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Sitelinks</div>
+          <div id="pSLDesk" class="sitelinks"></div>
 
+          <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Callouts & Snippet</div>
           <div class="callouts" id="pCalloutsDesk"></div>
           <div class="snip" id="pSnippetDesk"></div>
 
-          <div class="price-grid" id="pPriceDesk"></div>
+          <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Price</div>
+          <div id="pPriceDesk" class="price-grid"></div>
 
-          <div class="snip" id="pPromoDesk"></div>
-          <div class="snip" id="pPhoneDesk"></div>
-          <div class="snip" id="pLocDesk"></div>
+          <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Promotion / Call / Location</div>
+          <div id="pPromoDesk" class="snip"></div>
+          <div id="pPhoneDesk" class="snip"></div>
+          <div id="pLocDesk" class="snip"></div>
 
-          <div class="img-ext" id="pImgsDesk"></div>
+          <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Images</div>
+          <div id="pImgsDesk" class="img-ext"></div>
         </div>
 
+        <!-- Mobile -->
         <div class="mobile-frame">
           <div class="preview-card" style="border:none">
             <div class="preview-header">
@@ -365,23 +388,29 @@
                 <span class="badge">Mobile</span>
               </div>
             </div>
+
             <div class="serp-url" id="pTitleM">Your Business - example.com</div>
             <div class="serp-path">example.com/<span id="pPath1M"></span><span id="pSlash1M"></span><span id="pPath2M"></span></div>
             <div class="serp-hline" id="pHeadsMob"></div>
             <div class="serp-desc" id="pDescsMob"></div>
 
-            <div class="sitelinks" id="pSLMob"></div>
+            <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Sitelinks</div>
+            <div id="pSLMob" class="sitelinks"></div>
 
+            <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Callouts & Snippet</div>
             <div class="callouts" id="pCalloutsMob"></div>
             <div class="snip" id="pSnippetMob"></div>
 
-            <div class="price-grid" id="pPriceMob"></div>
+            <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Price</div>
+            <div id="pPriceMob" class="price-grid"></div>
 
-            <div class="snip" id="pPromoMob"></div>
-            <div class="snip" id="pPhoneMob"></div>
-            <div class="snip" id="pLocMob"></div>
+            <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Promotion / Call / Location</div>
+            <div id="pPromoMob" class="snip"></div>
+            <div id="pPhoneMob" class="snip"></div>
+            <div id="pLocMob" class="snip"></div>
 
-            <div class="img-ext" id="pImgsMob"></div>
+            <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Images</div>
+            <div id="pImgsMob" class="img-ext"></div>
           </div>
         </div>
 
@@ -392,19 +421,22 @@
 
 <script>
 /* ---------- State ---------- */
-const LIMITS = { head:30, desc:90, call:25, snip:25, maxH:15, maxD:4, maxSV:10, maxSL:4 };
+const LIMITS = { head:30, desc:90, call:25, snip:25, maxH:15, maxD:4, maxSV:10, maxSL:4, maxSnipSets:4 };
 const $ = id => document.getElementById(id);
 const L = s => (s||'').replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean);
 const clamp = (a,n)=>a.slice(0,n);
 const enc = o => btoa(unescape(encodeURIComponent(JSON.stringify(o))));
 const dec = s => JSON.parse(decodeURIComponent(escape(atob(s))));
 const esc = t => t.replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const SNIP_HEADERS = ["Services","Types","Brands","Styles","Areas","Amenities","Programs","Treatments","Materials"];
 
 let S = {
   theme:'dark',
   search:'',
   heads:[], descs:[], callouts:[],
-  snipHeader:'Services', snipValues:[],
+  // NEW: multiple snippet sets — [{header, values:[]}]
+  snipSets:[],
+  activeSnip:0,
   path1:'', path2:'',
   sitelinks:[], prices:[],
   promo:'', phone:'', loc:'',
@@ -413,7 +445,7 @@ let S = {
 
 /* ---------- Theme + Tabs ---------- */
 const themeSelect = $('themeSelect');
-function applyTheme(t){ document.documentElement.setAttribute('data-theme', t); S.theme=t; localStorage.setItem('ppc_theme', t); }
+function applyTheme(t){ document.documentElement.setAttribute('data-theme', t); S.theme=t; localStorage.setItem('ppc_theme', t); themeSelect.value=S.theme; }
 function loadTheme(){ applyTheme(localStorage.getItem('ppc_theme') || 'dark'); themeSelect.value=S.theme; }
 themeSelect.addEventListener('change', e=>{ applyTheme(e.target.value); render(); });
 
@@ -503,14 +535,62 @@ function renderAllLists(){
   renderHeads();
   renderSimple($('descList'), S.descs, LIMITS.desc, 'descriptions');
   renderSimple($('callList'), S.callouts, LIMITS.call, 'callouts');
-  renderSimple($('snipList'), S.snipValues, LIMITS.snip, 'snippet values');
   renderSL(); renderPrices(); renderImgs();
+  renderSnipUI();
+}
+
+/* ---------- Dynamic Snippet Sets (Manual) ---------- */
+function renderSnipUI(){
+  // chips to pick active set for preview
+  const chipBar = $('snipChipBar'); chipBar.innerHTML='';
+  S.snipSets.forEach((set, idx)=>{
+    const b=document.createElement('button');
+    b.className='snipChip'+(S.activeSnip===idx?' active':'');
+    b.textContent = `Set ${idx+1}: ${set.header} (${set.values.length})`;
+    b.onclick = ()=>{ S.activeSnip = idx; render(); renderSnipUI(); };
+    chipBar.appendChild(b);
+  });
+  // editor
+  const wrap=$('snipSetWrap'); wrap.innerHTML='';
+  S.snipSets.forEach((set, idx)=>{
+    const det = document.createElement('details'); det.className='drawer'; det.open = idx===S.activeSnip;
+    det.innerHTML = `
+      <summary>Set ${idx+1}: <b>${esc(set.header)}</b> <span class="pill">${set.values.length}/${LIMITS.maxSV}</span></summary>
+      <div class="inner">
+        <div class="snipRow">
+          <select data-role="header">
+            ${SNIP_HEADERS.map(h=>`<option value="${esc(h)}"${h===set.header?' selected':''}>${esc(h)}</option>`).join('')}
+          </select>
+          <textarea data-role="values" placeholder="One value per line (max ${LIMITS.maxSV})">${esc(set.values.join('\n'))}</textarea>
+          <button class="delBtn" data-role="del">Delete</button>
+        </div>
+      </div>`;
+    const headerSel = det.querySelector('[data-role="header"]');
+    const valuesTA  = det.querySelector('[data-role="values"]');
+    const delBtn    = det.querySelector('[data-role="del"]');
+
+    headerSel.onchange = e=>{ set.header=e.target.value; render(); renderSnipUI(); };
+    valuesTA.oninput   = e=>{ set.values=L(e.target.value).slice(0,LIMITS.maxSV); e.target.value=set.values.join('\n'); render(); renderSnipUI(); };
+    delBtn.onclick     = ()=>{ S.snipSets.splice(idx,1); if(S.activeSnip>=S.snipSets.length) S.activeSnip=Math.max(0,S.snipSets.length-1); renderSnipUI(); render(); };
+
+    wrap.appendChild(det);
+  });
+
+  $('addSnipSetBtn').onclick = ()=>{
+    if(S.snipSets.length>=LIMITS.maxSnipSets) return;
+    S.snipSets.push({header:'Services', values:[]});
+    S.activeSnip = S.snipSets.length-1;
+    renderSnipUI(); render();
+  };
 }
 
 /* ---------- Preview ---------- */
 function render(){
+  // Search sync (the user can also type in manual input field)
   $('searchQuery').value = S.search;
   $('searchQueryMobile').value = S.search;
+  $('searchManual').value = S.search;
+
   $('pPath1').textContent = S.path1||''; $('pPath2').textContent = S.path2||'';
   $('pSlash1').textContent = (S.path1 && S.path2) ? '/' : '';
   $('pPath1M').textContent = S.path1||''; $('pPath2M').textContent = S.path2||'';
@@ -526,8 +606,14 @@ function render(){
 
   const calls = S.callouts.join('  ·  ');
   $('pCalloutsDesk').textContent=calls; $('pCalloutsMob').textContent=calls;
-  const snip = S.snipValues.length? `${S.snipHeader}: ${S.snipValues.join(' • ')}`:'';
-  $('pSnippetDesk').textContent=snip; $('pSnippetMob').textContent=snip;
+
+  // Use only the active snippet set in preview
+  let snipText='';
+  if(S.snipSets.length){
+    const set=S.snipSets[S.activeSnip]||{header:'Services', values:[]};
+    if(set.values.length){ snipText = `${set.header}: ${set.values.join(' • ')}`; }
+  }
+  $('pSnippetDesk').textContent=snipText; $('pSnippetMob').textContent=snipText;
 
   const drawSL = el => { el.innerHTML=''; S.sitelinks.slice(0,LIMITS.maxSL).forEach(sl=>{ const d=document.createElement('div'); d.className='sitelink'; d.innerHTML=`<div><b>${esc(sl.t)}</b></div><div class="muted">${esc(sl.d1||'')}</div><div class="muted">${esc(sl.d2||'')}</div>`; el.appendChild(d); }); };
   drawSL($('pSLDesk')); drawSL($('pSLMob'));
@@ -545,24 +631,25 @@ function render(){
 
 /* ---------- Share (to preview.html) ---------- */
 function share(){
+  // Send active set as sh/sv for preview page compatibility;
+  // also send all sets as msv so we preserve everything when reloading this builder.
+  const active = S.snipSets[S.activeSnip] || {header:'Services', values:[]};
   const payload = {
     theme:S.theme, q:S.search,
     h:S.heads, d:S.descs.slice(0,LIMITS.maxD), c:S.callouts,
-    sh:S.snipHeader, sv:S.snipValues.slice(0,LIMITS.maxSV),
+    sh:active.header, sv:(active.values||[]).slice(0,LIMITS.maxSV),
+    msv:S.snipSets.map(s=>({header:s.header, values:(s.values||[]).slice(0,LIMITS.maxSV)})).slice(0,LIMITS.maxSnipSets),
     p1:S.path1, p2:S.path2,
     sl:S.sitelinks, pr:S.prices,
     promo:S.promo, phone:S.phone, loc:S.loc, imgs:S.imgs
   };
   const hash = enc(payload);
   const url = `${location.origin}/preview.html#${hash}`;
-  // keep builder hash in sync too (optional)
   history.replaceState(null,"",`#${hash}`);
   navigator.clipboard.writeText(url).then(()=>{
     $('saveNote').textContent='Preview link copied!';
     setTimeout(()=>{$('saveNote').textContent='';},3000);
-  }).catch(()=>{
-    $('saveNote').textContent=url;
-  });
+  }).catch(()=>{ $('saveNote').textContent=url; });
 }
 
 /* ---------- Load / Bulk / Manual / Misc ---------- */
@@ -572,82 +659,104 @@ function load(){
       const o = dec(location.hash.slice(1));
       S.theme=o.theme||'dark'; applyTheme(S.theme); themeSelect.value=S.theme;
       S.search=o.q||'';
-      S.heads=(o.h||[]).map(x=>({t:x.t, pin:x.pin||0})).slice(0,LIMITS.maxH);
+      S.heads=(o.h||[]).map(x=>({t:x.t||x, pin:x.pin||0})).slice(0,LIMITS.maxH);
       S.descs=(o.d||[]).slice(0,LIMITS.maxD);
       S.callouts=o.c||[];
-      S.snipHeader=o.sh||'Services';
-      S.snipValues=(o.sv||[]).slice(0,LIMITS.maxSV);
+      // Restore snippet sets (prefer msv; fallback to legacy sh+sv)
+      if (Array.isArray(o.msv) && o.msv.length){
+        S.snipSets = o.msv.slice(0,LIMITS.maxSnipSets).map(s=>({header:s.header||'Services', values:(s.values||[]).slice(0,LIMITS.maxSV)}));
+        S.activeSnip = 0;
+      } else {
+        const vals = (o.sv||[]).slice(0,LIMITS.maxSV);
+        const header = o.sh || 'Services';
+        S.snipSets = vals.length? [{header, values:vals}] : [];
+        S.activeSnip = 0;
+      }
       S.path1=o.p1||''; S.path2=o.p2||'';
       S.sitelinks=o.sl||[]; S.prices=o.pr||[];
       S.promo=o.promo||''; S.phone=o.phone||''; S.loc=o.loc||'';
       S.imgs=o.imgs||[];
-      $('snippetHeader').value=S.snipHeader; $('snippetHeaderM').value=S.snipHeader;
       $('displayPath1').value=S.path1; $('displayPath2').value=S.path2;
       $('path1').value=S.path1; $('path2').value=S.path2;
       $('searchBulk').value=S.search; $('searchManual').value=S.search;
+      // Bulk snippet header control reflects the first set if present
+      $('snippetHeader').value = S.snipSets[0]?.header || 'Services';
     }catch(e){}
   } else {
+    // Demo fill
     S.heads=[{t:"Local Stucco Contractors",pin:1},{t:"Get a Free Estimate Today",pin:2},{t:"Licensed & Insured Teams",pin:3},{t:"Trusted Local Experts",pin:0}];
     S.descs=["Hire licensed stucco contractors near you for quality results.","From homes to exteriors, we install and repair stucco right."];
     S.callouts=["Free Estimates","Fully Insured","Warranty Backed","Local Pros"];
-    S.snipHeader='Services'; S.snipValues=["Installation","Repair","Re-Stucco","Exterior Stucco"];
+    S.snipSets=[{header:'Services', values:["Installation","Repair","Re-Stucco","Exterior Stucco"]}];
     S.path1='home'; S.path2='stucco';
-    S.sitelinks=[{t:"Financing Options",d1:"Flexible monthly payments",d2:"Get approved today",url:""},{t:"Project Gallery",d1:"See before & afters",d2:"Local homes we improved",url:""}];
+    S.sitelinks=[{t:"Financing Options",d1:"Flexible monthly payments",d2:"Get approved today",url:""}, {t:"Project Gallery",d1:"See before & afters",d2:"Local homes we improved",url:""}];
     S.prices=[{h:"Stucco Repair",amt:"$199",unit:"per visit"},{h:"Re-Stucco",amt:"$35",unit:"per sq ft"}];
     S.promo="Spring Sale — 20% Off (SPRING20)";
     S.phone="+1 (555) 123-4567"; S.loc="PPC Gadget • 123 Main St, Phoenix, AZ";
     S.imgs=[];
-    $('snippetHeader').value=S.snipHeader; $('snippetHeaderM').value=S.snipHeader;
-    $('displayPath1').value=S.path1; $('displayPath2').value=S.path2; $('path1').value=S.path1; $('path2').value=S.path2;
+    $('displayPath1').value=S.path1; $('displayPath2').value=S.path2;
+    $('snippetHeader').value='Services';
   }
-  renderAllLists(); render();
+  renderAllLists(); renderSnipUI(); render();
 }
 
 $('applyBulk').onclick=()=>{
   S.heads=clamp(L($('bulkHeads').value),LIMITS.maxH).map(t=>({t, pin:0}));
   S.descs=clamp(L($('bulkDescs').value),LIMITS.maxD);
   S.callouts=L($('bulkCallouts').value);
-  S.snipValues=clamp(L($('bulkSnips').value),LIMITS.maxSV);
-  S.snipHeader=$('snippetHeader').value;
+  const vals = clamp(L($('bulkSnips').value),LIMITS.maxSV);
+  const header = $('snippetHeader').value;
+  // Put bulk into Set 1 (replace)
+  if (vals.length){
+    if (!S.snipSets.length) S.snipSets.push({header, values:[]});
+    S.snipSets[0] = {header, values:vals};
+    S.activeSnip = 0;
+  }
   S.path1=$('displayPath1').value.trim(); S.path2=$('displayPath2').value.trim();
   S.search=$('searchBulk').value;
 
+  // Sitelinks bulk: blocks separated by blank lines
   const raw=$('bulkSitelinks').value.replace(/\r/g,'').split(/\n\s*\n/).map(b=>b.trim()).filter(Boolean);
-  S.sitelinks = raw.slice(0,LIMITS.maxSL).map(b=>{ const l=b.split('\n'); return {t:l[0]||'', d1:l[1]||'', d2:l[2]||'', url:l[3]||''}; });
-  S.prices = L($('bulkPrices').value).map(r=>{ const [h,amt,unit]=(r||'').split('|').map(x=>x?x.trim():''); return {h:h||'',amt:amt||'',unit:unit||''}; });
+  S.sitelinks = raw.slice(0,LIMITS.maxSL).map(b=>{ const lines=b.split('\n'); return {t:lines[0]||'', d1:lines[1]||'', d2:lines[2]||'', url:lines[3]||''}; });
+
+  // Prices
+  S.prices = L($('bulkPrices').value).map(row=>{ const [h,amt,unit]=row.split('|').map(x=>x?x.trim():''); return {h:h||'',amt:amt||'',unit:unit||''}; });
 
   S.promo = $('bulkPromo').value.trim();
   S.imgs  = L($('bulkImages').value);
   S.phone = $('bulkPhone').value.trim();
   S.loc   = $('bulkLocation').value.trim();
 
-  renderAllLists(); render(); tabManual.click();
+  renderAllLists(); renderSnipUI(); render();
+  tabManual.click();
 };
 
+/* Manual add buttons */
 $('addHeadBtn').onclick=()=>{ const t=$('headInput').value.trim(); if(!t || S.heads.length>=LIMITS.maxH) return; S.heads.push({t, pin:0}); $('headInput').value=''; renderHeads(); render(); };
 $('addDescBtn').onclick=()=>{ const t=$('descInput').value.trim(); if(!t||S.descs.length>=LIMITS.maxD) return; S.descs.push(t); $('descInput').value=''; renderAllLists(); render(); };
 $('addCallBtn').onclick=()=>{ const t=$('callInput').value.trim(); if(!t) return; S.callouts.push(t); $('callInput').value=''; renderAllLists(); render(); };
-$('addSnipBtn').onclick=()=>{ const t=$('snipInput').value.trim(); if(!t||S.snipValues.length>=LIMITS.maxSV) return; S.snipValues.push(t); $('snipInput').value=''; renderAllLists(); render(); };
-$('snippetHeaderM').addEventListener('change', e=>{ S.snipHeader=e.target.value; $('snippetHeader').value=S.snipHeader; render(); });
 
 $('path1').addEventListener('input', e=>{ S.path1=e.target.value.trim(); $('displayPath1').value=S.path1; render(); });
 $('path2').addEventListener('input', e=>{ S.path2=e.target.value.trim(); $('displayPath2').value=S.path2; render(); });
 
+/* Search: editable in preview and manual helper */
 $('searchManual').addEventListener('input', e=>{ S.search=e.target.value; $('searchQuery').value=S.search; $('searchQueryMobile').value=S.search; });
 $('searchQuery').addEventListener('input', e=>{ S.search=e.target.value; $('searchQueryMobile').value=S.search; $('searchManual').value=S.search; $('searchBulk').value=S.search; });
 $('searchQueryMobile').addEventListener('input', e=>{ S.search=e.target.value; $('searchQuery').value=S.search; $('searchManual').value=S.search; $('searchBulk').value=S.search; });
 
+/* Sitelink / Price / Image */
 $('addSL').onclick=()=>{ const t=$('slTitle').value.trim(); if(!t || S.sitelinks.length>=LIMITS.maxSL) return; S.sitelinks.push({t, d1:$('slDesc1').value.trim(), d2:$('slDesc2').value.trim(), url:$('slUrl').value.trim()}); ['slTitle','slDesc1','slDesc2','slUrl'].forEach(id=>$(id).value=''); renderSL(); render(); };
 $('addPrice').onclick=()=>{ const h=$('priceHeader').value.trim(), amt=$('priceAmount').value.trim(); if(!h||!amt) return; S.prices.push({h, amt, unit:$('priceUnit').value.trim()}); ['priceHeader','priceAmount','priceUnit'].forEach(id=>$(id).value=''); renderPrices(); render(); };
 $('addImage').onclick=()=>{ const u=$('imgUrl').value.trim(); if(!u) return; S.imgs.push(u); $('imgUrl').value=''; renderImgs(); render(); };
 
+/* Buttons */
 $('shareBtn').onclick=share;
 $('updateBtn').onclick=render;
 $('clearBtn').onclick=()=>{
-  S={theme:S.theme,search:'',heads:[],descs:[],callouts:[],snipHeader:'Services',snipValues:[],path1:'',path2:'',sitelinks:[],prices:[],promo:'',phone:'',loc:'',imgs:[]};
+  S={theme:S.theme,search:'',heads:[],descs:[],callouts:[],snipSets:[],activeSnip:0,path1:'',path2:'',sitelinks:[],prices:[],promo:'',phone:'',loc:'',imgs:[]};
   document.querySelectorAll('input,textarea').forEach(el=>{ if(el.id!=='searchQuery'&&el.id!=='searchQueryMobile') el.value=''; });
-  $('snippetHeader').value='Services'; $('snippetHeaderM').value='Services';
-  renderAllLists(); render();
+  $('snippetHeader').value='Services';
+  renderAllLists(); renderSnipUI(); render();
 };
 
 loadTheme();
