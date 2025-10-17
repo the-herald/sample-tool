@@ -3,51 +3,66 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PPC Gadget — RSA Builder (Pro)</title>
+<title>PPC Gadget — RSA Builder Pro</title>
+<link rel="icon" href="/favicon.png" />
 <style>
-  /* =====================
-     THEMES
-  ======================*/
+  /* =============== THEMES =============== */
   :root{
-    --bg:#0b0e13; --panel:#121621; --panel-2:#0f1422; --line:#202635;
+    --bg:#0b0e13; --panel:#121621; --panel2:#0f1422; --line:#202635;
     --text:#e8ecf3; --muted:#9aa3b7; --brand:#6DBE45;
-    --ok:#22c884; --warn:#f5c558; --bad:#ff6b6d;
     --chip:#273047; --chipText:#d9e2ff;
+    --ok:#22c884; --warn:#f5c558; --bad:#ff6b6d;
+
     --preview-bg:#fff; --preview-text:#111; --preview-muted:#5f6368;
     --preview-blue:#174ea6; --preview-chip:#e8f0fe; --preview-link:#1a0dab; --preview-green:#0f9d58;
   }
   [data-theme="light"]{
-    --bg:#f6f7fb; --panel:#ffffff; --panel-2:#ffffff; --line:#e7e9f2;
+    --bg:#f6f7fb; --panel:#ffffff; --panel2:#ffffff; --line:#e7e9f2;
     --text:#0f1422; --muted:#56607a; --brand:#2f8d19;
     --chip:#eef2ff; --chipText:#2c3b64;
   }
+  [data-theme="cyberpunk"]{
+    --bg:#0a0c12; --panel:#0e1220; --panel2:#0c0f1a; --line:#23283b;
+    --text:#e6f7ff; --muted:#7bd4ff; --brand:#ff2bd6; /* neon magenta */
+    --chip:#121830; --chipText:#8feaff;
+    --ok:#00ffcc; --warn:#ffd166; --bad:#ff6b6b;
+
+    --preview-bg:#0b0f1a; --preview-text:#e6f7ff; --preview-muted:#8fd0ff;
+    --preview-blue:#49c7ff; --preview-chip:#121830; --preview-link:#7bf1ff; --preview-green:#00ffcc;
+  }
+
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
   a{color:var(--brand);text-decoration:none}
-  .wrap{max-width:1280px;margin:0 auto;padding:20px}
-  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:10px}
-  .title{display:flex;align-items:center;gap:10px}
-  .dot{width:10px;height:10px;border-radius:50%;background:var(--brand)}
+  .wrap{max-width:1320px;margin:0 auto;padding:20px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand img{width:32px;height:32px}
   h1{font-size:18px;margin:0}
-  .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .btn{
-    background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.06));
-    border:1px solid var(--line); color:var(--text); padding:10px 14px; border-radius:12px; cursor:pointer; font-size:14px;
-  }
-  .btn.primary{background:linear-gradient(180deg,#6DBE45,#479e23); border-color:#3a8a1d; color:#fff}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .btn{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.06));border:1px solid var(--line);color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer;font-size:14px}
+  .btn.primary{background:linear-gradient(180deg,var(--brand),#2d8e1f);border-color:#237515;color:#fff}
   .btn:active{transform:translateY(1px)}
+  select, input[type="text"], textarea{
+    width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;outline:none
+  }
+  textarea{min-height:90px;resize:vertical}
+  label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .pill{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
   .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
   .card h2{margin:0;padding:14px 16px;border-bottom:1px solid var(--line);font-size:15px;color:var(--muted);font-weight:600}
   .content{padding:14px}
-  label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
-  input[type="text"], textarea, select{
-    width:100%; background:var(--panel-2); color:var(--text);
-    border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:14px; outline:none; resize:vertical;
-  }
-  textarea{min-height:90px}
   .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .save{font-size:12px;color:var(--muted)}
+  .hr{height:1px;background:var(--line);margin:12px 0}
+  .tabs{display:flex;gap:6px;padding:10px}
+  .tab{border:1px solid var(--line);padding:8px 12px;border-radius:10px;cursor:pointer}
+  .tab.active{background:var(--panel2)}
+  .hidden{display:none}
+
+  /* Lists */
   .list{margin:10px 0 0;padding:0;list-style:none;border:1px dashed var(--line);border-radius:12px}
   .list li{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:10px;padding:8px 10px;border-top:1px dashed var(--line)}
   .list li:first-child{border-top:none}
@@ -56,21 +71,17 @@
   .warn{background:rgba(245,197,88,.16);color:#ffe4a0}
   .bad{background:rgba(255,107,109,.16);color:#ffc1c2}
   .mini{display:flex;gap:6px;align-items:center}
+  .mini .btn{padding:4px 8px;font-size:12px}
   .pin{display:flex;gap:6px}
-  .pin button{
-    border:1px solid var(--line); background:var(--panel-2); color:var(--text); border-radius:8px; padding:4px 8px; font-size:12px; cursor:pointer;
-  }
-  .pin .active{background:var(--brand);color:#fff;border-color:#2b7d16}
-  .inline{display:flex;gap:8px}
-  .addline{display:flex;gap:8px;margin-top:8px}
-  .addline input{flex:1}
-  .hr{height:1px;background:var(--line);margin:12px 0}
-  .pill{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
-  .flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .pin button{border:1px solid #d8dbe5;background:#f5f7fb;color:#2b3a55;border-radius:10px;padding:4px 10px;font-size:12px;cursor:pointer}
+  [data-theme="dark"] .pin button{border-color:#2a3041;background:#161b29;color:#cdd4e6}
+  [data-theme="cyberpunk"] .pin button{border-color:#25305b;background:#141a33;color:#9fd8ff}
+  .pin button.active{background:#1e7a27;border-color:#155a1c;color:#fff;font-weight:600}
 
-  /* Preview */
+  /* Previews */
   .previews{display:grid;grid-template-columns:1fr 380px;gap:14px}
   .preview-card{background:var(--preview-bg);color:var(--preview-text);border-radius:12px;border:1px solid #e3e6ef;padding:14px}
+  [data-theme="cyberpunk"] .preview-card{border-color:#1f2642}
   .preview-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
   .g{width:24px;height:24px;border-radius:6px;background:#4285F4}
   .searchbar{flex:1;border:1px solid #dadce0;border-radius:999px;padding:8px 12px;font-size:14px;display:flex;gap:8px;align-items:center;background:#fff}
@@ -80,476 +91,640 @@
   .serp-hline{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
   .serp-h{background:var(--preview-chip);color:var(--preview-blue);border-radius:4px;padding:2px 4px;font-weight:700}
   .serp-desc{color:#3c4043;font-size:14px;line-height:1.35}
+  [data-theme="cyberpunk"] .serp-desc{color:#c9e8ff}
   .callouts{font-size:12px;color:#5f6368;margin-top:8px}
   .snip{margin-top:4px;font-size:12px;color:#3c4043}
   .muted{color:#5f6368}
   .mobile-frame{max-width:360px;border:10px solid #e7eaef;border-radius:24px;margin:0 auto;background:#fff}
   .badge{font-size:11px;border:1px solid #dfe3ec;border-radius:6px;padding:2px 6px;color:#5a657c}
-  .save{font-size:12px;color:var(--muted)}
-  .topbar{display:flex;gap:10px;align-items:center}
-
-  /* Theme toggle */
-  .switch{position:relative;display:inline-block;width:52px;height:28px}
-  .switch input{display:none}
-  .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#d1d6e3;border-radius:999px;transition:.2s}
-  .slider:before{position:absolute;content:"";height:22px;width:22px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
-  input:checked + .slider{background:#111827}
-  input:checked + .slider:before{transform:translateX(24px)}
-  .theme-label{font-size:12px;color:var(--muted)}
-  @media (max-width: 1060px){ .grid{grid-template-columns:1fr} .previews{grid-template-columns:1fr} }
+  .ext-h{font-weight:700;margin:12px 0 6px;font-size:13px}
+  .sitelinks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .sitelink{font-size:13px;color:#1a0dab}
+  .price-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .price-card{border:1px solid #e4e7ef;border-radius:8px;padding:8px;font-size:12px}
+  .img-ext{display:flex;gap:8px;flex-wrap:wrap}
+  .img-ext img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid #e4e7ef}
+  @media (max-width:1060px){.grid{grid-template-columns:1fr}.previews{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="title">
-        <span class="dot"></span>
-        <h1>PPC Gadget — RSA Builder (Dark/Light • Pins • Mobile/Desk)</h1>
-      </div>
-      <div class="controls">
-        <div class="topbar">
-          <span class="theme-label">Theme</span>
-          <label class="switch">
-            <input id="themeToggle" type="checkbox">
-            <span class="slider"></span>
-          </label>
-        </div>
-        <button class="btn" id="clearBtn">Clear</button>
-        <button class="btn" id="updateBtn">Update</button>
-        <button class="btn primary" id="shareBtn">Share / Copy Link</button>
-        <span id="saveNote" class="save"></span>
-      </div>
-    </header>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <img src="/logo.png" alt="PPC Gadget">
+      <h1>PPC Gadget — RSA Builder Pro</h1>
+    </div>
+    <div class="controls">
+      <label style="display:flex;gap:8px;align-items:center">
+        <span style="font-size:12px;color:var(--muted)">Theme</span>
+        <select id="themeSelect">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+          <option value="cyberpunk">Cyberpunk</option>
+        </select>
+      </label>
+      <button class="btn" id="clearBtn">Clear</button>
+      <button class="btn" id="updateBtn">Update</button>
+      <button class="btn primary" id="shareBtn">Share / Copy Link</button>
+      <span id="saveNote" class="save"></span>
+    </div>
+  </header>
 
-    <div class="grid">
-      <!-- LEFT: INPUTS -->
-      <section class="card">
-        <h2>Inputs</h2>
-        <div class="content">
-          <div class="row">
-            <div>
-              <label>Bulk Headlines (one per line) <span class="pill">max 15 • ≤ 30 chars</span></label>
-              <textarea id="bulkHeads" placeholder="Paste lines here to replace the headlines list…"></textarea>
-              <div class="flex">
-                <button class="btn" id="replaceHeadsBtn">Replace List</button>
-                <span class="hint">You can also add headlines one by one below, and pin them to H1/H2/H3.</span>
-              </div>
+  <div class="tabs">
+    <div id="tabBulk" class="tab active">Bulk</div>
+    <div id="tabManual" class="tab">Manual</div>
+  </div>
 
-              <div class="addline">
-                <input id="headInput" type="text" placeholder="Add headline…" />
-                <button class="btn" id="addHeadBtn">Add</button>
-              </div>
-
-              <ul id="headList" class="list"></ul>
-            </div>
-
-            <div>
-              <label>Bulk Descriptions (one per line) <span class="pill">max 4 • ≤ 90 chars</span></label>
-              <textarea id="bulkDescs" placeholder="Paste lines here to replace the descriptions list…"></textarea>
-              <div class="addline">
-                <input id="descInput" type="text" placeholder="Add description…" />
-                <button class="btn" id="addDescBtn">Add</button>
-              </div>
-              <ul id="descList" class="list"></ul>
-            </div>
+  <div class="grid">
+    <!-- LEFT: BULK -->
+    <section id="bulkPane" class="card">
+      <h2>Bulk Inputs</h2>
+      <div class="content">
+        <div class="row">
+          <div>
+            <label>Headlines (one per line) <span class="pill">max 15 • ≤ 30</span></label>
+            <textarea id="bulkHeads" placeholder="Headline 1&#10;Headline 2&#10;…"></textarea>
           </div>
+          <div>
+            <label>Descriptions (one per line) <span class="pill">max 4 • ≤ 90</span></label>
+            <textarea id="bulkDescs" placeholder="Description 1&#10;Description 2"></textarea>
+          </div>
+        </div>
 
-          <div class="row" style="margin-top:12px">
-            <div>
-              <label>Callouts (one per line) <span class="pill">≤ 25</span></label>
-              <textarea id="bulkCallouts" placeholder="Free Estimates&#10;Fully Insured&#10;Warranty Backed"></textarea>
-              <div class="addline">
-                <input id="callInput" type="text" placeholder="Add callout…" />
-                <button class="btn" id="addCallBtn">Add</button>
-              </div>
-              <ul id="callList" class="list"></ul>
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label>Callouts (one per line) <span class="pill">≤ 25</span></label>
+            <textarea id="bulkCallouts" placeholder="Free Estimates&#10;Fully Insured"></textarea>
+          </div>
+          <div>
+            <label>Structured Snippet Values (one per line) <span class="pill">≤ 10 • ≤ 25</span></label>
+            <textarea id="bulkSnips" placeholder="Installation&#10;Repair"></textarea>
+            <div class="row" style="margin-top:8px">
+              <select id="snippetHeader">
+                <option value="Services">Services</option>
+                <option value="Types">Types</option>
+                <option value="Brands">Brands</option>
+                <option value="Styles">Styles</option>
+                <option value="Areas">Areas</option>
+              </select>
+              <input id="displayPath1" type="text" placeholder="Path 1" />
             </div>
-
-            <div>
-              <label>Structured Snippet</label>
-              <div class="row">
-                <select id="snippetHeader">
-                  <option value="Services">Services</option>
-                  <option value="Types">Types</option>
-                  <option value="Brands">Brands</option>
-                  <option value="Styles">Styles</option>
-                  <option value="Areas">Areas</option>
-                </select>
-                <input id="displayPath" type="text" placeholder="Display Path (optional): e.g. home • stucco"/>
-              </div>
-              <label style="margin-top:8px">Snippet Values (one per line) <span class="pill">≤ 10 • ≤ 25 chars</span></label>
-              <textarea id="bulkSnips" placeholder="Installation&#10;Repair&#10;Re-Stucco"></textarea>
-              <div class="addline">
-                <input id="snipInput" type="text" placeholder="Add snippet value…" />
-                <button class="btn" id="addSnipBtn">Add</button>
-              </div>
-              <ul id="snipList" class="list"></ul>
+            <div class="row" style="margin-top:8px">
+              <input id="displayPath2" type="text" placeholder="Path 2" />
+              <input id="searchBulk" type="text" placeholder="Search query (optional)" />
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- RIGHT: PREVIEWS -->
-      <section class="card">
-        <h2>Live Preview</h2>
-        <div class="content previews">
+        <div class="hr"></div>
 
-          <!-- Desktop -->
-          <div class="preview-card">
+        <div class="row">
+          <div>
+            <label>Sitelinks (bulk)</label>
+            <textarea id="bulkSitelinks" placeholder="Use blocks separated by blank lines. Each block:&#10;Title&#10;Description line 1&#10;Description line 2&#10;URL (optional)&#10;&#10;Example:&#10;Financing Options&#10;Flexible monthly payments&#10;Get approved today&#10;https://example.com/finance"></textarea>
+          </div>
+          <div>
+            <label>Price Extension (bulk)</label>
+            <textarea id="bulkPrices" placeholder="One item per line: Header | Price | Unit&#10;Example:&#10;Stucco Repair | $199 | per visit&#10;Re-Stucco | $35 | per sq ft"></textarea>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label>Promotion Extension</label>
+            <textarea id="bulkPromo" placeholder="Promotion text (e.g., Spring Sale 20% Off)"></textarea>
+          </div>
+          <div>
+            <label>Image Extensions (URLs, one per line)</label>
+            <textarea id="bulkImages" placeholder="https://example.com/img1.jpg&#10;https://example.com/img2.jpg"></textarea>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label>Call Extension (Phone)</label>
+            <input id="bulkPhone" type="text" placeholder="+1 (555) 123-4567" />
+          </div>
+          <div>
+            <label>Location Extension</label>
+            <input id="bulkLocation" type="text" placeholder="Business • 123 Main St, City, ST" />
+          </div>
+        </div>
+
+        <div class="hr"></div>
+        <button class="btn primary" id="applyBulk">Apply Bulk</button>
+        <span class="hint">Bulk will replace current lists (pins are cleared; set pins in Manual tab).</span>
+      </div>
+    </section>
+
+    <!-- LEFT: MANUAL -->
+    <section id="manualPane" class="card hidden">
+      <h2>Manual Inputs</h2>
+      <div class="content">
+
+        <!-- headlines + descriptions -->
+        <div class="row">
+          <div>
+            <label>Add Headline</label>
+            <div style="display:flex;gap:8px">
+              <input id="headInput" type="text" placeholder="Headline…" />
+              <button class="btn" id="addHeadBtn">Add</button>
+            </div>
+            <div class="hint">Pin positions work like Google Ads. Pin 1/2/3 override order in previews.</div>
+            <ul id="headList" class="list"></ul>
+          </div>
+
+          <div>
+            <label>Add Description</label>
+            <div style="display:flex;gap:8px">
+              <input id="descInput" type="text" placeholder="Description…" />
+              <button class="btn" id="addDescBtn">Add</button>
+            </div>
+            <ul id="descList" class="list"></ul>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label>Callout</label>
+            <div style="display:flex;gap:8px">
+              <input id="callInput" type="text" placeholder="Callout…" />
+              <button class="btn" id="addCallBtn">Add</button>
+            </div>
+            <ul id="callList" class="list"></ul>
+          </div>
+
+          <div>
+            <label>Structured Snippet</label>
+            <div class="row">
+              <select id="snippetHeaderM">
+                <option value="Services">Services</option>
+                <option value="Types">Types</option>
+                <option value="Brands">Brands</option>
+                <option value="Styles">Styles</option>
+                <option value="Areas">Areas</option>
+              </select>
+              <input id="snipInput" type="text" placeholder="Snippet value…" />
+            </div>
+            <div style="margin-top:8px">
+              <button class="btn" id="addSnipBtn">Add Value</button>
+            </div>
+            <ul id="snipList" class="list"></ul>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label>Display Paths</label>
+            <div class="row">
+              <input id="path1" type="text" placeholder="Path 1" />
+              <input id="path2" type="text" placeholder="Path 2" />
+            </div>
+          </div>
+          <div>
+            <label>Search Query</label>
+            <input id="searchManual" type="text" placeholder="Search Google…" />
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <!-- Extensions -->
+        <div class="row">
+          <div>
+            <label>Sitelink</label>
+            <input id="slTitle" type="text" placeholder="Title" />
+            <input id="slDesc1" type="text" placeholder="Description line 1" style="margin-top:6px" />
+            <input id="slDesc2" type="text" placeholder="Description line 2" style="margin-top:6px" />
+            <input id="slUrl"   type="text" placeholder="Final URL (optional)" style="margin-top:6px" />
+            <button class="btn" id="addSL" style="margin-top:8px">Add Sitelink</button>
+            <ul id="slList" class="list"></ul>
+          </div>
+
+          <div>
+            <label>Price Item</label>
+            <div class="row">
+              <input id="priceHeader" type="text" placeholder="Header" />
+              <input id="priceAmount" type="text" placeholder="Price (e.g., $199)" />
+            </div>
+            <input id="priceUnit" type="text" placeholder="Unit (e.g., per visit)" style="margin-top:6px" />
+            <button class="btn" id="addPrice" style="margin-top:8px">Add Price</button>
+            <ul id="priceList" class="list"></ul>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label>Promotion</label>
+            <input id="promoText" type="text" placeholder="e.g., Spring Sale — 20% Off with code SPRING20" />
+          </div>
+          <div>
+            <label>Call & Location</label>
+            <input id="phone" type="text" placeholder="Phone (e.g., +1 555-123-4567)" />
+            <input id="location" type="text" placeholder="Business • 123 Main St, City, ST" style="margin-top:6px" />
+          </div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>Image URL</label>
+          <div style="display:flex;gap:8px">
+            <input id="imgUrl" type="text" placeholder="https://…" />
+            <button class="btn" id="addImage">Add Image</button>
+          </div>
+          <ul id="imgList" class="list"></ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RIGHT: PREVIEWS -->
+    <section class="card">
+      <h2>Live Preview</h2>
+      <div class="content previews">
+
+        <!-- Desktop -->
+        <div class="preview-card">
+          <div class="preview-header">
+            <div class="g"></div>
+            <div class="searchbar">
+              <input id="searchQuery" type="text" placeholder="Search Google…" />
+              <span class="badge">Desktop</span>
+            </div>
+          </div>
+
+          <div class="serp-url" id="pTitle">Your Business - example.com</div>
+          <div class="serp-path">example.com/<span id="pPath1"></span><span id="pSlash1"></span><span id="pPath2"></span></div>
+          <div class="serp-hline" id="pHeadsDesk"></div>
+          <div class="serp-desc" id="pDescsDesk"></div>
+
+          <div class="ext-h">Sitelinks</div>
+          <div id="pSLDesk" class="sitelinks"></div>
+
+          <div class="ext-h">Callouts & Snippet</div>
+          <div class="callouts" id="pCalloutsDesk"></div>
+          <div class="snip" id="pSnippetDesk"></div>
+
+          <div class="ext-h">Price</div>
+          <div id="pPriceDesk" class="price-grid"></div>
+
+          <div class="ext-h">Promotion / Call / Location</div>
+          <div id="pPromoDesk" class="snip"></div>
+          <div id="pPhoneDesk" class="snip"></div>
+          <div id="pLocDesk" class="snip"></div>
+
+          <div class="ext-h">Images</div>
+          <div id="pImgsDesk" class="img-ext"></div>
+        </div>
+
+        <!-- Mobile -->
+        <div class="mobile-frame">
+          <div class="preview-card" style="border:none">
             <div class="preview-header">
               <div class="g"></div>
               <div class="searchbar">
-                <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#5f6368" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16a6.471 6.471 0 004.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                <input id="searchQuery" type="text" placeholder="Search Google…" />
-                <span class="badge">Desktop</span>
+                <input id="searchQueryMobile" type="text" placeholder="Search Google…" />
+                <span class="badge">Mobile</span>
               </div>
             </div>
 
-            <div class="serp-url" id="pTitle">Your Business - example.com</div>
-            <div class="serp-path">example.com<span id="pPathTrail" class="muted"></span></div>
-            <div class="serp-hline" id="pHeadsDesk"></div>
-            <div class="serp-desc" id="pDescsDesk"></div>
-            <div class="callouts" id="pCalloutsDesk"></div>
-            <div class="snip" id="pSnippetDesk"></div>
+            <div class="serp-url" id="pTitleM">Your Business - example.com</div>
+            <div class="serp-path">example.com/<span id="pPath1M"></span><span id="pSlash1M"></span><span id="pPath2M"></span></div>
+            <div class="serp-hline" id="pHeadsMob"></div>
+            <div class="serp-desc" id="pDescsMob"></div>
+
+            <div class="ext-h">Sitelinks</div>
+            <div id="pSLMob" class="sitelinks"></div>
+
+            <div class="ext-h">Callouts & Snippet</div>
+            <div class="callouts" id="pCalloutsMob"></div>
+            <div class="snip" id="pSnippetMob"></div>
+
+            <div class="ext-h">Price</div>
+            <div id="pPriceMob" class="price-grid"></div>
+
+            <div class="ext-h">Promotion / Call / Location</div>
+            <div id="pPromoMob" class="snip"></div>
+            <div id="pPhoneMob" class="snip"></div>
+            <div id="pLocMob" class="snip"></div>
+
+            <div class="ext-h">Images</div>
+            <div id="pImgsMob" class="img-ext"></div>
           </div>
-
-          <!-- Mobile -->
-          <div class="mobile-frame">
-            <div class="preview-card" style="border:none">
-              <div class="preview-header">
-                <div class="g"></div>
-                <div class="searchbar">
-                  <input id="searchQueryMobile" type="text" placeholder="Search Google…" />
-                  <span class="badge">Mobile</span>
-                </div>
-              </div>
-
-              <div class="serp-url" id="pTitleM">Your Business - example.com</div>
-              <div class="serp-path">example.com<span id="pPathTrailM" class="muted"></span></div>
-              <div class="serp-hline" id="pHeadsMob"></div>
-              <div class="serp-desc" id="pDescsMob"></div>
-              <div class="callouts" id="pCalloutsMob"></div>
-              <div class="snip" id="pSnippetMob"></div>
-            </div>
-          </div>
-
         </div>
-      </section>
-    </div>
+
+      </div>
+    </section>
   </div>
+</div>
 
 <script>
-/* ===========================
-   CONFIG & STATE
-=========================== */
-const LIMITS = { head:30, desc:90, call:25, snip:25, maxH:15, maxD:4, maxSV:10 };
+/* ============ STATE & HELPERS ============ */
+const LIMITS = { head:30, desc:90, call:25, snip:25, maxH:15, maxD:4, maxSV:10, maxSL:4 };
 const $ = id => document.getElementById(id);
+const L = s => (s||'').replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean);
+const clamp = (a,n)=>a.slice(0,n);
+const enc = o => btoa(unescape(encodeURIComponent(JSON.stringify(o))));
+const dec = s => JSON.parse(decodeURIComponent(escape(atob(s))));
+const esc = t => t.replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 
-let State = {
-  theme: 'dark',
-  search: '',
-  heads: [],            // [{t:'text', pin:0|1|2|3}]
-  descs: [],
-  calls: [],
-  sh: 'Services',
-  sv: [],
-  path: ''
+let S = {
+  theme:'dark',
+  search:'',
+  heads:[], // {t, pin:0|1|2|3}
+  descs:[],
+  callouts:[],
+  snipHeader:'Services',
+  snipValues:[],
+  path1:'', path2:'',
+  sitelinks:[], // {t,d1,d2,url}
+  prices:[],    // {h,amt,unit}
+  promo:'',
+  phone:'',
+  loc:'',
+  imgs:[]
 };
 
-/* ===========================
-   THEME
-=========================== */
-const themeToggle = $('themeToggle');
-function loadTheme(){
-  const t = localStorage.getItem('ppc_theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', t);
-  themeToggle.checked = (t === 'dark') ? true : false; // checked = dark for this switch style
-  State.theme = t;
-}
-function toggleTheme(){
-  const t = themeToggle.checked ? 'dark' : 'light';
-  document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem('ppc_theme', t);
-  State.theme = t;
-  render();
-}
-themeToggle.addEventListener('change', toggleTheme);
+/* ============ THEME/TABS ============ */
+const themeSelect = $('themeSelect');
+function applyTheme(t){ document.documentElement.setAttribute('data-theme', t); S.theme=t; localStorage.setItem('ppc_theme', t); }
+function loadTheme(){ applyTheme(localStorage.getItem('ppc_theme') || 'dark'); themeSelect.value=S.theme; }
+themeSelect.addEventListener('change', e=>{ applyTheme(e.target.value); render(); });
 
-/* ===========================
-   HELPERS
-=========================== */
-const lines = s => (s||'').replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean);
-const clamp = (arr, n) => arr.slice(0, n);
-const enc = obj => btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
-const dec = str => JSON.parse(decodeURIComponent(escape(atob(str))));
-function classify(len, limit){
-  if(len === 0) return 'warn';
-  if(len <= limit) return 'ok';
-  if(len <= limit+10) return 'warn';
-  return 'bad';
-}
-function headTop3(){
-  // pinned first (1,2,3), then fill by order
-  const out = [];
+const bulkPane=$('bulkPane'), manualPane=$('manualPane'), tabBulk=$('tabBulk'), tabManual=$('tabManual');
+tabBulk.onclick=()=>{tabBulk.classList.add('active');tabManual.classList.remove('active');bulkPane.classList.remove('hidden');manualPane.classList.add('hidden');}
+tabManual.onclick=()=>{tabManual.classList.add('active');tabBulk.classList.remove('active');manualPane.classList.remove('hidden');bulkPane.classList.add('hidden');}
+
+/* ============ PIN LOGIC ============ */
+function top3(){
+  const out=[];
   for(let p=1;p<=3;p++){
-    const h = State.heads.find(x=>x.pin===p);
-    if(h) out.push(h.t);
+    const x=S.heads.find(h=>h.pin===p);
+    if(x) out[p-1]=x.t;
   }
-  if(out.length<3){
-    State.heads.forEach(x=>{
-      if(out.length<3 && !out.includes(x.t) && x.pin===0) out.push(x.t);
-    });
-  }
-  return out;
+  S.heads.forEach(h=>{
+    if(out.length<3 && h.pin===0 && !out.includes(h.t)) out.push(h.t);
+  });
+  return out.slice(0,3);
 }
 
-/* ===========================
-   RENDER LISTS
-=========================== */
+/* ============ RENDER LISTS (Manual) ============ */
+function chip(len, lim){
+  const c = len===0?'warn':(len<=lim?'ok':(len<=lim+10?'warn':'bad'));
+  return `<span class="chip ${c}">${len}/${lim}</span>`;
+}
+
 function renderHeads(){
-  const ul = $('headList'); ul.innerHTML='';
-  if(State.heads.length===0){ ul.innerHTML = `<li><span class="muted" style="grid-column:span 4">No headlines yet</span></li>`; return; }
-  State.heads.forEach((h,idx)=>{
-    const li = document.createElement('li');
-    const c = classify(h.t.length, LIMITS.head);
+  const ul=$('headList'); ul.innerHTML='';
+  if(S.heads.length===0){ ul.innerHTML=`<li><span class="muted" style="grid-column:span 4">No headlines yet</span></li>`; return; }
+  S.heads.forEach((h,i)=>{
+    const li=document.createElement('li');
     li.innerHTML = `
-      <span class="chip ${c}">${h.t.length}/${LIMITS.head}</span>
-      <span>${h.t.replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}</span>
+      ${chip(h.t.length, LIMITS.head)}
+      <span>${esc(h.t)}</span>
       <div class="pin">
-        <button data-pin="1" data-idx="${idx}" class="${h.pin===1?'active':''}">Pin 1</button>
-        <button data-pin="2" data-idx="${idx}" class="${h.pin===2?'active':''}">Pin 2</button>
-        <button data-pin="3" data-idx="${idx}" class="${h.pin===3?'active':''}">Pin 3</button>
+        <button data-pin="1" data-i="${i}" class="${h.pin===1?'active':''}">Pin 1</button>
+        <button data-pin="2" data-i="${i}" class="${h.pin===2?'active':''}">Pin 2</button>
+        <button data-pin="3" data-i="${i}" class="${h.pin===3?'active':''}">Pin 3</button>
       </div>
-      <div class="mini">
-        <button class="btn" data-up="${idx}" style="padding:4px 8px;font-size:12px">↑</button>
-        <button class="btn" data-down="${idx}" style="padding:4px 8px;font-size:12px">↓</button>
-        <button class="btn" data-del="${idx}" style="padding:4px 8px;font-size:12px">✕</button>
-      </div>
-    `;
+      <div class="mini"><button class="btn" data-del="${i}">✕</button></div>`;
     ul.appendChild(li);
   });
-
-  // events
   ul.querySelectorAll('button[data-pin]').forEach(b=>{
-    b.onclick = e=>{
-      const idx = +b.dataset.idx, p = +b.dataset.pin;
-      // toggle: if already pinned at p, unpin; else set; also remove any other headline with same pin
-      if(State.heads[idx].pin===p){ State.heads[idx].pin=0; }
-      else {
-        State.heads.forEach(x=>{ if(x.pin===p) x.pin=0; });
-        State.heads[idx].pin = p;
-      }
+    b.onclick=()=>{ const i=+b.dataset.i, p=+b.dataset.pin;
+      S.heads[i].pin = (S.heads[i].pin===p)?0:p;
+      if(S.heads[i].pin===p){ S.heads.forEach((x,ix)=>{ if(ix!==i && x.pin===p) x.pin=0; }); }
       renderHeads(); render();
-    }
+    };
   });
-  ul.querySelectorAll('button[data-del]').forEach(b=>{
-    b.onclick = ()=>{ State.heads.splice(+b.dataset.del,1); renderHeads(); render(); }
-  });
-  ul.querySelectorAll('button[data-up]').forEach(b=>{
-    b.onclick = ()=>{ const i=+b.dataset.up; if(i>0){ [State.heads[i-1],State.heads[i]]=[State.heads[i],State.heads[i-1]]; renderHeads(); render(); } }
-  });
-  ul.querySelectorAll('button[data-down]').forEach(b=>{
-    b.onclick = ()=>{ const i=+b.dataset.down; if(i<State.heads.length-1){ [State.heads[i+1],State.heads[i]]=[State.heads[i],State.heads[i+1]]; renderHeads(); render(); } }
-  });
+  ul.querySelectorAll('button[data-del]').forEach(b=>{ b.onclick=()=>{ S.heads.splice(+b.dataset.del,1); renderHeads(); render(); }; });
 }
-function renderSimpleList(listEl, arr, limit, type){
-  listEl.innerHTML='';
-  if(arr.length===0){ listEl.innerHTML = `<li><span class="muted" style="grid-column:span 4">No ${type}</span></li>`; return; }
-  arr.forEach((t,idx)=>{
-    const li = document.createElement('li');
-    const c = classify(t.length, limit);
-    li.innerHTML = `
-      <span class="chip ${c}">${t.length}/${limit}</span>
-      <span>${t.replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}</span>
-      <span></span>
-      <div class="mini">
-        <button class="btn" data-up="${idx}" style="padding:4px 8px;font-size:12px">↑</button>
-        <button class="btn" data-down="${idx}" style="padding:4px 8px;font-size:12px">↓</button>
-        <button class="btn" data-del="${idx}" style="padding:4px 8px;font-size:12px">✕</button>
-      </div>`;
-    listEl.appendChild(li);
+function renderSimple(ul, arr, lim, label){
+  ul.innerHTML='';
+  if(arr.length===0){ ul.innerHTML=`<li><span class="muted" style="grid-column:span 4">No ${label}</span></li>`; return;}
+  arr.forEach((t,i)=>{
+    const li=document.createElement('li');
+    li.innerHTML = `${chip(t.length, lim)}<span>${esc(t)}</span><span></span><div class="mini"><button class="btn" data-del="${i}">✕</button></div>`;
+    ul.appendChild(li);
   });
-  listEl.querySelectorAll('button[data-del]').forEach(b=>{
-    b.onclick = ()=>{ arr.splice(+b.dataset.del,1); renderAllLists(); render(); }
+  ul.querySelectorAll('button[data-del]').forEach(b=>{ b.onclick=()=>{ arr.splice(+b.dataset.del,1); renderAllLists(); render(); }; });
+}
+function renderSL(){
+  const ul=$('slList'); ul.innerHTML='';
+  if(S.sitelinks.length===0){ ul.innerHTML=`<li><span class="muted" style="grid-column:span 4">No sitelinks</span></li>`; return; }
+  S.sitelinks.forEach((sl,i)=>{
+    const li=document.createElement('li');
+    li.style.gridTemplateColumns='1fr auto';
+    li.innerHTML = `<span><b>${esc(sl.t)}</b> — ${esc(sl.d1||'')} ${esc(sl.d2||'')} ${sl.url?(' ('+esc(sl.url)+')'):''}</span><div class="mini"><button class="btn" data-del="${i}">✕</button></div>`;
+    ul.appendChild(li);
   });
-  listEl.querySelectorAll('button[data-up]').forEach(b=>{
-    b.onclick = ()=>{ const i=+b.dataset.up; if(i>0){ [arr[i-1],arr[i]]=[arr[i],arr[i-1]]; renderAllLists(); render(); } }
+  ul.querySelectorAll('button[data-del]').forEach(b=>{ b.onclick=()=>{ S.sitelinks.splice(+b.dataset.del,1); renderSL(); render(); }; });
+}
+function renderPrices(){
+  const ul=$('priceList'); ul.innerHTML='';
+  if(S.prices.length===0){ ul.innerHTML=`<li><span class="muted" style="grid-column:span 4">No price items</span></li>`; return; }
+  S.prices.forEach((p,i)=>{
+    const li=document.createElement('li');
+    li.style.gridTemplateColumns='1fr auto';
+    li.innerHTML = `<span><b>${esc(p.h)}</b> — ${esc(p.amt)} <span class="muted">${esc(p.unit||'')}</span></span><div class="mini"><button class="btn" data-del="${i}">✕</button></div>`;
+    ul.appendChild(li);
   });
-  listEl.querySelectorAll('button[data-down]').forEach(b=>{
-    b.onclick = ()=>{ const i=+b.dataset.down; if(i<arr.length-1){ [arr[i+1],arr[i]]=[arr[i],arr[i+1]]; renderAllLists(); render(); } }
+  ul.querySelectorAll('button[data-del]').forEach(b=>{ b.onclick=()=>{ S.prices.splice(+b.dataset.del,1); renderPrices(); render(); }; });
+}
+function renderImgs(){
+  const ul=$('imgList'); ul.innerHTML='';
+  if(S.imgs.length===0){ ul.innerHTML=`<li><span class="muted" style="grid-column:span 4">No images</span></li>`; return; }
+  S.imgs.forEach((u,i)=>{
+    const li=document.createElement('li');
+    li.style.gridTemplateColumns='1fr auto';
+    li.innerHTML = `<span>${esc(u)}</span><div class="mini"><button class="btn" data-del="${i}">✕</button></div>`;
+    ul.appendChild(li);
   });
+  ul.querySelectorAll('button[data-del]').forEach(b=>{ b.onclick=()=>{ S.imgs.splice(+b.dataset.del,1); renderImgs(); render(); }; });
 }
 function renderAllLists(){
   renderHeads();
-  renderSimpleList($('descList'), State.descs, LIMITS.desc, 'descriptions');
-  renderSimpleList($('callList'), State.calls, LIMITS.call, 'callouts');
-  renderSimpleList($('snipList'), State.sv, LIMITS.snip, 'snippet values');
+  renderSimple($('descList'), S.descs, LIMITS.desc, 'descriptions');
+  renderSimple($('callList'), S.callouts, LIMITS.call, 'callouts');
+  renderSimple($('snipList'), S.snipValues, LIMITS.snip, 'snippet values');
+  renderSL(); renderPrices(); renderImgs();
 }
 
-/* ===========================
-   PREVIEW RENDER
-=========================== */
+/* ============ PREVIEW RENDER ============ */
 function render(){
-  // search sync
-  $('searchQuery').value = State.search;
-  $('searchQueryMobile').value = State.search;
+  // Search + paths
+  $('searchQuery').value = S.search;
+  $('searchQueryMobile').value = S.search;
+  $('pPath1').textContent = S.path1||'';
+  $('pPath2').textContent = S.path2||'';
+  $('pSlash1').textContent = (S.path1 && S.path2) ? '/' : '';
+  $('pPath1M').textContent = S.path1||'';
+  $('pPath2M').textContent = S.path2||'';
+  $('pSlash1M').textContent = (S.path1 && S.path2) ? '/' : '';
 
-  // paths
-  $('pPathTrail').textContent = State.path? `  ›  ${State.path}` : '';
-  $('pPathTrailM').textContent = State.path? `  ›  ${State.path}` : '';
+  const H = top3();
+  const D1 = S.descs[0] || 'Add a description (≤ 90 chars).';
+  const D2 = S.descs[1] || '';
 
-  const H = headTop3();
-  const D1 = State.descs[0] || 'Add a description (≤ 90 chars).';
-  const D2 = State.descs[1] || '';
+  const heads = e => { e.innerHTML=''; if(H.length===0){e.innerHTML='<span class="serp-h">Add a headline…</span>'; return;} H.forEach(t=>{const s=document.createElement('span');s.className='serp-h';s.textContent=t;e.appendChild(s);}); };
+  heads($('pHeadsDesk')); heads($('pHeadsMob'));
+  const desc = D2?`${D1}  ${D2}`:D1;
+  $('pDescsDesk').textContent=desc; $('pDescsMob').textContent=desc;
 
-  function fillHeads(el, arr){
+  // Sitelinks
+  function drawSL(el){
     el.innerHTML='';
-    if(arr.length===0){ el.innerHTML = `<span class="serp-h">Add a headline…</span>`; return; }
-    arr.forEach(h=>{
-      const s = document.createElement('span'); s.className='serp-h'; s.textContent=h; el.appendChild(s);
+    S.sitelinks.slice(0,LIMITS.maxSL).forEach(sl=>{
+      const d=document.createElement('div'); d.className='sitelink';
+      d.innerHTML = `<div><b>${esc(sl.t||'')}</b></div><div class="muted">${esc(sl.d1||'')}</div><div class="muted">${esc(sl.d2||'')}</div>`;
+      el.appendChild(d);
     });
   }
+  drawSL($('pSLDesk')); drawSL($('pSLMob'));
 
-  fillHeads($('pHeadsDesk'), H);
-  fillHeads($('pHeadsMob'), H);
-  $('pDescsDesk').textContent = D2 ? `${D1}  ${D2}` : D1;
-  $('pDescsMob').textContent  = D2 ? `${D1}  ${D2}` : D1;
+  // Callouts & Snippet
+  const calls = S.callouts.join('  ·  ');
+  $('pCalloutsDesk').textContent=calls; $('pCalloutsMob').textContent=calls;
+  const snip = S.snipValues.length? `${S.snipHeader}: ${S.snipValues.join(' • ')}`:'';
+  $('pSnippetDesk').textContent=snip; $('pSnippetMob').textContent=snip;
 
-  const calls = State.calls.join('  ·  ');
-  $('pCalloutsDesk').textContent = calls;
-  $('pCalloutsMob').textContent  = calls;
+  // Price
+  function drawPrice(el){
+    el.innerHTML='';
+    S.prices.forEach(p=>{
+      const c=document.createElement('div'); c.className='price-card';
+      c.innerHTML = `<div><b>${esc(p.h)}</b></div><div>${esc(p.amt)} <span class="muted">${esc(p.unit||'')}</span></div>`;
+      el.appendChild(c);
+    });
+  }
+  drawPrice($('pPriceDesk')); drawPrice($('pPriceMob'));
 
-  const snipText = State.sv.length ? `${State.sh}: ${State.sv.join(' • ')}` : '';
-  $('pSnippetDesk').textContent = snipText;
-  $('pSnippetMob').textContent  = snipText;
+  // Promo / phone / location
+  $('pPromoDesk').textContent = S.promo || '';
+  $('pPromoMob').textContent  = S.promo || '';
+  $('pPhoneDesk').textContent = S.phone ? `Call: ${S.phone}` : '';
+  $('pPhoneMob').textContent  = S.phone ? `Call: ${S.phone}` : '';
+  $('pLocDesk').textContent   = S.loc   || '';
+  $('pLocMob').textContent    = S.loc   || '';
+
+  // Images
+  function drawImgs(el){
+    el.innerHTML='';
+    S.imgs.forEach(u=>{
+      const im=document.createElement('img'); im.src=u; im.alt='Ad image'; el.appendChild(im);
+    });
+  }
+  drawImgs($('pImgsDesk')); drawImgs($('pImgsMob'));
 }
 
-/* ===========================
-   SHARE / LOAD
-=========================== */
+/* ============ SHARE / LOAD ============ */
 function share(){
   const payload = {
-    theme: State.theme,
-    q: State.search,
-    h: State.heads,   // keep pins
-    d: clamp(State.descs, LIMITS.maxD),
-    c: State.calls,
-    sh: State.sh,
-    sv: clamp(State.sv, LIMITS.maxSV),
-    p: State.path
+    theme:S.theme, q:S.search,
+    h:S.heads, d:clamp(S.descs,LIMITS.maxD), c:S.callouts,
+    sh:S.snipHeader, sv:clamp(S.snipValues,LIMITS.maxSV),
+    p1:S.path1, p2:S.path2,
+    sl:S.sitelinks, pr:S.prices,
+    promo:S.promo, phone:S.phone, loc:S.loc, imgs:S.imgs
   };
   const hash = enc(payload);
   location.hash = hash;
   navigator.clipboard.writeText(location.href).then(()=>{
-    $('saveNote').textContent = 'Link copied. Anyone with this URL will see the same ad, theme & search.';
-    setTimeout(()=>{$('saveNote').textContent='';}, 3200);
-  }).catch(()=>{
-    $('saveNote').textContent = 'URL updated — copy from address bar.';
-    setTimeout(()=>{$('saveNote').textContent='';}, 3200);
+    $('saveNote').textContent='Link copied (theme, pins, paths, extensions included).';
+    setTimeout(()=>{$('saveNote').textContent='';},3000);
   });
 }
 function load(){
   if(location.hash.length>1){
     try{
-      const obj = dec(location.hash.slice(1));
-      State.theme = obj.theme || 'dark';
-      document.documentElement.setAttribute('data-theme', State.theme);
-      themeToggle.checked = (State.theme==='dark');
-      State.search = obj.q || '';
-      State.heads  = (obj.h||[]).map(x=>({t:x.t, pin:x.pin||0})).slice(0, LIMITS.maxH);
-      State.descs  = (obj.d||[]).slice(0, LIMITS.maxD);
-      State.calls  = (obj.c||[]);
-      State.sh     = obj.sh || 'Services';
-      State.sv     = (obj.sv||[]).slice(0, LIMITS.maxSV);
-      State.path   = obj.p || '';
-      $('snippetHeader').value = State.sh;
-      $('displayPath').value = State.path;
+      const o = dec(location.hash.slice(1));
+      S.theme=o.theme||'dark'; applyTheme(S.theme); themeSelect.value=S.theme;
+      S.search=o.q||'';
+      S.heads=(o.h||[]).map(x=>({t:x.t, pin:x.pin||0})).slice(0,LIMITS.maxH);
+      S.descs=(o.d||[]).slice(0,LIMITS.maxD);
+      S.callouts=o.c||[];
+      S.snipHeader=o.sh||'Services';
+      S.snipValues=(o.sv||[]).slice(0,LIMITS.maxSV);
+      S.path1=o.p1||''; S.path2=o.p2||'';
+      S.sitelinks=o.sl||[];
+      S.prices=o.pr||[];
+      S.promo=o.promo||''; S.phone=o.phone||''; S.loc=o.loc||'';
+      S.imgs=o.imgs||[];
+      $('snippetHeader').value=S.snipHeader; $('snippetHeaderM').value=S.snipHeader;
+      $('displayPath1').value=S.path1; $('displayPath2').value=S.path2;
+      $('path1').value=S.path1; $('path2').value=S.path2;
+      $('searchBulk').value=S.search; $('searchManual').value=S.search;
     }catch(e){}
   } else {
     // Demo fill
-    State.heads = [
-      {t:"Local Stucco Contractors",pin:1},
-      {t:"Get a Free Estimate Today",pin:2},
-      {t:"Licensed & Insured Teams",pin:3},
-      {t:"Trusted Local Experts",pin:0},
-      {t:"Premium Stucco Materials",pin:0}
-    ];
-    State.descs = [
-      "Hire licensed stucco contractors near you for quality results.",
-      "From homes to exteriors, we install and repair stucco right.",
-      "Work with trusted stucco companies delivering lasting exteriors.",
-      "Get a free stucco estimate today from local professionals."
-    ];
-    State.calls = ["Free Estimates","Fully Insured","Warranty Backed","Local Pros"];
-    State.sh = 'Services';
-    State.sv = ["Installation","Repair","Re-Stucco","Exterior Stucco"];
-    State.path = "home • stucco";
-    $('snippetHeader').value = State.sh;
-    $('displayPath').value = State.path;
+    S.heads=[{t:"Local Stucco Contractors",pin:1},{t:"Get a Free Estimate Today",pin:2},{t:"Licensed & Insured Teams",pin:3},{t:"Trusted Local Experts",pin:0}];
+    S.descs=["Hire licensed stucco contractors near you for quality results.","From homes to exteriors, we install and repair stucco right."];
+    S.callouts=["Free Estimates","Fully Insured","Warranty Backed","Local Pros"];
+    S.snipHeader='Services'; S.snipValues=["Installation","Repair","Re-Stucco","Exterior Stucco"];
+    S.path1='home'; S.path2='stucco';
+    S.sitelinks=[{t:"Financing Options",d1:"Flexible monthly payments",d2:"Get approved today",url:""}, {t:"Project Gallery",d1:"See before & afters",d2:"Local homes we improved",url:""}];
+    S.prices=[{h:"Stucco Repair",amt:"$199",unit:"per visit"},{h:"Re-Stucco",amt:"$35",unit:"per sq ft"}];
+    S.promo="Spring Sale — 20% Off (SPRING20)";
+    S.phone="+1 (555) 123-4567"; S.loc="PPC Gadget • 123 Main St, Phoenix, AZ";
+    S.imgs=[];
+    $('snippetHeader').value=S.snipHeader; $('snippetHeaderM').value=S.snipHeader;
+    $('displayPath1').value=S.path1; $('displayPath2').value=S.path2; $('path1').value=S.path1; $('path2').value=S.path2;
   }
   renderAllLists(); render();
 }
 
-/* ===========================
-   EVENTS
-=========================== */
-// Bulk replacements
-$('replaceHeadsBtn').onclick = ()=>{
-  const arr = clamp(lines($('bulkHeads').value), LIMITS.maxH);
-  State.heads = arr.map(t=>({t, pin:0}));
-  renderHeads(); render();
-};
-$('addHeadBtn').onclick = ()=>{
-  const t = $('headInput').value.trim(); if(!t) return;
-  if(State.heads.length>=LIMITS.maxH) return;
-  State.heads.push({t, pin:0}); $('headInput').value=''; renderHeads(); render();
-};
+/* ============ EVENTS ============ */
+$('applyBulk').onclick=()=>{
+  S.heads=clamp(L($('bulkHeads').value),LIMITS.maxH).map(t=>({t, pin:0}));
+  S.descs=clamp(L($('bulkDescs').value),LIMITS.maxD);
+  S.callouts=L($('bulkCallouts').value);
+  S.snipValues=clamp(L($('bulkSnips').value),LIMITS.maxSV);
+  S.snipHeader=$('snippetHeader').value;
+  S.path1=$('displayPath1').value.trim();
+  S.path2=$('displayPath2').value.trim();
+  S.search=$('searchBulk').value;
 
-$('addDescBtn').onclick = ()=>{
-  const t = $('descInput').value.trim(); if(!t) return;
-  if(State.descs.length>=LIMITS.maxD) return;
-  State.descs.push(t); $('descInput').value=''; renderAllLists(); render();
-};
-$('addCallBtn').onclick = ()=>{
-  const t = $('callInput').value.trim(); if(!t) return;
-  State.calls.push(t); $('callInput').value=''; renderAllLists(); render();
-};
-$('addSnipBtn').onclick = ()=>{
-  const t = $('snipInput').value.trim(); if(!t) return;
-  if(State.sv.length>=LIMITS.maxSV) return;
-  State.sv.push(t); $('snipInput').value=''; renderAllLists(); render();
+  // Sitelinks bulk: blocks separated by blank lines
+  const raw=$('bulkSitelinks').value.replace(/\r/g,'').split(/\n\s*\n/).map(b=>b.trim()).filter(Boolean);
+  S.sitelinks = raw.slice(0,LIMITS.maxSL).map(b=>{ const lines=b.split('\n'); return {t:lines[0]||'', d1:lines[1]||'', d2:lines[2]||'', url:lines[3]||''}; });
+
+  // Prices
+  S.prices = L($('bulkPrices').value).map(row=>{ const [h,amt,unit]=row.split('|').map(x=>x?x.trim():''); return {h:h||'',amt:amt||'',unit:unit||''}; });
+
+  S.promo = $('bulkPromo').value.trim();
+  S.imgs  = L($('bulkImages').value);
+  S.phone = $('bulkPhone').value.trim();
+  S.loc   = $('bulkLocation').value.trim();
+
+  renderAllLists(); render();
+  tabManual.click(); // jump to manual to pin/edit
 };
 
-// Bulk textareas update lists live when changed (optional light behavior)
-$('bulkDescs').addEventListener('change', ()=>{
-  State.descs = clamp(lines($('bulkDescs').value), LIMITS.maxD); renderAllLists(); render();
-});
-$('bulkCallouts').addEventListener('change', ()=>{
-  State.calls = lines($('bulkCallouts').value); renderAllLists(); render();
-});
-$('bulkSnips').addEventListener('change', ()=>{
-  State.sv = clamp(lines($('bulkSnips').value), LIMITS.maxSV); renderAllLists(); render();
-});
+$('addHeadBtn').onclick=()=>{ const t=$('headInput').value.trim(); if(!t || S.heads.length>=LIMITS.maxH) return; S.heads.push({t, pin:0}); $('headInput').value=''; renderHeads(); render(); };
+$('addDescBtn').onclick=()=>{ const t=$('descInput').value.trim(); if(!t||S.descs.length>=LIMITS.maxD) return; S.descs.push(t); $('descInput').value=''; renderAllLists(); render(); };
+$('addCallBtn').onclick=()=>{ const t=$('callInput').value.trim(); if(!t) return; S.callouts.push(t); $('callInput').value=''; renderAllLists(); render(); };
+$('addSnipBtn').onclick=()=>{ const t=$('snipInput').value.trim(); if(!t||S.snipValues.length>=LIMITS.maxSV) return; S.snipValues.push(t); $('snipInput').value=''; renderAllLists(); render(); };
+$('snippetHeaderM').addEventListener('change', e=>{ S.snipHeader=e.target.value; $('snippetHeader').value=S.snipHeader; render(); });
 
-// Snippet header & path
-$('snippetHeader').addEventListener('change', e=>{ State.sh = e.target.value; render(); });
-$('displayPath').addEventListener('input', e=>{ State.path = e.target.value.trim(); render(); });
+$('path1').addEventListener('input', e=>{ S.path1=e.target.value.trim(); $('displayPath1').value=S.path1; render(); });
+$('path2').addEventListener('input', e=>{ S.path2=e.target.value.trim(); $('displayPath2').value=S.path2; render(); });
 
-// Search query (both inputs sync)
-$('searchQuery').addEventListener('input', e=>{ State.search = e.target.value; $('searchQueryMobile').value = State.search; });
-$('searchQueryMobile').addEventListener('input', e=>{ State.search = e.target.value; $('searchQuery').value = State.search; });
+$('searchManual').addEventListener('input', e=>{ S.search=e.target.value; $('searchQuery').value=S.search; $('searchQueryMobile').value=S.search; });
+$('searchQuery').addEventListener('input', e=>{ S.search=e.target.value; $('searchQueryMobile').value=S.search; $('searchManual').value=S.search; $('searchBulk').value=S.search; });
+$('searchQueryMobile').addEventListener('input', e=>{ S.search=e.target.value; $('searchQuery').value=S.search; $('searchManual').value=S.search; $('searchBulk').value=S.search; });
 
-// Global buttons
-$('shareBtn').onclick = share;
-$('updateBtn').onclick = render;
-$('clearBtn').onclick = ()=>{
-  State.search=''; State.heads=[]; State.descs=[]; State.calls=[]; State.sh='Services'; State.sv=[]; State.path='';
-  $('snippetHeader').value = State.sh; $('displayPath').value='';
-  ['bulkHeads','bulkDescs','bulkCallouts','bulkSnips','headInput','descInput','callInput','snipInput','searchQuery','searchQueryMobile'].forEach(id=>$(id).value='');
+$('addSL').onclick=()=>{ const t=$('slTitle').value.trim(); if(!t || S.sitelinks.length>=LIMITS.maxSL) return; S.sitelinks.push({t, d1:$('slDesc1').value.trim(), d2:$('slDesc2').value.trim(), url:$('slUrl').value.trim()}); ['slTitle','slDesc1','slDesc2','slUrl'].forEach(id=>$(id).value=''); renderSL(); render(); };
+$('addPrice').onclick=()=>{ const h=$('priceHeader').value.trim(), amt=$('priceAmount').value.trim(); if(!h||!amt) return; S.prices.push({h, amt, unit:$('priceUnit').value.trim()}); ['priceHeader','priceAmount','priceUnit'].forEach(id=>$(id).value=''); renderPrices(); render(); };
+$('addImage').onclick=()=>{ const u=$('imgUrl').value.trim(); if(!u) return; S.imgs.push(u); $('imgUrl').value=''; renderImgs(); render(); };
+
+$('shareBtn').onclick=share;
+$('updateBtn').onclick=render;
+$('clearBtn').onclick=()=>{
+  S={theme:S.theme,search:'',heads:[],descs:[],callouts:[],snipHeader:'Services',snipValues:[],path1:'',path2:'',sitelinks:[],prices:[],promo:'',phone:'',loc:'',imgs:[]};
+  document.querySelectorAll('input,textarea').forEach(el=>{ if(el.id!=='searchQuery'&&el.id!=='searchQueryMobile') el.value=''; });
+  $('snippetHeader').value='Services'; $('snippetHeaderM').value='Services';
   renderAllLists(); render();
 };
 
-// Boot
 loadTheme();
 load();
 </script>
