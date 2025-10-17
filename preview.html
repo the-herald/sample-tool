@@ -12,24 +12,28 @@
     --preview-bg:#fff; --preview-text:#111; --preview-muted:#5f6368;
     --preview-blue:#174ea6; --preview-chip:#e8f0fe; --preview-link:#1a0dab; --preview-green:#0f9d58;
   }
-  [data-theme="light"]{
-    --bg:#f6f7fb; --panel:#ffffff; --line:#e7e9f2; --text:#0f1422; --muted:#56607a; --brand:#2f8d19;
-  }
+  [data-theme="light"]{ --bg:#f6f7fb; --panel:#ffffff; --line:#e7e9f2; --text:#0f1422; --muted:#56607a; --brand:#2f8d19; }
   [data-theme="cyberpunk"]{
     --bg:#0a0c12; --panel:#0e1220; --line:#23283b; --text:#e6f7ff; --muted:#7bd4ff; --brand:#ff2bd6;
     --preview-bg:#0b0f1a; --preview-text:#e6f7ff; --preview-muted:#8fd0ff;
     --preview-blue:#49c7ff; --preview-chip:#121830; --preview-link:#7bf1ff; --preview-green:#00ffcc;
   }
-
   *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-  .wrap{max-width:1000px;margin:0 auto;padding:18px}
+  .wrap{max-width:1100px;margin:0 auto;padding:18px}
   header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
   .brand{display:flex;gap:10px;align-items:center}
   .brand img{width:28px;height:28px}
   h1{margin:0;font-size:18px}
   .a{color:var(--brand);text-decoration:none}
   .btn{border:1px solid var(--line);background:transparent;color:var(--text);padding:8px 12px;border-radius:10px;cursor:pointer}
-  .previews{display:grid;grid-template-columns:1fr 360px;gap:14px}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 8px;font-size:12px;color:var(--muted);margin-left:6px}
+
+  .topbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .adpicker{display:flex;gap:8px;flex-wrap:wrap}
+  .chipBtn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:6px 10px;border-radius:10px;cursor:pointer}
+  .chipBtn.active{outline:2px solid var(--brand)}
+
+  .previews{display:grid;grid-template-columns:1fr 360px;gap:14px;margin-top:10px}
   .preview-card{background:var(--preview-bg);color:var(--preview-text);border-radius:12px;border:1px solid #e3e6ef;padding:14px}
   [data-theme="cyberpunk"] .preview-card{border-color:#1f2642}
   .preview-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
@@ -42,19 +46,18 @@
   .serp-h{background:var(--preview-chip);color:var(--preview-blue);border-radius:4px;padding:2px 4px;font-weight:700}
   .serp-desc{color:#3c4043;font-size:14px;line-height:1.35}
   [data-theme="cyberpunk"] .serp-desc{color:#c9e8ff}
-  .badge{font-size:11px;border:1px solid #dfe3ec;border-radius:6px;padding:2px 6px;color:#5a657c}
-  .mobile-frame{max-width:360px;border:10px solid #e7eaef;border-radius:24px;margin:0 auto;background:#fff}
+  .callouts{font-size:12px;color:#5f6368;margin-top:8px}
+  .snip{margin-top:4px;font-size:12px;color:#3c4043}
+  .img-ext{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .img-ext img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid #e4e7ef}
 
-  /* Details drawers */
   .drawer{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-top:16px;overflow:hidden}
   .drawer summary{cursor:pointer;list-style:none;padding:12px 14px;font-weight:600;border-bottom:1px solid var(--line)}
   .drawer summary::-webkit-details-marker{display:none}
   .drawer .inner{padding:12px 14px}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .mono{font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px}
-  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 8px;font-size:12px;color:var(--muted);margin-left:6px}
-  .muted{color:var(--muted)}
-  @media (max-width: 900px){ .previews{grid-template-columns:1fr} }
+  @media (max-width: 900px){ .previews{grid-template-columns:1fr} .grid2{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -65,78 +68,76 @@
       <h1>Ad Preview</h1>
       <span id="themePill" class="pill"></span>
     </div>
-    <div class="controls">
+    <div class="topbar">
+      <div id="adPicker" class="adpicker"></div>
+      <button id="cycleSnipBtn" class="btn" style="display:none">Cycle Snippet Set</button>
+      <button id="switchImgBtn" class="btn" style="display:none">Switch Image</button>
       <a id="backLink" class="a btn" href="#">Open in Builder</a>
     </div>
   </header>
 
-  <section class="drawer">
-    <summary>Previews (click to toggle details below)</summary>
+  <section class="drawer" open>
+    <summary>Previews</summary>
     <div class="inner">
       <div class="previews">
         <!-- Desktop -->
-        <div class="preview-card" id="deskCard">
+        <div class="preview-card">
           <div class="preview-header">
             <div class="g"></div>
             <div class="searchbar">
               <input id="searchDesk" type="text" disabled />
-              <span class="badge">Desktop</span>
+              <span class="pill">Desktop</span>
             </div>
           </div>
           <div class="serp-url" id="pTitle">Your Business - example.com</div>
           <div class="serp-path">example.com/<span id="pPath1"></span><span id="pSlash1"></span><span id="pPath2"></span></div>
           <div class="serp-hline" id="pHeadsDesk"></div>
           <div class="serp-desc" id="pDescsDesk"></div>
+          <div class="callouts" id="pCalloutsDesk"></div>
+          <div class="snip" id="pSnippetDesk"></div>
+          <div class="img-ext" id="pImgsDesk"></div>
         </div>
 
         <!-- Mobile -->
-        <div class="mobile-frame">
-          <div class="preview-card" style="border:none">
-            <div class="preview-header">
-              <div class="g"></div>
-              <div class="searchbar">
-                <input id="searchMob" type="text" disabled />
-                <span class="badge">Mobile</span>
-              </div>
+        <div class="preview-card">
+          <div class="preview-header">
+            <div class="g"></div>
+            <div class="searchbar">
+              <input id="searchMob" type="text" disabled />
+              <span class="pill">Mobile</span>
             </div>
-            <div class="serp-url" id="pTitleM">Your Business - example.com</div>
-            <div class="serp-path">example.com/<span id="pPath1M"></span><span id="pSlash1M"></span><span id="pPath2M"></span></div>
-            <div class="serp-hline" id="pHeadsMob"></div>
-            <div class="serp-desc" id="pDescsMob"></div>
           </div>
+          <div class="serp-url" id="pTitleM">Your Business - example.com</div>
+          <div class="serp-path">example.com/<span id="pPath1M"></span><span id="pSlash1M"></span><span id="pPath2M"></span></div>
+          <div class="serp-hline" id="pHeadsMob"></div>
+          <div class="serp-desc" id="pDescsMob"></div>
+          <div class="callouts" id="pCalloutsMob"></div>
+          <div class="snip" id="pSnippetMob"></div>
+          <div class="img-ext" id="pImgsMob"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- FULL DETAILS -->
   <details class="drawer" open>
-    <summary>Full Ad Copy (everything in this ad)</summary>
+    <summary>Full Ad Copy</summary>
     <div class="inner grid2">
       <div>
-        <h3 style="margin:0 0 8px">Headlines (with pins)</h3>
+        <h3 style="margin:0 0 8px">Headlines</h3>
         <ul id="dHeads"></ul>
         <h3 style="margin:12px 0 8px">Descriptions</h3>
         <ul id="dDescs"></ul>
         <h3 style="margin:12px 0 8px">Callouts</h3>
         <ul id="dCalls"></ul>
-        <h3 style="margin:12px 0 8px">Structured Snippet</h3>
-        <div><span id="dSnipH" class="mono"></span>: <span id="dSnip"></span></div>
+        <h3 style="margin:12px 0 8px">Structured Snippets</h3>
+        <div id="dSnips"></div>
         <h3 style="margin:12px 0 8px">Display Paths</h3>
         <div class="mono">/<span id="dPath1"></span><span id="dSlash1"></span><span id="dPath2"></span></div>
         <h3 style="margin:12px 0 8px">Search Query</h3>
         <div class="mono" id="dQ"></div>
       </div>
       <div>
-        <h3 style="margin:0 0 8px">Sitelinks</h3>
-        <ul id="dSL"></ul>
-        <h3 style="margin:12px 0 8px">Price Items</h3>
-        <ul id="dPrice"></ul>
-        <h3 style="margin:12px 0 8px">Promotion / Phone / Location</h3>
-        <div id="dPromo"></div>
-        <div id="dPhone"></div>
-        <div id="dLoc"></div>
-        <h3 style="margin:12px 0 8px">Images</h3>
+        <h3 style="margin:0 0 8px">Images</h3>
         <ul id="dImgs"></ul>
       </div>
     </div>
@@ -144,90 +145,122 @@
 </div>
 
 <script>
-const LIMITS = { maxH:15, maxD:4 };
 const $ = id => document.getElementById(id);
 const dec = s => JSON.parse(decodeURIComponent(escape(atob(s))));
 const esc = t => (t||'').replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 
-let S = null;
+let P = null; // payload
+let isMulti = false;
+let idx = 0;       // current ad index (multi)
+let snipIdx = 0;   // snippet set index (0..3) (multi)
+let imgIdx = 0;    // image index (multi)
 
-function top3(heads){
-  const out=[];
-  for(let p=1;p<=3;p++){
-    const x=heads.find(h=>h.pin===p);
-    if(x) out[p-1]=x.t;
-  }
-  heads.forEach(h=>{
-    if(out.length<3 && h.pin===0 && !out.includes(h.t)) out.push(h.t);
-  });
-  return out.slice(0,3);
+function pickBuilderUrl(){
+  return isMulti ? './multi.html' : './index.html';
 }
 
-function render(){
-  if(!S) return;
+function renderPicker(){
+  const wrap = $('adPicker'); wrap.innerHTML='';
+  if(!isMulti){ $('cycleSnipBtn').style.display='none'; $('switchImgBtn').style.display='none'; return; }
+  $('cycleSnipBtn').style.display='inline-block';
+  $('switchImgBtn').style.display='inline-block';
+  (P.ads||[]).forEach((ad,i)=>{
+    const b=document.createElement('button'); b.className='chipBtn'+(i===idx?' active':''); b.textContent=ad.title?ad.title:`Ad ${i+1}`;
+    b.onclick=()=>{ idx=i; snipIdx=0; imgIdx=0; render(); renderPicker(); };
+    wrap.appendChild(b);
+  });
+}
 
-  // theme + back link
-  document.documentElement.setAttribute('data-theme', S.theme || 'dark');
-  $('themePill').textContent = (S.theme||'dark');
-  $('backLink').href = `./index.html${location.hash}`;
+function topHeads(ad){ return (ad.h||[]).slice(0,3); }
+
+function render(){
+  if(!P) return;
+  document.documentElement.setAttribute('data-theme', P.theme || 'dark');
+  $('themePill').textContent = (P.theme||'dark');
+
+  let ad = null;
+  if(isMulti){
+    ad = (P.ads||[])[idx] || {};
+  } else {
+    // map single-ad schema to multi-like
+    ad = { q:P.q||'', p1:P.p1||'', p2:P.p2||'', h:(P.h||[]).map(x=>x.t||x), d:P.d||[], c:P.c||[], sv:P.sv||[], imgs:P.imgs||[] };
+  }
+
+  // back link to the builder with same hash
+  $('backLink').href = `${pickBuilderUrl()}${location.hash}`;
 
   // Previews
-  $('searchDesk').value = S.q || '';
-  $('searchMob').value  = S.q || '';
+  $('searchDesk').value = ad.q || '';
+  $('searchMob').value  = ad.q || '';
+  $('pPath1').textContent = ad.p1||''; $('pPath2').textContent = ad.p2||'';
+  $('pSlash1').textContent = (ad.p1 && ad.p2)?'/':'';
+  $('pPath1M').textContent = ad.p1||''; $('pPath2M').textContent = ad.p2||'';
+  $('pSlash1M').textContent = (ad.p1 && ad.p2)?'/':'';
 
-  $('pPath1').textContent = S.p1 || '';
-  $('pPath2').textContent = S.p2 || '';
-  $('pSlash1').textContent = (S.p1 && S.p2)?'/':'';
-  $('pPath1M').textContent = S.p1 || '';
-  $('pPath2M').textContent = S.p2 || '';
-  $('pSlash1M').textContent = (S.p1 && S.p2)?'/':'';
+  const H = topHeads(ad);
+  const fillH = el => { el.innerHTML=''; if(!H.length){el.innerHTML='<span class="serp-h">Add a headline…</span>'; return;} H.forEach(t=>{ const s=document.createElement('span'); s.className='serp-h'; s.textContent=t; el.appendChild(s); }); };
+  fillH($('pHeadsDesk')); fillH($('pHeadsMob'));
 
-  const H = top3(S.h||[]);
-  function fill(el, arr){
+  const D1=(ad.d||[])[0]||'', D2=(ad.d||[])[1]||'';
+  const desc = D2?`${D1}  ${D2}`:D1;
+  $('pDescsDesk').textContent = desc; $('pDescsMob').textContent = desc;
+
+  // callouts: show in groups of 4 using snipIdx as pager too
+  const groupSize=4;
+  const totalGroups=Math.max(1, Math.ceil((ad.c||[]).length/groupSize));
+  const g = Math.min(snipIdx % totalGroups, totalGroups-1);
+  const callsSlice = (ad.c||[]).slice(g*groupSize, g*groupSize+groupSize);
+  const callsTxt = callsSlice.join('  ·  ');
+  $('pCalloutsDesk').textContent=callsTxt; $('pCalloutsMob').textContent=callsTxt;
+
+  // snippets: show only one set at a time
+  const set = (ad.sv||[])[snipIdx%4] || [];
+  const headers = ['Services','Types','Brands','Styles'];
+  const snipText = set.length ? `${headers[snipIdx%4]}: ${set.join(' • ')}` : '';
+  $('pSnippetDesk').textContent = snipText; $('pSnippetMob').textContent = snipText;
+
+  // images: show one + thumbs
+  const imgs = ad.imgs||[];
+  const ii = imgs.length? imgIdx % imgs.length : 0;
+  function draw(el){
     el.innerHTML='';
-    if(!arr.length){ el.innerHTML='<span class="serp-h">Add a headline…</span>'; return; }
-    arr.forEach(t=>{ const s=document.createElement('span'); s.className='serp-h'; s.textContent=t; el.appendChild(s); });
+    if(imgs.length){
+      const main=document.createElement('img'); main.src=imgs[ii]; main.alt='Ad image'; main.style.width='100px'; main.style.height='100px'; main.style.objectFit='cover'; main.style.borderRadius='10px'; main.style.border='1px solid #e4e7ef';
+      el.appendChild(main);
+      imgs.forEach((u,i)=>{ const im=document.createElement('img'); im.src=u; im.alt='thumb'; if(i===ii){ im.style.outline='2px solid #6DBE45'; } el.appendChild(im); });
+    }
   }
-  fill($('pHeadsDesk'), H);
-  fill($('pHeadsMob'),  H);
-  const D1=(S.d||[])[0] || '';
-  const D2=(S.d||[])[1] || '';
-  const desc = D2 ? `${D1}  ${D2}` : D1;
-  $('pDescsDesk').textContent = desc;
-  $('pDescsMob').textContent  = desc;
+  draw($('pImgsDesk')); draw($('pImgsMob'));
 
-  // Details
-  const UL = (id, arr, fmt=x=>esc(x))=>{
-    const el=$(id); el.innerHTML='';
-    (arr||[]).forEach(v=>{
-      const li=document.createElement('li'); li.innerHTML=fmt(v); el.appendChild(li);
-    });
-  };
-
-  UL('dHeads', (S.h||[]), h => `<span class="mono">${esc(h.t)}</span> ${h.pin?`<span class="pill">Pin ${h.pin}</span>`:''}`);
-  UL('dDescs', (S.d||[]), d => `<span class="mono">${esc(d)}</span>`);
-  UL('dCalls', (S.c||[]),  c => `<span class="mono">${esc(c)}</span>`);
-  $('dSnipH').textContent = S.sh || '';
-  $('dSnip').textContent  = (S.sv||[]).join(' • ');
-  $('dPath1').textContent = S.p1||''; $('dPath2').textContent = S.p2||''; $('dSlash1').textContent = (S.p1&&S.p2)?'/':'';
-  $('dQ').textContent     = S.q || '';
-
-  UL('dSL', (S.sl||[]), sl => `<b>${esc(sl.t||'')}</b> — ${esc(sl.d1||'')} ${esc(sl.d2||'')} ${sl.url?('('+esc(sl.url)+')'):''}`);
-  UL('dPrice', (S.pr||[]), p => `<b>${esc(p.h||'')}</b> — ${esc(p.amt||'')} <span class="muted">${esc(p.unit||'')}</span>`);
-  $('dPromo').textContent = S.promo || '';
-  $('dPhone').textContent = S.phone ? `Call: ${S.phone}` : '';
-  $('dLoc').textContent   = S.loc || '';
-  UL('dImgs', (S.imgs||[]), u => `<span class="mono">${esc(u)}</span>`);
+  // FULL DETAILS
+  const UL = (id,arr,fmt=x=>esc(x))=>{ const el=$(id); el.innerHTML=''; (arr||[]).forEach(v=>{ const li=document.createElement('li'); li.innerHTML=fmt(v); el.appendChild(li); }); };
+  UL('dHeads', ad.h||[], h=>`<span class="mono">${esc(h)}</span>`);
+  UL('dDescs', ad.d||[], d=>`<span class="mono">${esc(d)}</span>`);
+  UL('dCalls', ad.c||[], c=>`<span class="mono">${esc(c)}</span>`);
+  const dSnips = $('dSnips'); dSnips.innerHTML='';
+  (ad.sv||[]).forEach((set,i)=>{
+    const div=document.createElement('div');
+    const headers=['Services','Types','Brands','Styles'];
+    div.innerHTML = `<b>${headers[i]}:</b> <span class="mono">${esc((set||[]).join(' • '))}</span>`;
+    dSnips.appendChild(div);
+  });
+  $('dPath1').textContent = ad.p1||''; $('dPath2').textContent= ad.p2||''; $('dSlash1').textContent=(ad.p1&&ad.p2)?'/':'';
+  $('dQ').textContent = ad.q || '';
+  UL('dImgs', ad.imgs||[], u=>`<span class="mono">${esc(u)}</span>`);
 }
 
 function init(){
-  if(location.hash.length>1){
-    try{ S = dec(location.hash.slice(1)); }catch(e){}
-  }
-  if(!S) S = {};
+  try{ P = dec(location.hash.slice(1)); }catch(e){ P = {}; }
+  isMulti = !!P.ads;
+  idx = P.idx || 0;
+  snipIdx = P.snip || 0;
+  imgIdx  = P.img || 0;
+
+  renderPicker();
   render();
 
-  // Clicking either preview drawer header toggles details (handled by <details> built-in)
+  $('cycleSnipBtn').onclick = ()=>{ snipIdx=(snipIdx+1)%4; render(); };
+  $('switchImgBtn').onclick = ()=>{ imgIdx+=1; render(); };
 }
 init();
 </script>
