@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PPC Gadget — Multi-Ad Builder (Bulk)</title>
+<link rel="icon" href="/favicon.png" />
+<style>
+  :root{
+    --bg:#0b0e13; --panel:#121621; --panel2:#0f1422; --line:#202635;
+    --text:#e8ecf3; --muted:#9aa3b7; --brand:#6DBE45;
+    --preview-bg:#fff; --preview-text:#111; --preview-muted:#5f6368;
+    --preview-blue:#174ea6; --preview-chip:#e8f0fe; --preview-link:#1a0dab; --preview-green:#0f9d58;
+  }
+  [data-theme="light"]{
+    --bg:#f6f7fb; --panel:#ffffff; --panel2:#ffffff; --line:#e7e9f2;
+    --text:#0f1422; --muted:#56607a; --brand:#2f8d19;
+  }
+  [data-theme="cyberpunk"]{
+    --bg:#0a0c12; --panel:#0e1220; --panel2:#0c0f1a; --line:#23283b;
+    --text:#e6f7ff; --muted:#7bd4ff; --brand:#ff2bd6;
+    --preview-bg:#0b0f1a; --preview-text:#e6f7ff; --preview-muted:#8fd0ff;
+    --preview-blue:#49c7ff; --preview-chip:#121830; --preview-link:#7bf1ff; --preview-green:#00ffcc;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--brand);text-decoration:none}
+  .wrap{max-width:1320px;margin:0 auto;padding:20px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand img{width:32px;height:32px}
+  h1{font-size:18px;margin:0}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .btn{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.06));border:1px solid var(--line);color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer;font-size:14px}
+  .btn.primary{background:linear-gradient(180deg,var(--brand),#2d8e1f);border-color:#237515;color:#fff}
+  .btn:active{transform:translateY(1px)}
+  select, input[type="text"], textarea{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;outline:none}
+  textarea{min-height:180px;resize:vertical}
+  label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .pill{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+  .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .card h2{margin:0;padding:14px 16px;border-bottom:1px solid var(--line);font-size:15px;color:var(--muted);font-weight:600}
+  .content{padding:14px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .hr{height:1px;background:var(--line);margin:12px 0}
+  .save{font-size:12px;color:var(--muted)}
+
+  .adpicker{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .chipBtn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:6px 10px;border-radius:10px;cursor:pointer}
+  .chipBtn.active{outline:2px solid var(--brand)}
+  .counts{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}
+
+  .previews{display:grid;grid-template-columns:1fr 380px;gap:14px}
+  .preview-card{background:var(--preview-bg);color:var(--preview-text);border-radius:12px;border:1px solid #e3e6ef;padding:14px}
+  [data-theme="cyberpunk"] .preview-card{border-color:#1f2642}
+  .preview-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .g{width:24px;height:24px;border-radius:6px;background:#4285F4}
+  .searchbar{flex:1;border:1px solid #dadce0;border-radius:999px;padding:8px 12px;font-size:14px;display:flex;gap:8px;align-items:center;background:#fff}
+  .searchbar input{border:none;outline:none;flex:1;font-size:14px}
+  .serp-url{color:var(--preview-link);font-size:18px;font-weight:600;margin:8px 0 4px}
+  .serp-path{color:var(--preview-green);font-size:12px;margin-bottom:8px}
+  .serp-hline{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+  .serp-h{background:var(--preview-chip);color:var(--preview-blue);border-radius:4px;padding:2px 4px;font-weight:700}
+  .serp-desc{color:#3c4043;font-size:14px;line-height:1.35}
+  [data-theme="cyberpunk"] .serp-desc{color:#c9e8ff}
+  .callouts{font-size:12px;color:#5f6368;margin-top:8px}
+  .snip{margin-top:4px;font-size:12px;color:#3c4043}
+  .badge{font-size:11px;border:1px solid #dfe3ec;border-radius:6px;padding:2px 6px;color:#5a657c}
+  .img-ext{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .img-ext img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid #e4e7ef}
+
+  @media (max-width:1060px){.grid{grid-template-columns:1fr}.previews{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <img src="/logo.png" alt="PPC Gadget">
+      <h1>PPC Gadget — Multi-Ad Builder (Bulk)</h1>
+    </div>
+    <div class="controls">
+      <label style="display:flex;gap:8px;align-items:center">
+        <span style="font-size:12px;color:var(--muted)">Theme</span>
+        <select id="themeSelect">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+          <option value="cyberpunk">Cyberpunk</option>
+        </select>
+      </label>
+      <button class="btn" id="shareBtn">Share / Copy Link</button>
+      <span id="saveNote" class="save"></span>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- LEFT: BULK INPUT -->
+    <section class="card">
+      <h2>Bulk Input (multiple ads)</h2>
+      <div class="content">
+        <label>Paste ads below. Separate each ad with a line containing exactly <b>---</b>.</label>
+        <textarea id="bulk" placeholder="Example block format (one ad):
+
+Title: Optional Name
+Search: roofing phoenix
+Paths: services | roofing
+Heads:
+Local Roofing Experts
+Free Roof Inspection
+Licensed & Insured
+Descs:
+Protect your home with top-rated roofing pros.
+Book a free inspection today.
+Callouts:
+Free Estimates
+Same-Day Service
+Warranty Backed
+Family Owned
+Snip1 (Services):
+Installation
+Repair
+Replacement
+Snip2 (Brands):
+GAF
+Owens Corning
+CertainTeed
+Snip3:
+Snip4:
+Images:
+https://example.com/a.jpg
+https://example.com/b.jpg
+
+---
+
+Title: Another Ad
+Search: roof repair near me
+Paths: repair | same-day
+Heads:
+# ...and so on
+"></textarea>
+
+        <div class="row" style="margin-top:10px">
+          <div>
+            <button class="btn primary" id="parseBtn">Parse Ads</button>
+            <span class="hint">Limits: 15 callouts • 4 snippet sets × 10 each. Extra items are ignored.</span>
+          </div>
+          <div class="counts">
+            <span id="adCount" class="pill">0 ads</span>
+            <span id="callCount" class="pill">0/15 callouts (current ad)</span>
+            <span id="snipCount" class="pill">S1 0/10 • S2 0/10 • S3 0/10 • S4 0/10</span>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <label>Pick Ad</label>
+        <div id="adPicker" class="adpicker"></div>
+        <div class="hint">Tip: Click “Cycle Snippet Set” to toggle Snip1 → Snip2 → Snip3 → Snip4 in the previews. Use “Switch Image” to rotate through this ad’s images.</div>
+      </div>
+    </section>
+
+    <!-- RIGHT: PREVIEWS -->
+    <section class="card">
+      <h2>Preview (selected ad)</h2>
+      <div class="content">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <button class="btn" id="cycleSnipBtn">Cycle Snippet Set</button>
+          <button class="btn" id="switchImgBtn">Switch Image</button>
+        </div>
+
+        <div class="previews">
+          <!-- Desktop -->
+          <div class="preview-card">
+            <div class="preview-header">
+              <div class="g"></div>
+              <div class="searchbar">
+                <input id="searchDesk" type="text" disabled />
+                <span class="badge">Desktop</span>
+              </div>
+            </div>
+            <div class="serp-url" id="pTitle">Your Business - example.com</div>
+            <div class="serp-path">example.com/<span id="pPath1"></span><span id="pSlash1"></span><span id="pPath2"></span></div>
+            <div class="serp-hline" id="pHeadsDesk"></div>
+            <div class="serp-desc" id="pDescsDesk"></div>
+            <div class="callouts" id="pCalloutsDesk"></div>
+            <div class="snip" id="pSnippetDesk"></div>
+            <div class="img-ext" id="pImgsDesk"></div>
+          </div>
+
+          <!-- Mobile -->
+          <div class="preview-card">
+            <div class="preview-header">
+              <div class="g"></div>
+              <div class="searchbar">
+                <input id="searchMob" type="text" disabled />
+                <span class="badge">Mobile</span>
+              </div>
+            </div>
+            <div class="serp-url" id="pTitleM">Your Business - example.com</div>
+            <div class="serp-path">example.com/<span id="pPath1M"></span><span id="pSlash1M"></span><span id="pPath2M"></span></div>
+            <div class="serp-hline" id="pHeadsMob"></div>
+            <div class="serp-desc" id="pDescsMob"></div>
+            <div class="callouts" id="pCalloutsMob"></div>
+            <div class="snip" id="pSnippetMob"></div>
+            <div class="img-ext" id="pImgsMob"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+/* ====== helpers & state ====== */
+const LIMITS = { MAX_CALLOUTS:15, MAX_SNIPSETS:4, MAX_SNIPVALUES:10, MAX_HEADS:15, MAX_DESCS:4 };
+const $ = id => document.getElementById(id);
+const enc = o => btoa(unescape(encodeURIComponent(JSON.stringify(o))));
+const dec = s => JSON.parse(decodeURIComponent(escape(atob(s))));
+const esc = t => (t||'').replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const lines = s => (s||'').replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean);
+
+let App = {
+  theme: 'dark',
+  ads: [],            // array of ad objects
+  current: 0,         // index of selected ad
+  currentSnip: 0,     // which snippet set to show (0..3)
+  currentImg: 0       // which image index to show
+};
+
+function applyTheme(t){ document.documentElement.setAttribute('data-theme', t); App.theme=t; localStorage.setItem('ppc_theme', t); $('themeSelect').value=t; }
+$('themeSelect').addEventListener('change', e=>{ applyTheme(e.target.value); render(); });
+
+/* ====== parsing ====== */
+function parseAdBlock(block){
+  // initialize structure
+  const ad = { title:'', search:'', path1:'', path2:'', heads:[], descs:[], callouts:[], snips:[[],[],[],[]], images:[] };
+
+  // simple section parsing by labels:
+  // Title:, Search:, Paths:, Heads:, Descs:, Callouts:, Snip1 (...):, Snip2 (...):, Snip3:, Snip4:, Images:
+  const rows = block.replace(/\r/g,'').split('\n');
+
+  let mode = '';
+  for (let raw of rows){
+    const line = raw.trim();
+    if (!line){ continue; }
+
+    const m = line.match(/^(Title|Search|Paths|Heads|Descs|Callouts|Snip1(?:\s*\(.+\))?|Snip2(?:\s*\(.+\))?|Snip3(?:\s*\(.+\))?|Snip4(?:\s*\(.+\))?|Images):\s*(.*)$/i);
+    if (m){
+      mode = m[1].toLowerCase().replace(/\s*\(.+\)\s*/,'');
+      const rest = m[2].trim();
+      if (mode==='title') ad.title = rest;
+      else if (mode==='search') ad.search = rest;
+      else if (mode==='paths'){
+        const [p1='',p2=''] = rest.split('|').map(x=>x.trim());
+        ad.path1 = p1; ad.path2 = p2;
+      }
+      // other modes switch to collecting subsequent lines
+      continue;
+    }
+
+    // Collect lines by current mode
+    if (mode==='heads' && ad.heads.length < LIMITS.MAX_HEADS) ad.heads.push(line);
+    else if (mode==='descs' && ad.descs.length < LIMITS.MAX_DESCS) ad.descs.push(line);
+    else if (mode==='callouts' && ad.callouts.length < LIMITS.MAX_CALLOUTS) ad.callouts.push(line);
+    else if (mode==='snip1' && ad.snips[0].length < LIMITS.MAX_SNIPVALUES) ad.snips[0].push(line);
+    else if (mode==='snip2' && ad.snips[1].length < LIMITS.MAX_SNIPVALUES) ad.snips[1].push(line);
+    else if (mode==='snip3' && ad.snips[2].length < LIMITS.MAX_SNIPVALUES) ad.snips[2].push(line);
+    else if (mode==='snip4' && ad.snips[3].length < LIMITS.MAX_SNIPVALUES) ad.snips[3].push(line);
+    else if (mode==='images') ad.images.push(line);
+  }
+
+  return ad;
+}
+
+function parseAll(){
+  const raw = $('bulk').value;
+  const blocks = raw.split(/\n-{3,}\n/); // split by a line with ---
+  App.ads = blocks.map(b=>b.trim()).filter(Boolean).map(parseAdBlock);
+  App.current = 0;
+  App.currentSnip = 0;
+  App.currentImg = 0;
+  renderPicker();
+  render();
+}
+
+/* ====== UI pieces ====== */
+function renderPicker(){
+  const wrap = $('adPicker'); wrap.innerHTML = '';
+  $('adCount').textContent = `${App.ads.length} ad${App.ads.length===1?'':'s'}`;
+
+  App.ads.forEach((ad, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'chipBtn' + (i===App.current?' active':'');
+    btn.textContent = ad.title ? ad.title : `Ad ${i+1}`;
+    btn.onclick = ()=>{ App.current = i; App.currentSnip = 0; App.currentImg = 0; renderPicker(); render(); };
+    wrap.appendChild(btn);
+  });
+
+  // counts for current ad
+  const A = App.ads[App.current] || {callouts:[], snips:[[],[],[],[]]};
+  $('callCount').textContent = `${A.callouts.length}/${LIMITS.MAX_CALLOUTS} callouts (current ad)`;
+  const s1=A.snips[0]?.length||0, s2=A.snips[1]?.length||0, s3=A.snips[2]?.length||0, s4=A.snips[3]?.length||0;
+  $('snipCount').textContent = `S1 ${s1}/${LIMITS.MAX_SNIPVALUES} • S2 ${s2}/${LIMITS.MAX_SNIPVALUES} • S3 ${s3}/${LIMITS.MAX_SNIPVALUES} • S4 ${s4}/${LIMITS.MAX_SNIPVALUES}`;
+}
+
+/* ====== render previews ====== */
+function render(){
+  document.documentElement.setAttribute('data-theme', App.theme);
+
+  const ad = App.ads[App.current];
+  if (!ad){
+    // clear
+    ['searchDesk','searchMob','pPath1','pPath2','pSlash1','pPath1M','pPath2M','pSlash1M','pDescsDesk','pDescsMob','pCalloutsDesk','pCalloutsMob','pSnippetDesk','pSnippetMob'].forEach(id=>{
+      const el=$(id); if(el) el.textContent=''; if (el && el.tagName==='INPUT') el.value='';
+    });
+    ['pHeadsDesk','pHeadsMob','pImgsDesk','pImgsMob'].forEach(id=>$(id).innerHTML='');
+    return;
+  }
+
+  // search + paths
+  $('searchDesk').value = ad.search || '';
+  $('searchMob').value  = ad.search || '';
+  $('pPath1').textContent  = ad.path1||''; $('pPath2').textContent  = ad.path2||'';
+  $('pSlash1').textContent = (ad.path1 && ad.path2)?'/':'';
+  $('pPath1M').textContent = ad.path1||''; $('pPath2M').textContent = ad.path2||'';
+  $('pSlash1M').textContent = (ad.path1 && ad.path2)?'/':'';
+
+  // headlines (no pins in this multi-bulk version, just first 3)
+  const H = (ad.heads||[]).slice(0,3);
+  const fillH = (el)=>{ el.innerHTML=''; if(!H.length){el.innerHTML='<span class="serp-h">Add a headline…</span>'; return;} H.forEach(t=>{const s=document.createElement('span'); s.className='serp-h'; s.textContent=t; el.appendChild(s);}); };
+  fillH($('pHeadsDesk')); fillH($('pHeadsMob'));
+
+  // descriptions
+  const D1 = (ad.descs||[])[0] || '';
+  const D2 = (ad.descs||[])[1] || '';
+  const desc = D2 ? `${D1}  ${D2}` : D1;
+  $('pDescsDesk').textContent = desc; $('pDescsMob').textContent = desc;
+
+  // callouts (one set at a time; rotate by groups of 4)
+  const groupSize = 4;
+  const totalGroups = Math.max(1, Math.ceil((ad.callouts||[]).length / groupSize));
+  const groupIndex = Math.min(App.currentSnip % totalGroups, totalGroups-1); // reuse currentSnip as pager for callouts
+  const callsSlice = (ad.callouts||[]).slice(groupIndex*groupSize, groupIndex*groupSize+groupSize);
+  const callsTxt = callsSlice.join('  ·  ');
+  $('pCalloutsDesk').textContent = callsTxt; $('pCalloutsMob').textContent = callsTxt;
+
+  // structured snippet: show only one set at a time (Snip1..Snip4)
+  const snipSet = ad.snips[App.currentSnip % 4] || [];
+  const snipHeader = ['Services','Types','Brands','Styles'][App.currentSnip % 4]; // generic headers
+  const snipText = snipSet.length ? `${snipHeader}: ${snipSet.join(' • ')}` : '';
+  $('pSnippetDesk').textContent = snipText; $('pSnippetMob').textContent = snipText;
+
+  // images: show one at a time + thumbnails of all
+  const imgs = ad.images || [];
+  const imgIndex = (imgs.length? App.currentImg % imgs.length : 0);
+  function drawImgs(el){
+    el.innerHTML='';
+    if(imgs.length){
+      // primary (current)
+      const main=document.createElement('img'); main.src=imgs[imgIndex]; main.alt='Ad image'; main.style.width='100px'; main.style.height='100px';
+      main.style.borderRadius='10px'; main.style.border='1px solid #e4e7ef'; main.style.objectFit='cover';
+      el.appendChild(main);
+      // thumbs
+      imgs.forEach((u,ix)=>{ const im=document.createElement('img'); im.src=u; im.alt='Thumb'; if(ix===imgIndex){ im.style.outline='2px solid #6DBE45'; } el.appendChild(im); });
+    }
+  }
+  drawImgs($('pImgsDesk')); drawImgs($('pImgsMob'));
+}
+
+/* ====== controls ====== */
+$('parseBtn').onclick = ()=>{ parseAll(); };
+$('cycleSnipBtn').onclick = ()=>{ App.currentSnip = (App.currentSnip+1)%4; renderPicker(); render(); };
+$('switchImgBtn').onclick = ()=>{ App.currentImg += 1; render(); };
+
+/* ====== share -> preview.html (multi) ====== */
+$('shareBtn').onclick = ()=>{
+  // clamp per-ad limits before sharing
+  const ads = App.ads.map(a=>({
+    title:a.title||'',
+    q:a.search||'',
+    p1:a.path1||'', p2:a.path2||'',
+    h:(a.heads||[]).slice(0,15),
+    d:(a.descs||[]).slice(0,4),
+    c:(a.callouts||[]).slice(0,15),
+    sv:[
+      (a.snips?.[0]||[]).slice(0,10),
+      (a.snips?.[1]||[]).slice(0,10),
+      (a.snips?.[2]||[]).slice(0,10),
+      (a.snips?.[3]||[]).slice(0,10)
+    ],
+    imgs:a.images||[]
+  }));
+
+  const payload = { theme: App.theme, ads, idx: App.current, snip: App.currentSnip%4, img: App.currentImg };
+  const hash = enc(payload);
+  const url = `${location.origin}/preview.html#${hash}`;
+  navigator.clipboard.writeText(url).then(()=>{
+    $('saveNote').textContent='Preview link (multi) copied!';
+    setTimeout(()=>{$('saveNote').textContent='';},3000);
+  }).catch(()=>{$('saveNote').textContent=url;});
+};
+
+/* ====== boot ====== */
+(function init(){
+  applyTheme(localStorage.getItem('ppc_theme') || 'dark');
+  // demo data in textarea to get started quickly
+  if(!$('bulk').value.trim()){
+    $('bulk').value = document.querySelector('textarea#bulk').getAttribute('placeholder') || '';
+  }
+  render();
+})();
+</script>
+</body>
+</html>
