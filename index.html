@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PPC Gadget • One-File RSA Previewer</title>
+  <style>
+    :root{
+      --bg:#0b0e13; --panel:#121621; --muted:#8a93a5; --text:#e8ecf3; --brand:#6DBE45;
+      --ok:#21c17a; --warn:#f0b43a; --bad:#ff4d4f; --line:#202635;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    a{color:var(--brand);text-decoration:none}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px}
+    header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+    header .dot{width:10px;height:10px;border-radius:50%;background:var(--brand)}
+    header h1{font-size:20px;margin:0}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:14px}
+    .card h2{margin:0;padding:14px 16px;border-bottom:1px solid var(--line);font-size:15px;color:#cdd5e7}
+    .card .content{padding:16px}
+    label{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#cdd5e7;margin:6px 0 8px}
+    textarea, input[type="text"], select{
+      width:100%; background:#0f1320; color:var(--text);
+      border:1px solid var(--line); border-radius:10px; padding:12px; font-size:14px;
+      outline:none; resize:vertical; min-height:90px;
+    }
+    .hint{font-size:12px;color:var(--muted);margin-top:6px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .pill{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:#b6bfd6}
+    .list{margin:8px 0 0;padding:0;list-style:none;border:1px dashed var(--line);border-radius:12px}
+    .list li{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:8px 12px;border-top:1px dashed var(--line)}
+    .list li:first-child{border-top:none}
+    .chip{font-size:11px;border-radius:8px;padding:2px 6px}
+    .ok{background:rgba(33,193,122,.15);color:#a5f3c6}
+    .warn{background:rgba(240,180,58,.15);color:#ffe7a3}
+    .bad{background:rgba(255,77,79,.15);color:#ffb3b3}
+    .flex{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{
+      background:linear-gradient(180deg,#1d2333,#151a27);
+      color:var(--text); border:1px solid var(--line); padding:10px 14px; border-radius:12px;
+      font-size:14px; cursor:pointer
+    }
+    .btn.primary{background:linear-gradient(180deg,#6DBE45,#479e23); border-color:#3a8a1d}
+    .btn:active{transform:translateY(1px)}
+    /* Preview */
+    .preview{background:#ffffff;color:#111;border-radius:12px;border:1px solid #eaecef;padding:16px}
+    .serp-url{color:#1a0dab;font-size:18px;font-weight:600;margin-bottom:6px}
+    .serp-path{color:#0f9d58;font-size:12px;margin-bottom:10px}
+    .serp-hline{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+    .serp-h{background:#e8f0fe;color:#174ea6;border-radius:4px;padding:2px 4px;font-weight:600}
+    .serp-desc{color:#3c4043;font-size:14px;line-height:1.35}
+    .serp-extras{margin-top:12px}
+    .callouts{font-size:12px;color:#5f6368}
+    .snip{margin-top:4px;font-size:12px;color:#3c4043}
+    .muted{color:#5f6368}
+    .hr{height:1px;background:#eceff3;margin:12px 0}
+    .footer{margin-top:18px;font-size:12px;color:var(--muted)}
+    .small{font-size:12px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="dot"></span>
+      <h1>PPC Gadget — One-File RSA Previewer (Plain-Lines Input)</h1>
+      <span class="pill">Headlines ≤ 30 • Descriptions ≤ 90 • Callouts ≤ 25 • Snippet values ≤ 25</span>
+    </header>
+
+    <div class="grid">
+      <!-- Left: Inputs -->
+      <section class="card">
+        <h2>Ad Inputs</h2>
+        <div class="content">
+          <div class="row">
+            <div>
+              <label>
+                Headlines (one per line)
+                <span class="pill">max 15</span>
+              </label>
+              <textarea id="headlines" placeholder="Example:
+Local Stucco Contractors
+Stucco Companies Near You
+Best Stucco Contractors
+Upgrade Your Home Today
+Get a Free Estimate Now
+Licensed & Insured Teams"></textarea>
+              <div class="hint">We’ll color-code each line by length. First 3 are used in the preview (as pinned H1/H2/H3).</div>
+              <ul id="headList" class="list"></ul>
+            </div>
+            <div>
+              <label>
+                Descriptions (one per line)
+                <span class="pill">max 4</span>
+              </label>
+              <textarea id="descs" placeholder="Example:
+Hire licensed stucco contractors near you for quality results.
+From homes to exteriors, we install and repair stucco right.
+Work with trusted stucco companies delivering lasting exteriors.
+Get a free stucco estimate today from local professionals."></textarea>
+              <div class="hint">Up to 4 lines accepted (≤ 90 chars each). First 2 show in the preview.</div>
+              <ul id="descList" class="list"></ul>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:12px">
+            <div>
+              <label>Callouts (one per line) <span class="pill">optional</span></label>
+              <textarea id="callouts" placeholder="Local Contractors
+Free Estimates
+Fully Insured
+Quality Workmanship"></textarea>
+              <div class="hint">Google recommends short, punchy callouts (≤ 25 chars). We’ll validate each.</div>
+              <ul id="calloutList" class="list"></ul>
+            </div>
+            <div>
+              <label>Structured Snippet</label>
+              <div class="row">
+                <select id="snippetHeader" title="Header">
+                  <option value="Services">Services</option>
+                  <option value="Types">Types</option>
+                  <option value="Brands">Brands</option>
+                  <option value="Styles">Styles</option>
+                  <option value="Neighborhoods">Neighborhoods</option>
+                  <option value="Destinations">Destinations</option>
+                </select>
+                <input id="displayPath" type="text" placeholder="Display Path (optional): e.g. home • stucco" />
+              </div>
+              <label class="small" style="margin-top:8px">Snippet Values (one per line) <span class="pill">≤ 10</span></label>
+              <textarea id="snippetValues" placeholder="Installation
+Repair
+Re-Stucco
+Exterior Stucco"></textarea>
+              <div class="hint">Each value ≤ 25 chars. Example preview: <span class="mono">Services: Installation • Repair • Re-Stucco…</span></div>
+              <ul id="snipList" class="list"></ul>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+          <div class="flex">
+            <button class="btn primary" id="updateBtn">Update Preview</button>
+            <button class="btn" id="shareBtn">Share / Copy Link</button>
+            <button class="btn" id="clearBtn">Clear All</button>
+            <span id="saveNote" class="hint"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Preview -->
+      <section class="card">
+        <h2>Live Preview</h2>
+        <div class="content">
+          <div class="preview" id="preview">
+            <div class="serp-url" id="pTitle">Your Business - Example.com</div>
+            <div class="serp-path" id="pPath">example.com<span id="pPathTrail" class="muted"></span></div>
+
+            <div class="serp-hline" id="pHeads">
+              <!-- Headlines pills go here -->
+            </div>
+
+            <div class="serp-desc" id="pDescs">
+              <!-- Two descriptions glued together -->
+            </div>
+
+            <div class="serp-extras">
+              <div id="pCallouts" class="callouts"></div>
+              <div id="pSnippet" class="snip"></div>
+            </div>
+          </div>
+
+          <div class="footer">
+            Tips: Keep headlines ~24–30 chars for strength. Use keyword → CTA → trust flow. Descriptions: 75–88 chars.
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // === Config ===
+    const LIMITS = {
+      headline: 30,
+      description: 90,
+      callout: 25,
+      snippetValue: 25,
+      maxHeads: 15,
+      maxDescs: 4,
+      maxSnippetValues: 10
+    };
+
+    // === Helpers ===
+    const $ = (id) => document.getElementById(id);
+    const lines = (txt) => (txt || "").replace(/\r/g,"").split("\n").map(s=>s.trim()).filter(Boolean);
+    const clamp = (arr, n) => arr.slice(0, n);
+    const encode = (obj) => btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+    const decode = (str) => JSON.parse(decodeURIComponent(escape(atob(str))));
+
+    function classify(len, limit){
+      if(len === 0) return "warn"; // empty line warning tint
+      if(len <= limit) return "ok";
+      if(len <= limit + 10) return "warn";
+      return "bad";
+    }
+
+    function renderList(el, arr, limit){
+      el.innerHTML = "";
+      if(arr.length === 0){ el.innerHTML = `<li><span class="muted">No lines</span><span class="chip warn">0/${limit}</span></li>`; return; }
+      arr.forEach(t=>{
+        const li = document.createElement("li");
+        const c = classify(t.length, limit);
+        li.innerHTML = `<span>${escapeHTML(t)}</span><span class="chip ${c}">${t.length}/${limit}</span>`;
+        el.appendChild(li);
+      });
+    }
+
+    function escapeHTML(str){
+      return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+    }
+
+    // === Core Update ===
+    function update(){
+      // Parse inputs
+      let H = clamp(lines($("headlines").value), LIMITS.maxHeads);
+      let D = clamp(lines($("descs").value), LIMITS.maxDescs);
+      let C = lines($("callouts").value);
+      let SH = $("snippetHeader").value || "Services";
+      let SV = clamp(lines($("snippetValues").value), LIMITS.maxSnippetValues);
+      let path = $("displayPath").value.trim();
+
+      // Lists with counters
+      renderList($("headList"), H, LIMITS.headline);
+      renderList($("descList"), D, LIMITS.description);
+      renderList($("calloutList"), C, LIMITS.callout);
+      renderList($("snipList"), SV, LIMITS.snippetValue);
+
+      // Preview path
+      $("pPathTrail").textContent = path ? `  ›  ${path}` : "";
+
+      // Headlines (first 3 are previewed like pinned H1/H2/H3)
+      const headsWrap = $("pHeads");
+      headsWrap.innerHTML = "";
+      const shown = clamp(H, 3);
+      shown.forEach(h=>{
+        const span = document.createElement("span");
+        span.className = "serp-h";
+        span.textContent = h;
+        headsWrap.appendChild(span);
+      });
+      if(shown.length === 0){
+        headsWrap.innerHTML = `<span class="serp-h">Add a headline…</span>`;
+      }
+
+      // Descriptions (first 2 shown)
+      const d1 = D[0] || "Add a description (≤ 90 chars).";
+      const d2 = D[1] || "";
+      $("pDescs").textContent = d2 ? `${d1}  ${d2}` : d1;
+
+      // Callouts
+      $("pCallouts").textContent = C.length ? C.map(x=>x).join("  ·  ") : "";
+
+      // Structured Snippet
+      $("pSnippet").textContent = SV.length ? `${SH}: ${SV.join(" • ")}` : "";
+    }
+
+    // === Share / Clear ===
+    function share(){
+      const payload = {
+        h: clamp(lines($("headlines").value), LIMITS.maxHeads),
+        d: clamp(lines($("descs").value), LIMITS.maxDescs),
+        c: lines($("callouts").value),
+        sh: $("snippetHeader").value || "Services",
+        sv: clamp(lines($("snippetValues").value), LIMITS.maxSnippetValues),
+        p: $("displayPath").value.trim()
+      };
+      const hash = encode(payload);
+      location.hash = hash;
+      navigator.clipboard.writeText(location.href).then(()=>{
+        $("saveNote").textContent = "Link copied. Anyone with this URL will see your ad loaded.";
+        setTimeout(()=>{$("saveNote").textContent="";}, 3000);
+      }).catch(()=>{
+        $("saveNote").textContent = "URL updated — copy from address bar.";
+        setTimeout(()=>{$("saveNote").textContent="";}, 3000);
+      });
+    }
+
+    function clearAll(){
+      ["headlines","descs","callouts","snippetValues","displayPath"].forEach(id=>$(id).value="");
+      $("snippetHeader").value="Services";
+      update();
+    }
+
+    function loadFromHash(){
+      if(location.hash.length > 1){
+        try{
+          const obj = decode(location.hash.slice(1));
+          $("headlines").value = (obj.h||[]).join("\n");
+          $("descs").value = (obj.d||[]).join("\n");
+          $("callouts").value = (obj.c||[]).join("\n");
+          $("snippetHeader").value = obj.sh || "Services";
+          $("snippetValues").value = (obj.sv||[]).join("\n");
+          $("displayPath").value = obj.p || "";
+        }catch(e){ /* ignore bad hash */ }
+      }
+      update();
+    }
+
+    // === Events ===
+    $("updateBtn").addEventListener("click", update);
+    $("shareBtn").addEventListener("click", share);
+    $("clearBtn").addEventListener("click", clearAll);
+    ["headlines","descs","callouts","snippetValues","displayPath","snippetHeader"].forEach(id=>{
+      $(id).addEventListener("input", update);
+      $(id).addEventListener("change", update);
+    });
+
+    // Initial demo fill (first load only, no hash)
+    function demoFill(){
+      if(location.hash.length > 1) return;
+      $("headlines").value = [
+        "Local Stucco Contractors",
+        "Stucco Companies Near You",
+        "Best Stucco Contractors",
+        "Upgrade Your Home Today",
+        "Get a Free Estimate Now",
+        "Trusted Local Experts",
+        "Licensed & Insured Teams",
+        "Premium Stucco Materials",
+        "Backed by Warranty"
+      ].join("\n");
+
+      $("descs").value = [
+        "Hire licensed stucco contractors near you for quality results.",
+        "From homes to exteriors, we install and repair stucco right.",
+        "Work with trusted stucco companies delivering lasting exteriors.",
+        "Get a free stucco estimate today from local professionals."
+      ].join("\n");
+
+      $("callouts").value = [
+        "Local Contractors",
+        "Free Estimates",
+        "Fully Insured",
+        "Quality Workmanship"
+      ].join("\n");
+
+      $("snippetHeader").value = "Services";
+      $("snippetValues").value = ["Installation","Repair","Re-Stucco","Exterior Stucco"].join("\n");
+      $("displayPath").value = "home • stucco";
+    }
+
+    // Boot
+    demoFill();
+    loadFromHash();
+  </script>
+</body>
+</html>
