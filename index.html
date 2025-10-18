@@ -1,766 +1,128 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PPC Gadget — RSA Builder Pro</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PPC Gadget — RSA Builder (Single)</title>
 <link rel="icon" href="/favicon.png" />
 <style>
-  :root{
-    --bg:#0b0e13; --panel:#121621; --panel2:#0f1422; --line:#202635;
-    --text:#e8ecf3; --muted:#9aa3b7; --brand:#6DBE45;
-    --chip:#273047; --chipText:#d9e2ff;
-    --ok:#22c884; --warn:#f5c558; --bad:#ff6b6d;
-
-    --preview-bg:#fff; --preview-text:#111; --preview-muted:#5f6368;
-    --preview-blue:#174ea6; --preview-chip:#e8f0fe; --preview-link:#1a0dab; --preview-green:#0f9d58;
-  }
-  [data-theme="light"]{
-    --bg:#f6f7fb; --panel:#ffffff; --panel2:#ffffff; --line:#e7e9f2;
-    --text:#0f1422; --muted:#56607a; --brand:#2f8d19;
-    --chip:#eef2ff; --chipText:#2c3b64;
-  }
-  [data-theme="cyberpunk"]{
-    --bg:#0a0c12; --panel:#0e1220; --panel2:#0c0f1a; --line:#23283b;
-    --text:#e6f7ff; --muted:#7bd4ff; --brand:#ff2bd6;
-    --chip:#121830; --chipText:#8feaff;
-    --ok:#00ffcc; --warn:#ffd166; --bad:#ff6b6b;
-
-    --preview-bg:#0b0f1a; --preview-text:#e6f7ff; --preview-muted:#8fd0ff;
-    --preview-blue:#49c7ff; --preview-chip:#121830; --preview-link:#7bf1ff; --preview-green:#00ffcc;
-  }
-
-  *{box-sizing:border-box}
-  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-  a{color:var(--brand);text-decoration:none}
-  .wrap{max-width:1320px;margin:0 auto;padding:20px}
-  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
-  .brand{display:flex;align-items:center;gap:10px}
-  .brand img{width:32px;height:32px}
-  h1{font-size:18px;margin:0}
-  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .btn{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.06));border:1px solid var(--line);color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer;font-size:14px}
-  .btn.primary{background:linear-gradient(180deg,var(--brand),#2d8e1f);border-color:#237515;color:#fff}
-  .btn.linklike{background:transparent}
-  .btn:active{transform:translateY(1px)}
-  select, input[type="text"], textarea{
-    width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;outline:none
-  }
-  textarea{min-height:90px;resize:vertical}
-  label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
-  .hint{font-size:12px;color:var(--muted);margin-top:6px}
-  .pill{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
-  .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-  .card h2{margin:0;padding:14px 16px;border-bottom:1px solid var(--line);font-size:15px;color:var(--muted);font-weight:600}
-  .content{padding:14px}
-  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .save{font-size:12px;color:var(--muted)}
-  .hr{height:1px;background:var(--line);margin:12px 0}
-  .tabs{display:flex;gap:6px;padding:10px}
-  .tab{border:1px solid var(--line);padding:8px 12px;border-radius:10px;cursor:pointer}
-  .tab.active{background:var(--panel2)}
-  .hidden{display:none}
-
-  .list{margin:10px 0 0;padding:0;list-style:none;border:1px dashed var(--line);border-radius:12px}
-  .list li{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:10px;padding:8px 10px;border-top:1px dashed var(--line)}
-  .list li:first-child{border-top:none}
-  .chip{font-size:11px;border-radius:999px;padding:2px 8px;background:var(--chip);color:var(--chipText)}
-  .ok{background:rgba(34,200,132,.14);color:#aaf4d0}
-  .warn{background:rgba(245,197,88,.16);color:#ffe4a0}
-  .bad{background:rgba(255,107,109,.16);color:#ffc1c2}
-  .mini{display:flex;gap:6px;align-items:center}
-  .mini .btn{padding:4px 8px;font-size:12px}
-  .pin{display:flex;gap:6px}
-  .pin button{border:1px solid #2a3041;background:#161b29;color:#cdd4e6;border-radius:10px;padding:4px 10px;font-size:12px;cursor:pointer}
-  [data-theme="light"] .pin button{border-color:#d8dbe5;background:#f5f7fb;color:#2b3a55}
-  [data-theme="cyberpunk"] .pin button{border-color:#25305b;background:#141a33;color:#9fd8ff}
-  .pin button.active{background:#1e7a27;border-color:#155a1c;color:#fff;font-weight:600}
-
-  .previews{display:grid;grid-template-columns:1fr 380px;gap:14px}
-  .preview-card{background:var(--preview-bg);color:var(--preview-text);border-radius:12px;border:1px solid #e3e6ef;padding:14px}
-  [data-theme="cyberpunk"] .preview-card{border-color:#1f2642}
-  .preview-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-  .g{width:24px;height:24px;border-radius:6px;background:#4285F4}
-  .searchbar{flex:1;border:1px solid #dadce0;border-radius:999px;padding:8px 12px;font-size:14px;display:flex;gap:8px;align-items:center;background:#fff}
-  .searchbar input{border:none;outline:none;flex:1;font-size:14px}
-  .serp-url{color:var(--preview-link);font-size:18px;font-weight:600;margin:8px 0 4px}
-  .serp-path{color:var(--preview-green);font-size:12px;margin-bottom:8px}
-  .serp-hline{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
-  .serp-h{background:var(--preview-chip);color:var(--preview-blue);border-radius:4px;padding:2px 4px;font-weight:700}
-  .serp-desc{color:#3c4043;font-size:14px;line-height:1.35}
-  [data-theme="cyberpunk"] .serp-desc{color:#c9e8ff}
-  .callouts{font-size:12px;color:#5f6368;margin-top:8px}
-  .snip{margin-top:4px;font-size:12px;color:#3c4043}
-  .muted{color:#5f6368}
-  .mobile-frame{max-width:360px;border:10px solid #e7eaef;border-radius:24px;margin:0 auto;background:#fff}
-  .badge{font-size:11px;border:1px solid #dfe3ec;border-radius:6px;padding:2px 6px;color:#5a657c}
-  .sitelinks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .sitelink{font-size:13px;color:#1a0dab}
-  .price-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .price-card{border:1px solid #e4e7ef;border-radius:8px;padding:8px;font-size:12px}
-  .img-ext{display:flex;gap:8px;flex-wrap:wrap}
-  .img-ext img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid #e4e7ef}
-
-  /* Snippet sets */
-  .drawer{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-top:12px;overflow:hidden}
-  .drawer summary{cursor:pointer;list-style:none;padding:10px 12px;font-weight:600;border-bottom:1px solid var(--line)}
-  .drawer summary::-webkit-details-marker{display:none}
-  .drawer .inner{padding:12px}
-  .snipRow{display:grid;grid-template-columns:220px 1fr auto;gap:10px;align-items:start}
-  .delBtn{border:1px solid var(--line);background:transparent;color:#ff6b6d;padding:8px 10px;border-radius:10px;cursor:pointer}
-  .snipChips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-  .snipChip{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:6px 10px;border-radius:10px;cursor:pointer}
-  .snipChip.active{outline:2px solid var(--brand)}
-
-  @media (max-width:1060px){.grid{grid-template-columns:1fr}.previews{grid-template-columns:1fr}}
-  @media (max-width:700px){.snipRow{grid-template-columns:1fr}}
+  body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;background:#0b0e13;color:#e8ecf3}
+  .wrap{max-width:1000px;margin:0 auto;padding:18px}
+  input,textarea{width:100%;padding:10px;border:1px solid #202635;border-radius:10px;background:#121621;color:#e8ecf3}
+  label{font-size:12px;color:#9aa3b7}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .btn{padding:10px 14px;border:1px solid #202635;border-radius:10px;background:#121621;color:#e8ecf3;cursor:pointer}
+  .row{margin-bottom:12px}
+  .mono{font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace}
+  a.btn{display:inline-block;text-decoration:none}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <div class="brand">
-      <img src="/logo.png" alt="PPC Gadget">
-      <h1>PPC Gadget — RSA Builder Pro</h1>
-    </div>
-    <div class="controls">
-      <a class="btn linklike" href="./multi.html">↗ Multi-Ad (Bulk)</a>
-      <label style="display:flex;gap:8px;align-items:center">
-        <span style="font-size:12px;color:var(--muted)">Theme</span>
-        <select id="themeSelect">
-          <option value="dark">Dark</option>
-          <option value="light">Light</option>
-          <option value="cyberpunk">Cyberpunk</option>
-        </select>
-      </label>
-      <button class="btn" id="clearBtn">Clear</button>
-      <button class="btn" id="updateBtn">Update</button>
-      <button class="btn primary" id="shareBtn">Share / Copy Link</button>
-      <span id="saveNote" class="save"></span>
-    </div>
-  </header>
+  <h1>RSA Builder (Single)</h1>
 
-  <div class="tabs">
-    <div id="tabBulk" class="tab active">Bulk</div>
-    <div id="tabManual" class="tab">Manual</div>
+  <div class="row grid">
+    <div>
+      <label>Search Query</label>
+      <input id="q" placeholder="sailboat slips near me">
+    </div>
+    <div>
+      <label>Domain (optional)</label>
+      <input id="dm" placeholder="example.com">
+    </div>
   </div>
 
-  <div class="grid">
-    <!-- LEFT: BULK -->
-    <section id="bulkPane" class="card">
-      <h2>Bulk Inputs</h2>
-      <div class="content">
-        <div class="row">
-          <div>
-            <label>Headlines (one per line) <span class="pill">max 15 • ≤ 30</span></label>
-            <textarea id="bulkHeads" placeholder="Headline 1&#10;Headline 2&#10;…"></textarea>
-          </div>
-          <div>
-            <label>Descriptions (one per line) <span class="pill">max 4 • ≤ 90</span></label>
-            <textarea id="bulkDescs" placeholder="Description 1&#10;Description 2"></textarea>
-          </div>
-        </div>
-
-        <div class="row" style="margin-top:10px">
-          <div>
-            <label>Callouts (one per line) <span class="pill">≤ 25</span></label>
-            <textarea id="bulkCallouts" placeholder="Free Estimates&#10;Fully Insured"></textarea>
-          </div>
-          <div>
-            <label>Structured Snippet Values (one per line) <span class="pill">Set 1 • ≤ 10</span></label>
-            <textarea id="bulkSnips" placeholder="Installation&#10;Repair"></textarea>
-            <div class="row" style="margin-top:8px">
-              <select id="snippetHeader">
-                <option value="Services">Services</option>
-                <option value="Types">Types</option>
-                <option value="Brands">Brands</option>
-                <option value="Styles">Styles</option>
-                <option value="Areas">Areas</option>
-                <option value="Amenities">Amenities</option>
-                <option value="Programs">Programs</option>
-                <option value="Treatments">Treatments</option>
-                <option value="Materials">Materials</option>
-              </select>
-              <input id="displayPath1" type="text" placeholder="Path 1" />
-            </div>
-            <div class="row" style="margin-top:8px">
-              <input id="displayPath2" type="text" placeholder="Path 2" />
-              <input id="searchBulk" type="text" placeholder="Search query (optional)" />
-            </div>
-            <div class="hint">Bulk goes into **Snippet Set 1**. You can add more sets in the Manual tab.</div>
-          </div>
-        </div>
-
-        <div class="hr"></div>
-
-        <div class="row">
-          <div>
-            <label>Sitelinks (blocks separated by blank lines)</label>
-            <textarea id="bulkSitelinks" placeholder="Title&#10;Description line 1&#10;Description line 2&#10;URL (optional)&#10;&#10;Next sitelink…"></textarea>
-          </div>
-          <div>
-            <label>Price Extension (one per line: Header | Price | Unit)</label>
-            <textarea id="bulkPrices" placeholder="Stucco Repair | $199 | per visit"></textarea>
-          </div>
-        </div>
-
-        <div class="row" style="margin-top:10px">
-          <div>
-            <label>Promotion</label>
-            <textarea id="bulkPromo" placeholder="Spring Sale — 20% Off"></textarea>
-          </div>
-          <div>
-            <label>Image Extensions (URLs, one per line)</label>
-            <textarea id="bulkImages"></textarea>
-          </div>
-        </div>
-
-        <div class="row" style="margin-top:10px">
-          <div>
-            <label>Call Extension (Phone)</label>
-            <input id="bulkPhone" type="text" placeholder="+1 (555) 123-4567" />
-          </div>
-          <div>
-            <label>Location Extension</label>
-            <input id="bulkLocation" type="text" placeholder="Business • 123 Main St, City, ST" />
-          </div>
-        </div>
-
-        <div class="hr"></div>
-        <button class="btn primary" id="applyBulk">Apply Bulk</button>
-        <span class="hint">Bulk replaces current lists (pins cleared; set pins in Manual).</span>
+  <div class="row grid">
+    <div>
+      <label>Landing Page URL</label>
+      <input id="u" placeholder="https://example.com/sailboat/slips">
+    </div>
+    <div class="grid">
+      <div>
+        <label>Path 1</label>
+        <input id="p1" placeholder="sailboat">
       </div>
-    </section>
-
-    <!-- LEFT: MANUAL -->
-    <section id="manualPane" class="card hidden">
-      <h2>Manual Inputs</h2>
-      <div class="content">
-
-        <!-- headlines + descriptions -->
-        <div class="row">
-          <div>
-            <label>Add Headline</label>
-            <div style="display:flex;gap:8px">
-              <input id="headInput" type="text" placeholder="Headline…" />
-              <button class="btn" id="addHeadBtn">Add</button>
-            </div>
-            <div class="hint">Pin positions work like Google Ads. Pin 1/2/3 override order in previews.</div>
-            <ul id="headList" class="list"></ul>
-          </div>
-
-          <div>
-            <label>Add Description</label>
-            <div style="display:flex;gap:8px">
-              <input id="descInput" type="text" placeholder="Description…" />
-              <button class="btn" id="addDescBtn">Add</button>
-            </div>
-            <ul id="descList" class="list"></ul>
-          </div>
-        </div>
-
-        <div class="row" style="margin-top:10px">
-          <div>
-            <label>Callout</label>
-            <div style="display:flex;gap:8px">
-              <input id="callInput" type="text" placeholder="Callout…" />
-              <button class="btn" id="addCallBtn">Add</button>
-            </div>
-            <ul id="callList" class="list"></ul>
-          </div>
-
-          <!-- Dynamic Structured Snippets -->
-          <div>
-            <label>Structured Snippets</label>
-            <div class="snipChips" id="snipChipBar"></div>
-            <div class="drawer" id="snipDrawer">
-              <summary>Snippet Sets (click to expand/collapse)</summary>
-              <div class="inner" id="snipEditor">
-                <div style="margin-bottom:10px;display:flex;gap:10px;flex-wrap:wrap">
-                  <button class="btn" id="addSnipSetBtn">+ Add Snippet Set</button>
-                  <span class="hint">Up to 4 sets. Each set: pick a header and enter up to 10 values (one per line).</span>
-                </div>
-                <div id="snipSetWrap"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row" style="margin-top:10px">
-          <div>
-            <label>Display Paths</label>
-            <div class="row">
-              <input id="path1" type="text" placeholder="Path 1" />
-              <input id="path2" type="text" placeholder="Path 2" />
-            </div>
-          </div>
-          <div>
-            <label>Search Query (preview only)</label>
-            <input id="searchManual" type="text" placeholder="Type here or in the preview…" />
-          </div>
-        </div>
-
-        <div class="hr"></div>
-
-        <!-- Extensions -->
-        <div class="row">
-          <div>
-            <label>Sitelink</label>
-            <input id="slTitle" type="text" placeholder="Title" />
-            <input id="slDesc1" type="text" placeholder="Description line 1" style="margin-top:6px" />
-            <input id="slDesc2" type="text" placeholder="Description line 2" style="margin-top:6px" />
-            <input id="slUrl"   type="text" placeholder="Final URL (optional)" style="margin-top:6px" />
-            <button class="btn" id="addSL" style="margin-top:8px">Add Sitelink</button>
-            <ul id="slList" class="list"></ul>
-          </div>
-
-          <div>
-            <label>Price Item</label>
-            <div class="row">
-              <input id="priceHeader" type="text" placeholder="Header" />
-              <input id="priceAmount" type="text" placeholder="Price (e.g., $199)" />
-            </div>
-            <input id="priceUnit" type="text" placeholder="Unit (e.g., per visit)" style="margin-top:6px" />
-            <button class="btn" id="addPrice" style="margin-top:8px">Add Price</button>
-            <ul id="priceList" class="list"></ul>
-          </div>
-        </div>
-
-        <div style="margin-top:10px">
-          <label>Image URL</label>
-          <div style="display:flex;gap:8px">
-            <input id="imgUrl" type="text" placeholder="https://…" />
-            <button class="btn" id="addImage">Add Image</button>
-          </div>
-          <ul id="imgList" class="list"></ul>
-        </div>
-
+      <div>
+        <label>Path 2</label>
+        <input id="p2" placeholder="slips">
       </div>
-    </section>
+    </div>
+  </div>
 
-    <!-- RIGHT: PREVIEWS -->
-    <section class="card">
-      <h2>Live Preview</h2>
-      <div class="content previews">
+  <div class="row">
+    <label>Headlines (one per line)</label>
+    <textarea id="heads" rows="6"></textarea>
+  </div>
 
-        <!-- Desktop -->
-        <div class="preview-card">
-          <div class="preview-header">
-            <div class="g"></div>
-            <div class="searchbar">
-              <input id="searchQuery" type="text" placeholder="Search Google…" />
-              <span class="badge">Desktop</span>
-            </div>
-          </div>
+  <div class="row">
+    <label>Descriptions (one per line; Google uses up to 2 together)</label>
+    <textarea id="descs" rows="5"></textarea>
+  </div>
 
-          <div class="serp-url" id="pTitle">Your Business - example.com</div>
-          <div class="serp-path">example.com/<span id="pPath1"></span><span id="pSlash1"></span><span id="pPath2"></span></div>
-          <div class="serp-hline" id="pHeadsDesk"></div>
-          <div class="serp-desc" id="pDescsDesk"></div>
+  <div class="row">
+    <label>Callouts (one per line)</label>
+    <textarea id="calls" rows="4"></textarea>
+  </div>
 
-          <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Sitelinks</div>
-          <div id="pSLDesk" class="sitelinks"></div>
+  <div class="row grid3">
+    <div>
+      <label>Snippet Header</label>
+      <input id="sh" placeholder="Services">
+    </div>
+    <div style="grid-column: span 2">
+      <label>Snippet Values (one per line)</label>
+      <textarea id="sv" rows="4"></textarea>
+    </div>
+  </div>
 
-          <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Callouts & Snippet</div>
-          <div class="callouts" id="pCalloutsDesk"></div>
-          <div class="snip" id="pSnippetDesk"></div>
+  <div class="row">
+    <button id="share" class="btn">Open Preview</button>
+    <a id="previewLink" class="btn" href="#" target="_blank" rel="noopener">Preview Link</a>
+  </div>
 
-          <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Price</div>
-          <div id="pPriceDesk" class="price-grid"></div>
-
-          <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Promotion / Call / Location</div>
-          <div id="pPromoDesk" class="snip"></div>
-          <div id="pPhoneDesk" class="snip"></div>
-          <div id="pLocDesk" class="snip"></div>
-
-          <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Images</div>
-          <div id="pImgsDesk" class="img-ext"></div>
-        </div>
-
-        <!-- Mobile -->
-        <div class="mobile-frame">
-          <div class="preview-card" style="border:none">
-            <div class="preview-header">
-              <div class="g"></div>
-              <div class="searchbar">
-                <input id="searchQueryMobile" type="text" placeholder="Search Google…" />
-                <span class="badge">Mobile</span>
-              </div>
-            </div>
-
-            <div class="serp-url" id="pTitleM">Your Business - example.com</div>
-            <div class="serp-path">example.com/<span id="pPath1M"></span><span id="pSlash1M"></span><span id="pPath2M"></span></div>
-            <div class="serp-hline" id="pHeadsMob"></div>
-            <div class="serp-desc" id="pDescsMob"></div>
-
-            <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Sitelinks</div>
-            <div id="pSLMob" class="sitelinks"></div>
-
-            <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Callouts & Snippet</div>
-            <div class="callouts" id="pCalloutsMob"></div>
-            <div class="snip" id="pSnippetMob"></div>
-
-            <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Price</div>
-            <div id="pPriceMob" class="price-grid"></div>
-
-            <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Promotion / Call / Location</div>
-            <div id="pPromoMob" class="snip"></div>
-            <div id="pPhoneMob" class="snip"></div>
-            <div id="pLocMob" class="snip"></div>
-
-            <div class="ext-h" style="font-weight:700;margin:10px 0 6px">Images</div>
-            <div id="pImgsMob" class="img-ext"></div>
-          </div>
-        </div>
-
-      </div>
-    </section>
+  <div class="row">
+    <label>Hash (debug)</label>
+    <div class="mono" id="hash" style="word-break:break-all"></div>
   </div>
 </div>
 
 <script>
-/* ---------- State ---------- */
-const LIMITS = { head:30, desc:90, call:25, snip:25, maxH:15, maxD:4, maxSV:10, maxSL:4, maxSnipSets:4 };
-const $ = id => document.getElementById(id);
-const L = s => (s||'').replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean);
-const clamp = (a,n)=>a.slice(0,n);
-const enc = o => btoa(unescape(encodeURIComponent(JSON.stringify(o))));
-const dec = s => JSON.parse(decodeURIComponent(escape(atob(s))));
-const esc = t => t.replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
-const SNIP_HEADERS = ["Services","Types","Brands","Styles","Areas","Amenities","Programs","Treatments","Materials"];
+/* LZString (URI-safe; full) — using same impl as preview for compatibility */
+var LZString=function(){function o(o,r){if(!t[o]){t[o]={};for(var n=0;n<o.length;n++)t[o][o.charAt(n)]=n}return t[o][r]}var r=String.fromCharCode,n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",t={},e={compressToEncodedURIComponent:function(o){return null==o?"":e._compress(o,6,function(o){return n.charAt(o)})},_compress:function(o,n,t){if(null==o)return"";var e,i,s={},p={},a="",u="",c="",f=2,l=3,h=2,d=[],m=0,v=0;for(i=0;i<o.length;i+=1)if(a=o.charAt(i),Object.prototype.hasOwnProperty.call(s,a)||(s[a]=l++,p[a]=!0),u=c+a,Object.prototype.hasOwnProperty.call(s,u))c=u;else{if(Object.prototype.hasOwnProperty.call(p,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==n-1?(v=0,d.push(t(m)),m=0):v++;for(i=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&i,v==n-1?(v=0,d.push(t(m)),m=0):v++;}else{for(i=1,e=0;e<h;e++)m=m<<1|i,v==n-1?(v=0,d.push(t(m)),m=0):v++;for(i=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&i,v==n-1?(v=0,d.push(t(m)),m=0):v++;}f--,0==f&&(f=Math.pow(2,h),h++),delete p[c]}else{for(i=s[c],e=0;e<h;e++)m=m<<1|1&i,v==n-1?(v=0,d.push(t(m)),m=0):v++}f--,0==f&&(f=Math.pow(2,h),h++),s[u]=l++,c=String(a)}if(""!==c){if(Object.prototype.hasOwnProperty.call(p,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==n-1?(v=0,d.push(t(m)),m=0):v++;for(i=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&i,v==n-1?(v=0,d.push(t(m)),m=0):v++;}else{for(i=1,e=0;e<h;e++)m=m<<1|i,v==n-1?(v=0,d.push(t(m)),m=0):v++;for(i=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&i,v==n-1?(v=0,d.push(t(m)),m=0):v++;}f--,0==f&&(f=Math.pow(2,h),h++),delete p[c]}else{for(i=s[c],e=0;e<h;e++)m=m<<1|1&i,v==n-1?(v=0,d.push(t(m)),m=0):v++}f--,0==f&&(f=Math.pow(2,h),h++),i=2;for(e=0;e<h;e++)m=m<<1|1&i,v==n-1?(v=0,d.push(t(m)),m=0):v++;for(;;){if(m<<=1,v==n-1){d.push(t(m));break}v++}return d.join("")},};return e}();
 
-let S = {
-  theme:'dark',
-  search:'',
-  heads:[], descs:[], callouts:[],
-  // NEW: multiple snippet sets — [{header, values:[]}]
-  snipSets:[],
-  activeSnip:0,
-  path1:'', path2:'',
-  sitelinks:[], prices:[],
-  promo:'', phone:'', loc:'',
-  imgs:[]
-};
+/* helpers */
+const $ = s => document.querySelector(s);
+const lines = v => (v||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
 
-/* ---------- Theme + Tabs ---------- */
-const themeSelect = $('themeSelect');
-function applyTheme(t){ document.documentElement.setAttribute('data-theme', t); S.theme=t; localStorage.setItem('ppc_theme', t); themeSelect.value=S.theme; }
-function loadTheme(){ applyTheme(localStorage.getItem('ppc_theme') || 'dark'); themeSelect.value=S.theme; }
-themeSelect.addEventListener('change', e=>{ applyTheme(e.target.value); render(); });
-
-const bulkPane=$('bulkPane'), manualPane=$('manualPane'), tabBulk=$('tabBulk'), tabManual=$('tabManual');
-tabBulk.onclick=()=>{tabBulk.classList.add('active');tabManual.classList.remove('active');bulkPane.classList.remove('hidden');manualPane.classList.add('hidden');}
-tabManual.onclick=()=>{tabManual.classList.add('active');tabBulk.classList.remove('active');manualPane.classList.remove('hidden');bulkPane.classList.add('hidden');}
-
-/* ---------- Pins ---------- */
-function top3(){
-  const out=[];
-  for(let p=1;p<=3;p++){
-    const x=S.heads.find(h=>h.pin===p);
-    if(x) out[p-1]=x.t;
-  }
-  S.heads.forEach(h=>{
-    if(out.length<3 && h.pin===0 && !out.includes(h.t)) out.push(h.t);
-  });
-  return out.slice(0,3);
-}
-
-/* ---------- Lists ---------- */
-function chip(len, lim){ const c=len===0?'warn':(len<=lim?'ok':(len<=lim+10?'warn':'bad')); return `<span class="chip ${c}">${len}/${lim}</span>`; }
-function renderHeads(){
-  const ul=$('headList'); ul.innerHTML='';
-  if(S.heads.length===0){ ul.innerHTML=`<li><span class="muted" style="grid-column:span 4">No headlines yet</span></li>`; return; }
-  S.heads.forEach((h,i)=>{
-    const li=document.createElement('li');
-    li.innerHTML = `${chip(h.t.length, LIMITS.head)}<span>${esc(h.t)}</span>
-      <div class="pin">
-        <button data-pin="1" data-i="${i}" class="${h.pin===1?'active':''}">Pin 1</button>
-        <button data-pin="2" data-i="${i}" class="${h.pin===2?'active':''}">Pin 2</button>
-        <button data-pin="3" data-i="${i}" class="${h.pin===3?'active':''}">Pin 3</button>
-      </div>
-      <div class="mini"><button class="btn" data-del="${i}">✕</button></div>`;
-    ul.appendChild(li);
-  });
-  ul.querySelectorAll('button[data-pin]').forEach(b=>{
-    b.onclick=()=>{ const i=+b.dataset.i, p=+b.dataset.pin;
-      S.heads[i].pin = (S.heads[i].pin===p)?0:p;
-      if(S.heads[i].pin===p){ S.heads.forEach((x,ix)=>{ if(ix!==i && x.pin===p) x.pin=0; }); }
-      renderHeads(); render();
-    };
-  });
-  ul.querySelectorAll('button[data-del]').forEach(b=>{ b.onclick=()=>{ S.heads.splice(+b.dataset.del,1); renderHeads(); render(); }; });
-}
-function renderSimple(ul, arr, lim, label){
-  ul.innerHTML='';
-  if(arr.length===0){ ul.innerHTML=`<li><span class="muted" style="grid-column:span 4">No ${label}</span></li>`; return;}
-  arr.forEach((t,i)=>{
-    const li=document.createElement('li');
-    li.innerHTML = `${chip(t.length, lim)}<span>${esc(t)}</span><span></span><div class="mini"><button class="btn" data-del="${i}">✕</button></div>`;
-    ul.appendChild(li);
-  });
-  ul.querySelectorAll('button[data-del]').forEach(b=>{ b.onclick=()=>{ arr.splice(+b.dataset.del,1); renderAllLists(); render(); }; });
-}
-function renderSL(){
-  const ul=$('slList'); ul.innerHTML='';
-  if(S.sitelinks.length===0){ ul.innerHTML=`<li><span class="muted" style="grid-column:span 4">No sitelinks</span></li>`; return; }
-  S.sitelinks.forEach((sl,i)=>{
-    const li=document.createElement('li'); li.style.gridTemplateColumns='1fr auto';
-    li.innerHTML = `<span><b>${esc(sl.t)}</b> — ${esc(sl.d1||'')} ${esc(sl.d2||'')} ${sl.url?('('+esc(sl.url)+')'):''}</span><div class="mini"><button class="btn" data-del="${i}">✕</button></div>`;
-    ul.appendChild(li);
-  });
-  ul.querySelectorAll('button[data-del]').forEach(b=>{ b.onclick=()=>{ S.sitelinks.splice(+b.dataset.del,1); renderSL(); render(); }; });
-}
-function renderPrices(){
-  const ul=$('priceList'); ul.innerHTML='';
-  if(S.prices.length===0){ ul.innerHTML=`<li><span class="muted" style="grid-column:span 4">No price items</span></li>`; return; }
-  S.prices.forEach((p,i)=>{
-    const li=document.createElement('li'); li.style.gridTemplateColumns='1fr auto';
-    li.innerHTML = `<span><b>${esc(p.h)}</b> — ${esc(p.amt)} <span class="muted">${esc(p.unit||'')}</span></span><div class="mini"><button class="btn" data-del="${i}">✕</button></div>`;
-    ul.appendChild(li);
-  });
-  ul.querySelectorAll('button[data-del]').forEach(b=>{ b.onclick=()=>{ S.prices.splice(+b.dataset.del,1); renderPrices(); render(); }; });
-}
-function renderImgs(){
-  const ul=$('imgList'); ul.innerHTML='';
-  if(S.imgs.length===0){ ul.innerHTML=`<li><span class="muted" style="grid-column:span 4">No images</span></li>`; return; }
-  S.imgs.forEach((u,i)=>{
-    const li=document.createElement('li'); li.style.gridTemplateColumns='1fr auto';
-    li.innerHTML = `<span>${esc(u)}</span><div class="mini"><button class="btn" data-del="${i}">✕</button></div>`;
-    ul.appendChild(li);
-  });
-  ul.querySelectorAll('button[data-del]').forEach(b=>{ b.onclick=()=>{ S.imgs.splice(+b.dataset.del,1); renderImgs(); render(); }; });
-}
-function renderAllLists(){
-  renderHeads();
-  renderSimple($('descList'), S.descs, LIMITS.desc, 'descriptions');
-  renderSimple($('callList'), S.callouts, LIMITS.call, 'callouts');
-  renderSL(); renderPrices(); renderImgs();
-  renderSnipUI();
-}
-
-/* ---------- Dynamic Snippet Sets (Manual) ---------- */
-function renderSnipUI(){
-  // chips to pick active set for preview
-  const chipBar = $('snipChipBar'); chipBar.innerHTML='';
-  S.snipSets.forEach((set, idx)=>{
-    const b=document.createElement('button');
-    b.className='snipChip'+(S.activeSnip===idx?' active':'');
-    b.textContent = `Set ${idx+1}: ${set.header} (${set.values.length})`;
-    b.onclick = ()=>{ S.activeSnip = idx; render(); renderSnipUI(); };
-    chipBar.appendChild(b);
-  });
-  // editor
-  const wrap=$('snipSetWrap'); wrap.innerHTML='';
-  S.snipSets.forEach((set, idx)=>{
-    const det = document.createElement('details'); det.className='drawer'; det.open = idx===S.activeSnip;
-    det.innerHTML = `
-      <summary>Set ${idx+1}: <b>${esc(set.header)}</b> <span class="pill">${set.values.length}/${LIMITS.maxSV}</span></summary>
-      <div class="inner">
-        <div class="snipRow">
-          <select data-role="header">
-            ${SNIP_HEADERS.map(h=>`<option value="${esc(h)}"${h===set.header?' selected':''}>${esc(h)}</option>`).join('')}
-          </select>
-          <textarea data-role="values" placeholder="One value per line (max ${LIMITS.maxSV})">${esc(set.values.join('\n'))}</textarea>
-          <button class="delBtn" data-role="del">Delete</button>
-        </div>
-      </div>`;
-    const headerSel = det.querySelector('[data-role="header"]');
-    const valuesTA  = det.querySelector('[data-role="values"]');
-    const delBtn    = det.querySelector('[data-role="del"]');
-
-    headerSel.onchange = e=>{ set.header=e.target.value; render(); renderSnipUI(); };
-    valuesTA.oninput   = e=>{ set.values=L(e.target.value).slice(0,LIMITS.maxSV); e.target.value=set.values.join('\n'); render(); renderSnipUI(); };
-    delBtn.onclick     = ()=>{ S.snipSets.splice(idx,1); if(S.activeSnip>=S.snipSets.length) S.activeSnip=Math.max(0,S.snipSets.length-1); renderSnipUI(); render(); };
-
-    wrap.appendChild(det);
-  });
-
-  $('addSnipSetBtn').onclick = ()=>{
-    if(S.snipSets.length>=LIMITS.maxSnipSets) return;
-    S.snipSets.push({header:'Services', values:[]});
-    S.activeSnip = S.snipSets.length-1;
-    renderSnipUI(); render();
-  };
-}
-
-/* ---------- Preview ---------- */
-function render(){
-  // Search sync (the user can also type in manual input field)
-  $('searchQuery').value = S.search;
-  $('searchQueryMobile').value = S.search;
-  $('searchManual').value = S.search;
-
-  $('pPath1').textContent = S.path1||''; $('pPath2').textContent = S.path2||'';
-  $('pSlash1').textContent = (S.path1 && S.path2) ? '/' : '';
-  $('pPath1M').textContent = S.path1||''; $('pPath2M').textContent = S.path2||'';
-  $('pSlash1M').textContent = (S.path1 && S.path2) ? '/' : '';
-
-  const H = top3();
-  const D1 = S.descs[0] || 'Add a description (≤ 90 chars).';
-  const D2 = S.descs[1] || '';
-  const heads = e => { e.innerHTML=''; if(!H.length){e.innerHTML='<span class="serp-h">Add a headline…</span>';return;} H.forEach(t=>{const s=document.createElement('span');s.className='serp-h';s.textContent=t;e.appendChild(s);}); };
-  heads($('pHeadsDesk')); heads($('pHeadsMob'));
-  const desc = D2 ? `${D1}  ${D2}` : D1;
-  $('pDescsDesk').textContent=desc; $('pDescsMob').textContent=desc;
-
-  const calls = S.callouts.join('  ·  ');
-  $('pCalloutsDesk').textContent=calls; $('pCalloutsMob').textContent=calls;
-
-  // Use only the active snippet set in preview
-  let snipText='';
-  if(S.snipSets.length){
-    const set=S.snipSets[S.activeSnip]||{header:'Services', values:[]};
-    if(set.values.length){ snipText = `${set.header}: ${set.values.join(' • ')}`; }
-  }
-  $('pSnippetDesk').textContent=snipText; $('pSnippetMob').textContent=snipText;
-
-  const drawSL = el => { el.innerHTML=''; S.sitelinks.slice(0,LIMITS.maxSL).forEach(sl=>{ const d=document.createElement('div'); d.className='sitelink'; d.innerHTML=`<div><b>${esc(sl.t)}</b></div><div class="muted">${esc(sl.d1||'')}</div><div class="muted">${esc(sl.d2||'')}</div>`; el.appendChild(d); }); };
-  drawSL($('pSLDesk')); drawSL($('pSLMob'));
-
-  const drawPrice = el => { el.innerHTML=''; S.prices.forEach(p=>{ const c=document.createElement('div'); c.className='price-card'; c.innerHTML=`<div><b>${esc(p.h)}</b></div><div>${esc(p.amt)} <span class="muted">${esc(p.unit||'')}</span></div>`; el.appendChild(c); }); };
-  drawPrice($('pPriceDesk')); drawPrice($('pPriceMob'));
-
-  $('pPromoDesk').textContent = S.promo||''; $('pPromoMob').textContent = S.promo||'';
-  $('pPhoneDesk').textContent = S.phone?`Call: ${S.phone}`:''; $('pPhoneMob').textContent = S.phone?`Call: ${S.phone}`:'';
-  $('pLocDesk').textContent   = S.loc||''; $('pLocMob').textContent = S.loc||'';
-
-  const drawImgs = el => { el.innerHTML=''; S.imgs.forEach(u=>{ const im=document.createElement('img'); im.src=u; im.alt='Ad image'; el.appendChild(im); }); };
-  drawImgs($('pImgsDesk')); drawImgs($('pImgsMob'));
-}
-
-/* ---------- Share (to preview.html) ---------- */
-function share(){
-  // Send active set as sh/sv for preview page compatibility;
-  // also send all sets as msv so we preserve everything when reloading this builder.
-  const active = S.snipSets[S.activeSnip] || {header:'Services', values:[]};
+function buildPayload(){
+  // short keys to keep JSON minimal
   const payload = {
-    theme:S.theme, q:S.search,
-    h:S.heads, d:S.descs.slice(0,LIMITS.maxD), c:S.callouts,
-    sh:active.header, sv:(active.values||[]).slice(0,LIMITS.maxSV),
-    msv:S.snipSets.map(s=>({header:s.header, values:(s.values||[]).slice(0,LIMITS.maxSV)})).slice(0,LIMITS.maxSnipSets),
-    p1:S.path1, p2:S.path2,
-    sl:S.sitelinks, pr:S.prices,
-    promo:S.promo, phone:S.phone, loc:S.loc, imgs:S.imgs
+    q: $('#q').value.trim(),
+    dm: $('#dm').value.trim(),         // domain (display domain)
+    u:  $('#u').value.trim(),          // landing page
+    p1: $('#p1').value.trim(),
+    p2: $('#p2').value.trim(),
+    h:  lines($('#heads').value),
+    d:  lines($('#descs').value),
+    c:  lines($('#calls').value),
+    sh: $('#sh').value.trim(),
+    sv: lines($('#sv').value)
   };
-  const hash = enc(payload);
-  const url = `${location.origin}/preview.html#${hash}`;
-  history.replaceState(null,"",`#${hash}`);
-  navigator.clipboard.writeText(url).then(()=>{
-    $('saveNote').textContent='Preview link copied!';
-    setTimeout(()=>{$('saveNote').textContent='';},3000);
-  }).catch(()=>{ $('saveNote').textContent=url; });
+  return payload;
 }
 
-/* ---------- Load / Bulk / Manual / Misc ---------- */
-function load(){
-  if(location.hash.length>1){
-    try{
-      const o = dec(location.hash.slice(1));
-      S.theme=o.theme||'dark'; applyTheme(S.theme); themeSelect.value=S.theme;
-      S.search=o.q||'';
-      S.heads=(o.h||[]).map(x=>({t:x.t||x, pin:x.pin||0})).slice(0,LIMITS.maxH);
-      S.descs=(o.d||[]).slice(0,LIMITS.maxD);
-      S.callouts=o.c||[];
-      // Restore snippet sets (prefer msv; fallback to legacy sh+sv)
-      if (Array.isArray(o.msv) && o.msv.length){
-        S.snipSets = o.msv.slice(0,LIMITS.maxSnipSets).map(s=>({header:s.header||'Services', values:(s.values||[]).slice(0,LIMITS.maxSV)}));
-        S.activeSnip = 0;
-      } else {
-        const vals = (o.sv||[]).slice(0,LIMITS.maxSV);
-        const header = o.sh || 'Services';
-        S.snipSets = vals.length? [{header, values:vals}] : [];
-        S.activeSnip = 0;
-      }
-      S.path1=o.p1||''; S.path2=o.p2||'';
-      S.sitelinks=o.sl||[]; S.prices=o.pr||[];
-      S.promo=o.promo||''; S.phone=o.phone||''; S.loc=o.loc||'';
-      S.imgs=o.imgs||[];
-      $('displayPath1').value=S.path1; $('displayPath2').value=S.path2;
-      $('path1').value=S.path1; $('path2').value=S.path2;
-      $('searchBulk').value=S.search; $('searchManual').value=S.search;
-      // Bulk snippet header control reflects the first set if present
-      $('snippetHeader').value = S.snipSets[0]?.header || 'Services';
-    }catch(e){}
-  } else {
-    // Demo fill
-    S.heads=[{t:"Local Stucco Contractors",pin:1},{t:"Get a Free Estimate Today",pin:2},{t:"Licensed & Insured Teams",pin:3},{t:"Trusted Local Experts",pin:0}];
-    S.descs=["Hire licensed stucco contractors near you for quality results.","From homes to exteriors, we install and repair stucco right."];
-    S.callouts=["Free Estimates","Fully Insured","Warranty Backed","Local Pros"];
-    S.snipSets=[{header:'Services', values:["Installation","Repair","Re-Stucco","Exterior Stucco"]}];
-    S.path1='home'; S.path2='stucco';
-    S.sitelinks=[{t:"Financing Options",d1:"Flexible monthly payments",d2:"Get approved today",url:""}, {t:"Project Gallery",d1:"See before & afters",d2:"Local homes we improved",url:""}];
-    S.prices=[{h:"Stucco Repair",amt:"$199",unit:"per visit"},{h:"Re-Stucco",amt:"$35",unit:"per sq ft"}];
-    S.promo="Spring Sale — 20% Off (SPRING20)";
-    S.phone="+1 (555) 123-4567"; S.loc="PPC Gadget • 123 Main St, Phoenix, AZ";
-    S.imgs=[];
-    $('displayPath1').value=S.path1; $('displayPath2').value=S.path2;
-    $('snippetHeader').value='Services';
-  }
-  renderAllLists(); renderSnipUI(); render();
+function makeLink(){
+  const payload = buildPayload();
+  const json = JSON.stringify(payload);
+  const hash = LZString.compressToEncodedURIComponent(json);
+  const url = `./preview.html#${hash}`;
+  $('#hash').textContent = hash;
+  $('#previewLink').href = url;
+  return url;
 }
 
-$('applyBulk').onclick=()=>{
-  S.heads=clamp(L($('bulkHeads').value),LIMITS.maxH).map(t=>({t, pin:0}));
-  S.descs=clamp(L($('bulkDescs').value),LIMITS.maxD);
-  S.callouts=L($('bulkCallouts').value);
-  const vals = clamp(L($('bulkSnips').value),LIMITS.maxSV);
-  const header = $('snippetHeader').value;
-  // Put bulk into Set 1 (replace)
-  if (vals.length){
-    if (!S.snipSets.length) S.snipSets.push({header, values:[]});
-    S.snipSets[0] = {header, values:vals};
-    S.activeSnip = 0;
-  }
-  S.path1=$('displayPath1').value.trim(); S.path2=$('displayPath2').value.trim();
-  S.search=$('searchBulk').value;
-
-  // Sitelinks bulk: blocks separated by blank lines
-  const raw=$('bulkSitelinks').value.replace(/\r/g,'').split(/\n\s*\n/).map(b=>b.trim()).filter(Boolean);
-  S.sitelinks = raw.slice(0,LIMITS.maxSL).map(b=>{ const lines=b.split('\n'); return {t:lines[0]||'', d1:lines[1]||'', d2:lines[2]||'', url:lines[3]||''}; });
-
-  // Prices
-  S.prices = L($('bulkPrices').value).map(row=>{ const [h,amt,unit]=row.split('|').map(x=>x?x.trim():''); return {h:h||'',amt:amt||'',unit:unit||''}; });
-
-  S.promo = $('bulkPromo').value.trim();
-  S.imgs  = L($('bulkImages').value);
-  S.phone = $('bulkPhone').value.trim();
-  S.loc   = $('bulkLocation').value.trim();
-
-  renderAllLists(); renderSnipUI(); render();
-  tabManual.click();
-};
-
-/* Manual add buttons */
-$('addHeadBtn').onclick=()=>{ const t=$('headInput').value.trim(); if(!t || S.heads.length>=LIMITS.maxH) return; S.heads.push({t, pin:0}); $('headInput').value=''; renderHeads(); render(); };
-$('addDescBtn').onclick=()=>{ const t=$('descInput').value.trim(); if(!t||S.descs.length>=LIMITS.maxD) return; S.descs.push(t); $('descInput').value=''; renderAllLists(); render(); };
-$('addCallBtn').onclick=()=>{ const t=$('callInput').value.trim(); if(!t) return; S.callouts.push(t); $('callInput').value=''; renderAllLists(); render(); };
-
-$('path1').addEventListener('input', e=>{ S.path1=e.target.value.trim(); $('displayPath1').value=S.path1; render(); });
-$('path2').addEventListener('input', e=>{ S.path2=e.target.value.trim(); $('displayPath2').value=S.path2; render(); });
-
-/* Search: editable in preview and manual helper */
-$('searchManual').addEventListener('input', e=>{ S.search=e.target.value; $('searchQuery').value=S.search; $('searchQueryMobile').value=S.search; });
-$('searchQuery').addEventListener('input', e=>{ S.search=e.target.value; $('searchQueryMobile').value=S.search; $('searchManual').value=S.search; $('searchBulk').value=S.search; });
-$('searchQueryMobile').addEventListener('input', e=>{ S.search=e.target.value; $('searchQuery').value=S.search; $('searchManual').value=S.search; $('searchBulk').value=S.search; });
-
-/* Sitelink / Price / Image */
-$('addSL').onclick=()=>{ const t=$('slTitle').value.trim(); if(!t || S.sitelinks.length>=LIMITS.maxSL) return; S.sitelinks.push({t, d1:$('slDesc1').value.trim(), d2:$('slDesc2').value.trim(), url:$('slUrl').value.trim()}); ['slTitle','slDesc1','slDesc2','slUrl'].forEach(id=>$(id).value=''); renderSL(); render(); };
-$('addPrice').onclick=()=>{ const h=$('priceHeader').value.trim(), amt=$('priceAmount').value.trim(); if(!h||!amt) return; S.prices.push({h, amt, unit:$('priceUnit').value.trim()}); ['priceHeader','priceAmount','priceUnit'].forEach(id=>$(id).value=''); renderPrices(); render(); };
-$('addImage').onclick=()=>{ const u=$('imgUrl').value.trim(); if(!u) return; S.imgs.push(u); $('imgUrl').value=''; renderImgs(); render(); };
-
-/* Buttons */
-$('shareBtn').onclick=share;
-$('updateBtn').onclick=render;
-$('clearBtn').onclick=()=>{
-  S={theme:S.theme,search:'',heads:[],descs:[],callouts:[],snipSets:[],activeSnip:0,path1:'',path2:'',sitelinks:[],prices:[],promo:'',phone:'',loc:'',imgs:[]};
-  document.querySelectorAll('input,textarea').forEach(el=>{ if(el.id!=='searchQuery'&&el.id!=='searchQueryMobile') el.value=''; });
-  $('snippetHeader').value='Services';
-  renderAllLists(); renderSnipUI(); render();
-};
-
-loadTheme();
-load();
+document.getElementById('share').onclick = ()=>{ window.open(makeLink(), '_blank'); };
 </script>
 </body>
 </html>
