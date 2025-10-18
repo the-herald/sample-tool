@@ -141,24 +141,50 @@
 </div>
 
 <script>
+/* ===== LZ-String (URI-safe decompress only) ===== */
+// (minimized decompress for encodedURIComponent)
+var LZString=function(){function o(o,r){if(!t[o]){t[o]={};for(var n=0;n<o.length;n++)t[o][o.charAt(n)]=n}return t[o][r]}var r=String.fromCharCode,n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",t={},e={decompressFromEncodedURIComponent:function(t){return null==t?"":""==t?null:e._decompress(t.length,32,function(e){return o(n,t.charAt(e))})},_decompress:function(o,n,t){var e,i,s,p,a,u,c,f=[],l=4,h=4,d=3,m="",v=[],g={val:t(0),position:n,index:1};for(i=0;i<3;i+=1)f[i]=i;for(p=0,a=Math.pow(2,2),u=1;u!=a;)s=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=t(g.index++)),p|=(s>0?1:0)*u,u<<=1;switch(p){case 0:for(p=0,a=Math.pow(2,8),u=1;u!=a;)s=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=t(g.index++)),p|=(s>0?1:0)*u,u<<=1;f[3]=r(p);break;case 1:for(p=0,a=Math.pow(2,16),u=1;u!=a;)s=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=t(g.index++)),p|=(s>0?1:0)*u,u<<=1;f[3]=r(p);break;case 2:return""}for(c=3,i=0,a=Math.pow(2,2),u=1;u!=a;)s=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=t(g.index++)),i|=(s>0?1:0)*u,u<<=1;switch(i){case 0:for(i=0,a=Math.pow(2,8),u=1;u!=a;)s=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=t(g.index++)),i|=(s>0?1:0)*u,u<<=1;v[0]=r(i);break;case 1:for(i=0,a=Math.pow(2,16),u=1;u!=a;)s=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=t(g.index++)),i|=(s>0?1:0)*u,u<<=1;v[0]=r(i);break;case 2:return""}for(e=v[0],f[0]=e,i=1;;){if(p=g.index,0==g.position&&(g.position=n,g.val=t(g.index++)),s=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=t(g.index++)),a=0,u=Math.pow(2,c),i=0;i!=u;)p=g.index,0==g.position&&(g.position=n,g.val=t(g.index++)),s=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=t(g.index++)),i|=(s>0?1:0)*a,a+=1;switch(i){case 0:for(i=0,u=Math.pow(2,8),a=1;a!=u;)p=g.index,0==g.position&&(g.position=n,g.val=t(g.index++)),s=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=t(g.index++)),i|=(s>0?1:0)*a,a<<=1;f[h++]=r(i),i=h-1,d--;break;case 1:for(i=0,u=Math.pow(2,16),a=1;a!=u;)p=g.index,0==g.position&&(g.position=n,g.val=t(g.index++)),s=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=t(g.index++)),i|=(s>0?1:0)*a,a<<=1;f[h++]=r(i),i=h-1,d--;break;case 2:return m}if(0==d&&(d=Math.pow(2,c),c++),f[i])e=f[i];else{if(i!==h)return null;e=e+r.charAt(0)}m+=e.charAt(0),f[h++]=e=r+e.charAt(0),d--,r=e} } };return e}();
+
 /* ===== helpers & payload ===== */
 const $  = id => document.getElementById(id);
-const dec= s => JSON.parse(decodeURIComponent(escape(atob(s))));
 const esc= t => (t||'').replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+
+// Back-compat decoder: try LZ first, then legacy Base64
+function decodeHash(h){
+  const raw = (h||'').replace(/^#/, '');
+  if(!raw) return {};
+  try{
+    const j = LZString.decompressFromEncodedURIComponent(raw);
+    if (j) return JSON.parse(j);
+  }catch(e){}
+  try{
+    return JSON.parse(decodeURIComponent(escape(atob(raw))));
+  }catch(e){}
+  return {};
+}
 
 let P=null, isMulti=false, idx=0, snipIdx=0, imgIdx=0;
 let overrideDomain='';
 
 function pickBuilderUrl(){ return isMulti ? './multi.html' : './index.html'; }
-function topHeads(ad){ return (ad.h||[]).slice(0,3).map(x=>x.t||x); }
+
+// Normalize headlines
+function allHeads(ad){
+  const src = ad.h || [];
+  return src
+    .map(h => typeof h === 'string' ? h : (h?.t ?? h?.text ?? h?.headline ?? ''))
+    .filter(Boolean);
+}
+function topHeads(ad){ return allHeads(ad).slice(0,3); }
+
 function getDomainFromURL(u){
   try{ const h=new URL(u).hostname; return h.replace(/^www\./,''); }catch(e){ return ''; }
 }
 function resolveDomain(ad){
   if (overrideDomain) return overrideDomain;
   const candidates = [
-    ad.domain, ad.displayDomain, ad.host, ad.dm,
-    P?.domain, P?.displayDomain, P?.host, P?.dm
+    ad.dm, ad.domain, ad.displayDomain, ad.host, ad.d,
+    P?.dm, P?.domain, P?.displayDomain, P?.host, P?.d
   ].filter(Boolean);
   for (const c of candidates){
     const d = String(c).trim().replace(/^https?:\/\//,'').replace(/^www\./,'');
@@ -193,42 +219,40 @@ function render(){
   // choose ad
   let ad = isMulti ? ((P.ads||[])[idx]||{}) :
             { q:P.q||'', p1:P.p1||'', p2:P.p2||'',
-              h:(P.h||[]).map(x=>x.t||x), d:P.d||[], c:P.c||[],
+              h:(P.h||[]), d:P.d||[], c:P.c||[],
               msv:P.msv||[], sv:P.sv||[], sh:P.sh||'Services',
-              sl:P.sl||[], u:P.u||'', domain:P.domain||'', imgs:P.imgs||[] };
+              sl:P.sl||[], u:P.u||'', dm:P.dm||P.domain||'', imgs:P.imgs||[] };
 
   const domain = resolveDomain(ad);
 
   // paths + site lines
-  $('siteDesk').textContent = domain;
-  $('siteMob').textContent  = domain;
-  $('domainDesk').textContent = domain;
-  $('domainMob').textContent  = domain;
+  document.getElementById('siteDesk').textContent = domain;
+  document.getElementById('siteMob').textContent  = domain;
+  document.getElementById('domainDesk').textContent = domain;
+  document.getElementById('domainMob').textContent  = domain;
 
   $('pPath1').textContent = ad.p1||''; $('pPath2').textContent = ad.p2||'';
   $('pSlash1').textContent = (ad.p1 && ad.p2)?'/':'';
   $('pPath1M').textContent = ad.p1||''; $('pPath2M').textContent = ad.p2||'';
   $('pSlash1M').textContent = (ad.p1 && ad.p2)?'/':'';
 
-  // title from first 3 heads (Google/Karooya style)
-  const H = topHeads(ad);
-  const title = H.length ? H.join(' | ') : 'Add a headline…';
+  // title from first 3 heads
+  const H3 = topHeads(ad);
+  const title = H3.length ? H3.join(' | ') : 'Add a headline…';
   $('pTitle').textContent = title;
   $('pTitleM').textContent = title;
 
-  // ----- SINGLE PARAGRAPH: Descriptions + Callouts + Snippet -----
+  // ONE PARAGRAPH: Descriptions + Callouts + Snippet
   const D1=(ad.d||[])[0]||'', D2=(ad.d||[])[1]||'';
   const descTxt = D2 ? `${D1} ${D2}` : D1;
 
-  // callouts (max 4)
   const calls = (ad.c||[]).slice(0,4);
   const callsTxt = calls.length ? ` ${calls.join(' \u00B7 ')}` : '';
 
-  // structured snippet: prefer msv[0], else sv with header; max 4 values
   let snHead='', snVals=[];
   if (Array.isArray(ad.msv) && ad.msv.length){
-    snHead = ad.msv[0]?.header || 'Services';
-    snVals = (ad.msv[0]?.values || []).slice(0,4);
+    snHead = ad.msv[0]?.header || ad.msv[0]?.h || 'Services';
+    snVals = (ad.msv[0]?.values || ad.msv[0]?.v || []).slice(0,4);
   } else if ((ad.sv||[]).length){
     snHead = ad.sh || 'Services';
     snVals = (ad.sv||[]).slice(0,4);
@@ -244,22 +268,24 @@ function render(){
   function drawSL(el){
     el.innerHTML='';
     (ad.sl||[]).slice(0,4).forEach(sl=>{
-      const a=document.createElement('a'); a.href='javascript:void(0)'; a.textContent=sl.t||''; el.appendChild(a);
+      const a=document.createElement('a'); a.href='javascript:void(0)'; a.textContent=sl.t||sl||''; el.appendChild(a);
     });
   }
   drawSL($('pSLDesk')); drawSL($('pSLMob'));
 
-  /* ---- Full details panel: show EVERYTHING for the selected ad ---- */
+  // Full details panel
   const UL=(id,arr,fmt=x=>esc(x))=>{ const el=$(id); el.innerHTML=''; (arr||[]).forEach(v=>{ const li=document.createElement('li'); li.innerHTML=fmt(v); el.appendChild(li); }); };
-  UL('dHeads', ad.h||H, h=>`<span class="mono">${esc(h)}</span>`);
+  UL('dHeads', allHeads(ad), h=>`<span class="mono">${esc(h)}</span>`);
   UL('dDescs', ad.d||[], d=>`<span class="mono">${esc(d)}</span>`);
   UL('dCalls', ad.c||[], c=>`<span class="mono">${esc(c)}</span>`);
 
   const dSnips=$('dSnips'); dSnips.innerHTML='';
   if (Array.isArray(ad.msv) && ad.msv.length){
     ad.msv.forEach(s=>{
+      const head = s.header || s.h || 'Services';
+      const vals = (s.values || s.v || []).join(' \u00B7 ');
       const div=document.createElement('div');
-      div.innerHTML = `<b>${esc(s.header||'Services')}:</b> <span class="mono">${esc((s.values||[]).join(' \u00B7 '))}</span>`;
+      div.innerHTML = `<b>${esc(head)}:</b> <span class="mono">${esc(vals)}</span>`;
       dSnips.appendChild(div);
     });
   } else if ((ad.sv||[]).length){
@@ -277,7 +303,7 @@ function render(){
 
 /* ===== init & controls ===== */
 (function init(){
-  try{ P = dec(location.hash.slice(1)); }catch(e){ P = {}; }
+  P = decodeHash(location.hash);
   isMulti = !!P.ads;
   idx = P.idx || 0;
   snipIdx = P.snip || 0;
