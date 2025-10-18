@@ -27,7 +27,7 @@
   .adpicker{display:flex;gap:8px;flex-wrap:wrap}
   .chipBtn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:6px 10px;border-radius:10px;cursor:pointer}
   .chipBtn.active{outline:2px solid var(--brand)}
-  .input{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:8px 10px;border-radius:10px}
+  .input{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:8px 10px;border-radius:10px;min-width:260px}
 
   /* SERP */
   .grid {display:grid;grid-template-columns:1fr 380px;gap:14px}
@@ -52,6 +52,7 @@
 
   /* Mobile frame (no orange) */
   .frame{background:#fff;border:10px solid #e7eaef;border-radius:24px}
+
   /* Details block */
   .drawer{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-top:16px;overflow:hidden}
   .drawer summary{cursor:pointer;list-style:none;padding:12px 14px;font-weight:600;border-bottom:1px solid var(--line)}
@@ -86,7 +87,7 @@
         <div class="result">
           <div class="favicon" aria-hidden="true"></div>
           <div class="site" id="siteDesk">example.com</div>
-          <div class="path"> <span id="domainDesk">example.com</span>/<span id="pPath1"></span><span id="pSlash1"></span><span id="pPath2"></span></div>
+          <div class="path"><span id="domainDesk">example.com</span>/<span id="pPath1"></span><span id="pSlash1"></span><span id="pPath2"></span></div>
           <a href="javascript:void(0)" class="title" id="pTitle">Your Business - example.com</a>
           <div class="desc" id="descDesk"></div>
           <div class="sl" id="pSLDesk"></div>
@@ -100,7 +101,7 @@
           <div class="result">
             <div class="favicon" aria-hidden="true"></div>
             <div class="site" id="siteMob">example.com</div>
-            <div class="path"> <span id="domainMob">example.com</span>/<span id="pPath1M"></span><span id="pSlash1M"></span><span id="pPath2M"></span></div>
+            <div class="path"><span id="domainMob">example.com</span>/<span id="pPath1M"></span><span id="pSlash1M"></span><span id="pPath2M"></span></div>
             <a href="javascript:void(0)" class="title" id="pTitleM">Your Business - example.com</a>
             <div class="desc" id="descMob"></div>
             <div class="sl" id="pSLMob"></div>
@@ -154,10 +155,17 @@ function getDomainFromURL(u){
   try{ const h=new URL(u).hostname; return h.replace(/^www\./,''); }catch(e){ return ''; }
 }
 function resolveDomain(ad){
-  if(overrideDomain) return overrideDomain;
-  if(ad.domain) return ad.domain.replace(/^https?:\/\//,'').replace(/^www\./,'');
-  const d=getDomainFromURL(ad.u || '');
-  return d || 'example.com';
+  if (overrideDomain) return overrideDomain;
+  const candidates = [
+    ad.domain, ad.displayDomain, ad.host, ad.dm,
+    P?.domain, P?.displayDomain, P?.host, P?.dm
+  ].filter(Boolean);
+  for (const c of candidates){
+    const d = String(c).trim().replace(/^https?:\/\//,'').replace(/^www\./,'');
+    if (d) return d;
+  }
+  const fromUrl = getDomainFromURL(ad.u || P?.u || '');
+  return fromUrl || 'example.com';
 }
 
 /* ===== UI for multi payloads ===== */
@@ -214,7 +222,7 @@ function render(){
 
   // callouts (max 4)
   const calls = (ad.c||[]).slice(0,4);
-  const callsTxt = calls.length ? ` ${calls.join(' · ')}` : '';
+  const callsTxt = calls.length ? ` ${calls.join(' \u00B7 ')}` : '';
 
   // structured snippet: prefer msv[0], else sv with header; max 4 values
   let snHead='', snVals=[];
@@ -225,10 +233,10 @@ function render(){
     snHead = ad.sh || 'Services';
     snVals = (ad.sv||[]).slice(0,4);
   }
-  const snipTxt = snVals.length ? ` — ${snHead}: ${snVals.join(' • ')}` : '';
+  const SEP = ' \u00B7 ';
+  const snipTxt = snVals.length ? ` — ${snHead}: ${snVals.join(SEP)}` : '';
 
   const fullPara = `${descTxt}${callsTxt}${snipTxt}`;
-
   $('descDesk').textContent = fullPara;
   $('descMob').textContent  = fullPara;
 
@@ -251,12 +259,12 @@ function render(){
   if (Array.isArray(ad.msv) && ad.msv.length){
     ad.msv.forEach(s=>{
       const div=document.createElement('div');
-      div.innerHTML = `<b>${esc(s.header||'Services')}:</b> <span class="mono">${esc((s.values||[]).join(' • '))}</span>`;
+      div.innerHTML = `<b>${esc(s.header||'Services')}:</b> <span class="mono">${esc((s.values||[]).join(' \u00B7 '))}</span>`;
       dSnips.appendChild(div);
     });
   } else if ((ad.sv||[]).length){
     const div=document.createElement('div');
-    div.innerHTML = `<b>${esc(ad.sh||'Services')}:</b> <span class="mono">${esc((ad.sv||[]).join(' • '))}</span>`;
+    div.innerHTML = `<b>${esc(ad.sh||'Services')}:</b> <span class="mono">${esc((ad.sv||[]).join(' \u00B7 '))}</span>`;
     dSnips.appendChild(div);
   }
 
@@ -280,7 +288,10 @@ function render(){
 
   $('cycleSnipBtn').onclick = ()=>{ snipIdx=(snipIdx+1)%4; render(); };
   $('switchImgBtn').onclick = ()=>{ imgIdx+=1; render(); };
-  $('domainInput').addEventListener('input', e => { overrideDomain = (e.target.value||'').trim().replace(/^https?:\/\//,'').replace(/^www\./,''); render(); });
+  $('domainInput').addEventListener('input', e => {
+    overrideDomain = (e.target.value||'').trim().replace(/^https?:\/\//,'').replace(/^www\./,'');
+    render();
+  });
 })();
 </script>
 </body>
