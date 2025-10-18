@@ -9,10 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#0b0e13; --panel:#121621; --line:#202635;
-    --text:#e8ecf3; --muted:#9aa3b7; --brand:#6DBE45;
-  }
+  :root{ --bg:#0b0e13; --panel:#121621; --line:#202635; --text:#e8ecf3; --muted:#9aa3b7; --brand:#6DBE45; }
   [data-theme="light"]{ --bg:#f6f7fb; --panel:#ffffff; --line:#e7e9f2; --text:#0f1422; --muted:#56607a; --brand:#2f8d19; }
   [data-theme="cyberpunk"]{ --bg:#0a0c12; --panel:#0e1220; --line:#23283b; --text:#e6f7ff; --muted:#7bd4ff; --brand:#ff2bd6; }
 
@@ -30,8 +27,9 @@
   .adpicker{display:flex;gap:8px;flex-wrap:wrap}
   .chipBtn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:6px 10px;border-radius:10px;cursor:pointer}
   .chipBtn.active{outline:2px solid var(--brand)}
+  .input{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:8px 10px;border-radius:10px}
 
-  /* ===== True Google SERP look ===== */
+  /* SERP */
   .grid {display:grid;grid-template-columns:1fr 380px;gap:14px}
   @media (max-width: 900px){ .grid{grid-template-columns:1fr} }
 
@@ -42,28 +40,25 @@
   }
   .serp .sponsored{font-size:12px;color:#5f6368;margin-bottom:6px}
   .serp .result{position:relative;padding-left:40px}
-  .serp .favicon{
-    position:absolute; left:0; top:2px;
-    width:28px; height:28px; border-radius:6px; background:#1a73e8;
-  }
+  .serp .favicon{position:absolute; left:0; top:2px; width:28px; height:28px; border-radius:6px; background:#1a73e8}
   .serp .site{font-size:12px;color:#5f6368;line-height:1.2}
   .serp .path{font-size:12px;color:#137333;margin-top:1px}
-  .serp .title{
-    display:inline-block; color:#1a0dab;
-    font-size:20px; line-height:1.3; margin:6px 0 4px; text-decoration:none;
-  }
+  .serp .title{display:inline-block;color:#1a0dab;font-size:20px;line-height:1.3;margin:6px 0 4px;text-decoration:none}
   .serp .title:hover{text-decoration:underline}
-  .serp .desc{font-size:14px;color:#4d5156;line-height:1.45}
-  .serp .meta{font-size:12px;color:#5f6368;margin-top:6px}
-  .serp .snippet{margin-top:6px;font-size:12px;color:#4d5156}
+  .serp .desc{font-size:14px;color:#4d5156;line-height:1.5}
   .serp .sl{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;margin-top:10px}
   .serp .sl a{color:#1a0dab;font-size:13px;text-decoration:none}
   .serp .sl a:hover{text-decoration:underline}
 
-  /* Mobile frame (subtle, no orange bits) */
-  .frame{
-    background:#fff; border:10px solid #e7eaef; border-radius:24px;
-  }
+  /* Mobile frame (no orange) */
+  .frame{background:#fff;border:10px solid #e7eaef;border-radius:24px}
+  /* Details block */
+  .drawer{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-top:16px;overflow:hidden}
+  .drawer summary{cursor:pointer;list-style:none;padding:12px 14px;font-weight:600;border-bottom:1px solid var(--line)}
+  .drawer summary::-webkit-details-marker{display:none}
+  .drawer .inner{padding:12px 14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .mono{font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px}
 </style>
 </head>
 <body>
@@ -76,25 +71,24 @@
     </div>
     <div class="topbar">
       <div id="adPicker" class="adpicker"></div>
+      <input id="domainInput" class="input" placeholder="Domain override (e.g., hammockisland.com)" />
       <button id="cycleSnipBtn" class="btn" style="display:none">Cycle Snippet Set</button>
       <button id="switchImgBtn" class="btn" style="display:none">Switch Image</button>
       <a id="backLink" class="a btn" href="#">Open in Builder</a>
     </div>
   </header>
 
-  <section class="serp-wrap">
+  <section>
     <div class="grid">
       <!-- Desktop SERP -->
       <article class="serp" aria-label="Desktop Ad">
         <div class="sponsored">Sponsored</div>
         <div class="result">
           <div class="favicon" aria-hidden="true"></div>
-          <div class="site">example.com</div>
-          <div class="path">example.com/<span id="pPath1"></span><span id="pSlash1"></span><span id="pPath2"></span></div>
+          <div class="site" id="siteDesk">example.com</div>
+          <div class="path"> <span id="domainDesk">example.com</span>/<span id="pPath1"></span><span id="pSlash1"></span><span id="pPath2"></span></div>
           <a href="javascript:void(0)" class="title" id="pTitle">Your Business - example.com</a>
-          <div class="desc" id="pDescsDesk"></div>
-          <div class="meta" id="pCalloutsDesk"></div>
-          <div class="snippet" id="pSnippetDesk"></div>
+          <div class="desc" id="descDesk"></div>
           <div class="sl" id="pSLDesk"></div>
         </div>
       </article>
@@ -105,12 +99,10 @@
           <div class="sponsored">Sponsored</div>
           <div class="result">
             <div class="favicon" aria-hidden="true"></div>
-            <div class="site">example.com</div>
-            <div class="path">example.com/<span id="pPath1M"></span><span id="pSlash1M"></span><span id="pPath2M"></span></div>
+            <div class="site" id="siteMob">example.com</div>
+            <div class="path"> <span id="domainMob">example.com</span>/<span id="pPath1M"></span><span id="pSlash1M"></span><span id="pPath2M"></span></div>
             <a href="javascript:void(0)" class="title" id="pTitleM">Your Business - example.com</a>
-            <div class="desc" id="pDescsMob"></div>
-            <div class="meta" id="pCalloutsMob"></div>
-            <div class="snippet" id="pSnippetMob"></div>
+            <div class="desc" id="descMob"></div>
             <div class="sl" id="pSLMob"></div>
           </div>
         </article>
@@ -118,9 +110,9 @@
     </div>
   </section>
 
-  <details class="drawer" open style="background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-top:16px;overflow:hidden">
-    <summary style="cursor:pointer;list-style:none;padding:12px 14px;font-weight:600;border-bottom:1px solid var(--line)">Full Ad Copy</summary>
-    <div class="inner" style="padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+  <details class="drawer" open>
+    <summary>Full Ad Copy</summary>
+    <div class="inner grid2">
       <div>
         <h3 style="margin:0 0 8px">Headlines</h3>
         <ul id="dHeads"></ul>
@@ -128,15 +120,19 @@
         <ul id="dDescs"></ul>
         <h3 style="margin:12px 0 8px">Callouts</h3>
         <ul id="dCalls"></ul>
-        <h3 style="margin:12px 0 8px">Structured Snippets (active set first)</h3>
+        <h3 style="margin:12px 0 8px">Structured Snippets</h3>
         <div id="dSnips"></div>
         <h3 style="margin:12px 0 8px">Display Paths</h3>
-        <div class="mono" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px">/<span id="dPath1"></span><span id="dSlash1"></span><span id="dPath2"></span></div>
+        <div class="mono">/<span id="dPath1"></span><span id="dSlash1"></span><span id="dPath2"></span></div>
         <h3 style="margin:12px 0 8px">Search Query</h3>
-        <div class="mono" id="dQ" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px"></div>
+        <div class="mono" id="dQ"></div>
+        <h3 style="margin:12px 0 8px">Domain</h3>
+        <div class="mono" id="dDomain"></div>
+        <h3 style="margin:12px 0 8px">Landing Page</h3>
+        <div class="mono" id="dURL"></div>
       </div>
       <div>
-        <h3 style="margin:0 0 8px">Images (URLs)</h3>
+        <h3 style="margin:0 0 8px">Images</h3>
         <ul id="dImgs"></ul>
       </div>
     </div>
@@ -145,13 +141,24 @@
 
 <script>
 /* ===== helpers & payload ===== */
-const $ = id => document.getElementById(id);
-const dec = s => JSON.parse(decodeURIComponent(escape(atob(s))));
-const esc = t => (t||'').replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;","&gt;":"&gt;",'"':"&quot;"}[m]));
+const $  = id => document.getElementById(id);
+const dec= s => JSON.parse(decodeURIComponent(escape(atob(s))));
+const esc= t => (t||'').replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+
 let P=null, isMulti=false, idx=0, snipIdx=0, imgIdx=0;
+let overrideDomain='';
 
 function pickBuilderUrl(){ return isMulti ? './multi.html' : './index.html'; }
 function topHeads(ad){ return (ad.h||[]).slice(0,3).map(x=>x.t||x); }
+function getDomainFromURL(u){
+  try{ const h=new URL(u).hostname; return h.replace(/^www\./,''); }catch(e){ return ''; }
+}
+function resolveDomain(ad){
+  if(overrideDomain) return overrideDomain;
+  if(ad.domain) return ad.domain.replace(/^https?:\/\//,'').replace(/^www\./,'');
+  const d=getDomainFromURL(ad.u || '');
+  return d || 'example.com';
+}
 
 /* ===== UI for multi payloads ===== */
 function renderPicker(){
@@ -175,87 +182,89 @@ function render(){
   $('themePill').textContent = (P.theme||'dark');
   $('backLink').href = `${pickBuilderUrl()}${location.hash}`;
 
-  // choose the ad
+  // choose ad
   let ad = isMulti ? ((P.ads||[])[idx]||{}) :
             { q:P.q||'', p1:P.p1||'', p2:P.p2||'',
               h:(P.h||[]).map(x=>x.t||x), d:P.d||[], c:P.c||[],
-              sv:(P.sv||[]), sh:P.sh||'Services',
-              msv:(P.msv||[]), sl:P.sl||[], pr:P.pr||[],
-              promo:P.promo||'', phone:P.phone||'', loc:P.loc||'',
-              imgs:P.imgs||[] };
+              msv:P.msv||[], sv:P.sv||[], sh:P.sh||'Services',
+              sl:P.sl||[], u:P.u||'', domain:P.domain||'', imgs:P.imgs||[] };
 
-  // paths
+  const domain = resolveDomain(ad);
+
+  // paths + site lines
+  $('siteDesk').textContent = domain;
+  $('siteMob').textContent  = domain;
+  $('domainDesk').textContent = domain;
+  $('domainMob').textContent  = domain;
+
   $('pPath1').textContent = ad.p1||''; $('pPath2').textContent = ad.p2||'';
   $('pSlash1').textContent = (ad.p1 && ad.p2)?'/':'';
   $('pPath1M').textContent = ad.p1||''; $('pPath2M').textContent = ad.p2||'';
   $('pSlash1M').textContent = (ad.p1 && ad.p2)?'/':'';
 
-  // title = the 3 heads joined like Google/Karooya
+  // title from first 3 heads (Google/Karooya style)
   const H = topHeads(ad);
   const title = H.length ? H.join(' | ') : 'Add a headline…';
   $('pTitle').textContent = title;
   $('pTitleM').textContent = title;
 
-  // descriptions
+  // ----- SINGLE PARAGRAPH: Descriptions + Callouts + Snippet -----
   const D1=(ad.d||[])[0]||'', D2=(ad.d||[])[1]||'';
-  const desc = D2 ? `${D1}  ${D2}` : D1;
-  $('pDescsDesk').textContent = desc;
-  $('pDescsMob').textContent  = desc;
+  const descTxt = D2 ? `${D1} ${D2}` : D1;
 
-  // callouts muted dot-separated (max 4 at a time if long)
-  const groupSize=4;
-  const totalGroups=Math.max(1, Math.ceil((ad.c||[]).length/groupSize));
-  const g=Math.min(snipIdx % totalGroups, totalGroups-1);
-  const callsSlice=(ad.c||[]).slice(g*groupSize, g*groupSize+groupSize);
-  const callsTxt=callsSlice.join(' · ');
-  $('pCalloutsDesk').textContent=callsTxt;
-  $('pCalloutsMob').textContent=callsTxt;
+  // callouts (max 4)
+  const calls = (ad.c||[]).slice(0,4);
+  const callsTxt = calls.length ? ` ${calls.join(' · ')}` : '';
 
-  // structured snippet (either legacy sv/sh or first item of msv)
-  let snipText='';
+  // structured snippet: prefer msv[0], else sv with header; max 4 values
+  let snHead='', snVals=[];
   if (Array.isArray(ad.msv) && ad.msv.length){
-    const set = ad.msv[snipIdx % ad.msv.length];
-    if ((set.values||[]).length) snipText = `${set.header||'Services'}: ${(set.values||[]).join(' • ')}`;
+    snHead = ad.msv[0]?.header || 'Services';
+    snVals = (ad.msv[0]?.values || []).slice(0,4);
   } else if ((ad.sv||[]).length){
-    snipText = `${ad.sh||'Services'}: ${(ad.sv||[]).join(' • ')}`;
+    snHead = ad.sh || 'Services';
+    snVals = (ad.sv||[]).slice(0,4);
   }
-  $('pSnippetDesk').textContent = snipText;
-  $('pSnippetMob').textContent  = snipText;
+  const snipTxt = snVals.length ? ` — ${snHead}: ${snVals.join(' • ')}` : '';
 
-  // sitelinks (if any) — show titles only like SERP block links
+  const fullPara = `${descTxt}${callsTxt}${snipTxt}`;
+
+  $('descDesk').textContent = fullPara;
+  $('descMob').textContent  = fullPara;
+
+  // sitelinks (if any)
   function drawSL(el){
     el.innerHTML='';
     (ad.sl||[]).slice(0,4).forEach(sl=>{
-      const a=document.createElement('a');
-      a.href='javascript:void(0)';
-      a.textContent=sl.t || '';
-      el.appendChild(a);
+      const a=document.createElement('a'); a.href='javascript:void(0)'; a.textContent=sl.t||''; el.appendChild(a);
     });
   }
   drawSL($('pSLDesk')); drawSL($('pSLMob'));
 
-  /* ---- Full details panel ---- */
+  /* ---- Full details panel: show EVERYTHING for the selected ad ---- */
   const UL=(id,arr,fmt=x=>esc(x))=>{ const el=$(id); el.innerHTML=''; (arr||[]).forEach(v=>{ const li=document.createElement('li'); li.innerHTML=fmt(v); el.appendChild(li); }); };
-  UL('dHeads', H, h=>`<span class="mono" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px">${esc(h)}</span>`);
-  UL('dDescs', ad.d||[], d=>`<span class="mono" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px">${esc(d)}</span>`);
-  UL('dCalls', ad.c||[], c=>`<span class="mono" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px">${esc(c)}</span>`);
+  UL('dHeads', ad.h||H, h=>`<span class="mono">${esc(h)}</span>`);
+  UL('dDescs', ad.d||[], d=>`<span class="mono">${esc(d)}</span>`);
+  UL('dCalls', ad.c||[], c=>`<span class="mono">${esc(c)}</span>`);
 
   const dSnips=$('dSnips'); dSnips.innerHTML='';
   if (Array.isArray(ad.msv) && ad.msv.length){
-    ad.msv.forEach((s,i)=>{
+    ad.msv.forEach(s=>{
       const div=document.createElement('div');
-      div.innerHTML = `<b>${esc(s.header||'Services')}:</b> <span class="mono" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px">${esc((s.values||[]).join(' • '))}</span>`;
+      div.innerHTML = `<b>${esc(s.header||'Services')}:</b> <span class="mono">${esc((s.values||[]).join(' • '))}</span>`;
       dSnips.appendChild(div);
     });
   } else if ((ad.sv||[]).length){
     const div=document.createElement('div');
-    div.innerHTML = `<b>${esc(ad.sh||'Services')}:</b> <span class="mono" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px">${esc((ad.sv||[]).join(' • '))}</span>`;
+    div.innerHTML = `<b>${esc(ad.sh||'Services')}:</b> <span class="mono">${esc((ad.sv||[]).join(' • '))}</span>`;
     dSnips.appendChild(div);
   }
 
-  $('dPath1').textContent = ad.p1||''; $('dPath2').textContent = ad.p2||''; $('dSlash1').textContent=(ad.p1&&ad.p2)?'/':'';
+  $('dPath1').textContent = ad.p1||''; $('dPath2').textContent= ad.p2||''; $('dSlash1').textContent=(ad.p1&&ad.p2)?'/':'';
   $('dQ').textContent = ad.q || '';
-  UL('dImgs', ad.imgs||[], u=>`<span class="mono" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px">${esc(u)}</span>`);
+  $('dDomain').textContent = domain;
+  $('dURL').textContent = ad.u || '';
+  UL('dImgs', ad.imgs||[], u=>`<span class="mono">${esc(u)}</span>`);
 }
 
 /* ===== init & controls ===== */
@@ -271,6 +280,7 @@ function render(){
 
   $('cycleSnipBtn').onclick = ()=>{ snipIdx=(snipIdx+1)%4; render(); };
   $('switchImgBtn').onclick = ()=>{ imgIdx+=1; render(); };
+  $('domainInput').addEventListener('input', e => { overrideDomain = (e.target.value||'').trim().replace(/^https?:\/\//,'').replace(/^www\./,''); render(); });
 })();
 </script>
 </body>
