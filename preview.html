@@ -5,20 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>PPC Gadget — Ad Preview</title>
 <link rel="icon" href="/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0b0e13; --panel:#121621; --line:#202635;
     --text:#e8ecf3; --muted:#9aa3b7; --brand:#6DBE45;
-    --preview-bg:#fff; --preview-text:#111; --preview-muted:#5f6368;
-    --preview-blue:#174ea6; --preview-chip:#e8f0fe; --preview-link:#1a0dab; --preview-green:#0f9d58;
   }
   [data-theme="light"]{ --bg:#f6f7fb; --panel:#ffffff; --line:#e7e9f2; --text:#0f1422; --muted:#56607a; --brand:#2f8d19; }
-  [data-theme="cyberpunk"]{
-    --bg:#0a0c12; --panel:#0e1220; --line:#23283b; --text:#e6f7ff; --muted:#7bd4ff; --brand:#ff2bd6;
-    --preview-bg:#0b0f1a; --preview-text:#e6f7ff; --preview-muted:#8fd0ff;
-    --preview-blue:#49c7ff; --preview-chip:#121830; --preview-link:#7bf1ff; --preview-green:#00ffcc;
-  }
-  *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  [data-theme="cyberpunk"]{ --bg:#0a0c12; --panel:#0e1220; --line:#23283b; --text:#e6f7ff; --muted:#7bd4ff; --brand:#ff2bd6; }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
   .wrap{max-width:1100px;margin:0 auto;padding:18px}
   header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
   .brand{display:flex;gap:10px;align-items:center}
@@ -27,37 +26,44 @@
   .a{color:var(--brand);text-decoration:none}
   .btn{border:1px solid var(--line);background:transparent;color:var(--text);padding:8px 12px;border-radius:10px;cursor:pointer}
   .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 8px;font-size:12px;color:var(--muted);margin-left:6px}
-
   .topbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
   .adpicker{display:flex;gap:8px;flex-wrap:wrap}
   .chipBtn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:6px 10px;border-radius:10px;cursor:pointer}
   .chipBtn.active{outline:2px solid var(--brand)}
 
-  .previews{display:grid;grid-template-columns:1fr 360px;gap:14px;margin-top:10px}
-  .preview-card{background:var(--preview-bg);color:var(--preview-text);border-radius:12px;border:1px solid #e3e6ef;padding:14px}
-  [data-theme="cyberpunk"] .preview-card{border-color:#1f2642}
-  .preview-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-  .g{width:24px;height:24px;border-radius:6px;background:#4285F4}
-  .searchbar{flex:1;border:1px solid #dadce0;border-radius:999px;padding:8px 12px;font-size:14px;display:flex;gap:8px;align-items:center;background:#fff}
-  .searchbar input{border:none;outline:none;flex:1;font-size:14px;background:transparent}
-  .serp-url{color:var(--preview-link);font-size:18px;font-weight:600;margin:8px 0 4px}
-  .serp-path{color:var(--preview-green);font-size:12px;margin-bottom:8px}
-  .serp-hline{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
-  .serp-h{background:var(--preview-chip);color:var(--preview-blue);border-radius:4px;padding:2px 4px;font-weight:700}
-  .serp-desc{color:#3c4043;font-size:14px;line-height:1.35}
-  [data-theme="cyberpunk"] .serp-desc{color:#c9e8ff}
-  .callouts{font-size:12px;color:#5f6368;margin-top:8px}
-  .snip{margin-top:4px;font-size:12px;color:#3c4043}
-  .img-ext{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-  .img-ext img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid #e4e7ef}
+  /* ===== True Google SERP look ===== */
+  .grid {display:grid;grid-template-columns:1fr 380px;gap:14px}
+  @media (max-width: 900px){ .grid{grid-template-columns:1fr} }
 
-  .drawer{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-top:16px;overflow:hidden}
-  .drawer summary{cursor:pointer;list-style:none;padding:12px 14px;font-weight:600;border-bottom:1px solid var(--line)}
-  .drawer summary::-webkit-details-marker{display:none}
-  .drawer .inner{padding:12px 14px}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .mono{font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px}
-  @media (max-width: 900px){ .previews{grid-template-columns:1fr} .grid2{grid-template-columns:1fr} }
+  .serp{
+    background:#fff; color:#202124;
+    border:1px solid #e3e6ef; border-radius:12px;
+    padding:14px; font-family: Roboto, Arial, sans-serif;
+  }
+  .serp .sponsored{font-size:12px;color:#5f6368;margin-bottom:6px}
+  .serp .result{position:relative;padding-left:40px}
+  .serp .favicon{
+    position:absolute; left:0; top:2px;
+    width:28px; height:28px; border-radius:6px; background:#1a73e8;
+  }
+  .serp .site{font-size:12px;color:#5f6368;line-height:1.2}
+  .serp .path{font-size:12px;color:#137333;margin-top:1px}
+  .serp .title{
+    display:inline-block; color:#1a0dab;
+    font-size:20px; line-height:1.3; margin:6px 0 4px; text-decoration:none;
+  }
+  .serp .title:hover{text-decoration:underline}
+  .serp .desc{font-size:14px;color:#4d5156;line-height:1.45}
+  .serp .meta{font-size:12px;color:#5f6368;margin-top:6px}
+  .serp .snippet{margin-top:6px;font-size:12px;color:#4d5156}
+  .serp .sl{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;margin-top:10px}
+  .serp .sl a{color:#1a0dab;font-size:13px;text-decoration:none}
+  .serp .sl a:hover{text-decoration:underline}
+
+  /* Mobile frame (subtle, no orange bits) */
+  .frame{
+    background:#fff; border:10px solid #e7eaef; border-radius:24px;
+  }
 </style>
 </head>
 <body>
@@ -76,52 +82,45 @@
     </div>
   </header>
 
-  <section class="drawer" open>
-    <summary>Previews</summary>
-    <div class="inner">
-      <div class="previews">
-        <!-- Desktop -->
-        <div class="preview-card">
-          <div class="preview-header">
-            <div class="g"></div>
-            <div class="searchbar">
-              <input id="searchDesk" type="text" disabled />
-              <span class="pill">Desktop</span>
-            </div>
-          </div>
-          <div class="serp-url" id="pTitle">Your Business - example.com</div>
-          <div class="serp-path">example.com/<span id="pPath1"></span><span id="pSlash1"></span><span id="pPath2"></span></div>
-          <div class="serp-hline" id="pHeadsDesk"></div>
-          <div class="serp-desc" id="pDescsDesk"></div>
-          <div class="callouts" id="pCalloutsDesk"></div>
-          <div class="snip" id="pSnippetDesk"></div>
-          <div class="img-ext" id="pImgsDesk"></div>
+  <section class="serp-wrap">
+    <div class="grid">
+      <!-- Desktop SERP -->
+      <article class="serp" aria-label="Desktop Ad">
+        <div class="sponsored">Sponsored</div>
+        <div class="result">
+          <div class="favicon" aria-hidden="true"></div>
+          <div class="site">example.com</div>
+          <div class="path">example.com/<span id="pPath1"></span><span id="pSlash1"></span><span id="pPath2"></span></div>
+          <a href="javascript:void(0)" class="title" id="pTitle">Your Business - example.com</a>
+          <div class="desc" id="pDescsDesk"></div>
+          <div class="meta" id="pCalloutsDesk"></div>
+          <div class="snippet" id="pSnippetDesk"></div>
+          <div class="sl" id="pSLDesk"></div>
         </div>
+      </article>
 
-        <!-- Mobile -->
-        <div class="preview-card">
-          <div class="preview-header">
-            <div class="g"></div>
-            <div class="searchbar">
-              <input id="searchMob" type="text" disabled />
-              <span class="pill">Mobile</span>
-            </div>
+      <!-- Mobile SERP -->
+      <div class="frame">
+        <article class="serp" style="border:none" aria-label="Mobile Ad">
+          <div class="sponsored">Sponsored</div>
+          <div class="result">
+            <div class="favicon" aria-hidden="true"></div>
+            <div class="site">example.com</div>
+            <div class="path">example.com/<span id="pPath1M"></span><span id="pSlash1M"></span><span id="pPath2M"></span></div>
+            <a href="javascript:void(0)" class="title" id="pTitleM">Your Business - example.com</a>
+            <div class="desc" id="pDescsMob"></div>
+            <div class="meta" id="pCalloutsMob"></div>
+            <div class="snippet" id="pSnippetMob"></div>
+            <div class="sl" id="pSLMob"></div>
           </div>
-          <div class="serp-url" id="pTitleM">Your Business - example.com</div>
-          <div class="serp-path">example.com/<span id="pPath1M"></span><span id="pSlash1M"></span><span id="pPath2M"></span></div>
-          <div class="serp-hline" id="pHeadsMob"></div>
-          <div class="serp-desc" id="pDescsMob"></div>
-          <div class="callouts" id="pCalloutsMob"></div>
-          <div class="snip" id="pSnippetMob"></div>
-          <div class="img-ext" id="pImgsMob"></div>
-        </div>
+        </article>
       </div>
     </div>
   </section>
 
-  <details class="drawer" open>
-    <summary>Full Ad Copy</summary>
-    <div class="inner grid2">
+  <details class="drawer" open style="background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-top:16px;overflow:hidden">
+    <summary style="cursor:pointer;list-style:none;padding:12px 14px;font-weight:600;border-bottom:1px solid var(--line)">Full Ad Copy</summary>
+    <div class="inner" style="padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div>
         <h3 style="margin:0 0 8px">Headlines</h3>
         <ul id="dHeads"></ul>
@@ -129,142 +128,138 @@
         <ul id="dDescs"></ul>
         <h3 style="margin:12px 0 8px">Callouts</h3>
         <ul id="dCalls"></ul>
-        <h3 style="margin:12px 0 8px">Structured Snippets</h3>
+        <h3 style="margin:12px 0 8px">Structured Snippets (active set first)</h3>
         <div id="dSnips"></div>
         <h3 style="margin:12px 0 8px">Display Paths</h3>
-        <div class="mono">/<span id="dPath1"></span><span id="dSlash1"></span><span id="dPath2"></span></div>
+        <div class="mono" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px">/<span id="dPath1"></span><span id="dSlash1"></span><span id="dPath2"></span></div>
         <h3 style="margin:12px 0 8px">Search Query</h3>
-        <div class="mono" id="dQ"></div>
+        <div class="mono" id="dQ" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px"></div>
       </div>
       <div>
-        <h3 style="margin:0 0 8px">Images</h3>
+        <h3 style="margin:0 0 8px">Images (URLs)</h3>
         <ul id="dImgs"></ul>
       </div>
     </div>
   </details>
 </div>
 
- /* ---- Google SERP look ---- */
-.serp { background:#fff; color:#202124; border-radius:12px; border:1px solid #e3e6ef; padding:14px; font-family: Roboto, Arial, sans-serif; }
-.serp.mobile { border:10px solid #e7eaef; border-radius:24px; padding:0; }
-.serp .sponsored { font-size:12px; color:#5f6368; margin-bottom:6px; }
-.serp .result { position:relative; padding-left:40px; }
-.serp .favicon { position:absolute; left:0; top:2px; width:28px; height:28px; border-radius:6px; background:#1a73e8; }
-.serp .site { font-size:12px; color:#5f6368; line-height:1.2; }
-.serp .path { font-size:12px; color:#137333; margin-top:1px; }
-.serp .title { display:inline-block; color:#1a0dab; font-size:20px; line-height:1.3; margin:6px 0 4px; text-decoration:none; }
-.serp .title:hover { text-decoration:underline; }
-.serp .desc { font-size:14px; color:#4d5156; line-height:1.45; }
-.serp .sl { display:grid; grid-template-columns:1fr 1fr; gap:8px 20px; margin-top:10px; }
-.serp .sl a { color:#1a0dab; font-size:13px; text-decoration:none; }
-.serp .sl a:hover { text-decoration:underline; }
-
 <script>
+/* ===== helpers & payload ===== */
 const $ = id => document.getElementById(id);
 const dec = s => JSON.parse(decodeURIComponent(escape(atob(s))));
-const esc = t => (t||'').replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const esc = t => (t||'').replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;","&gt;":"&gt;",'"':"&quot;"}[m]));
+let P=null, isMulti=false, idx=0, snipIdx=0, imgIdx=0;
 
-let P = null; // payload
-let isMulti = false;
-let idx = 0;       // current ad index (multi)
-let snipIdx = 0;   // snippet set index (0..3) (multi)
-let imgIdx = 0;    // image index (multi)
+function pickBuilderUrl(){ return isMulti ? './multi.html' : './index.html'; }
+function topHeads(ad){ return (ad.h||[]).slice(0,3).map(x=>x.t||x); }
 
-function pickBuilderUrl(){
-  return isMulti ? './multi.html' : './index.html';
-}
-
+/* ===== UI for multi payloads ===== */
 function renderPicker(){
-  const wrap = $('adPicker'); wrap.innerHTML='';
+  const wrap=$('adPicker'); wrap.innerHTML='';
   if(!isMulti){ $('cycleSnipBtn').style.display='none'; $('switchImgBtn').style.display='none'; return; }
   $('cycleSnipBtn').style.display='inline-block';
   $('switchImgBtn').style.display='inline-block';
   (P.ads||[]).forEach((ad,i)=>{
-    const b=document.createElement('button'); b.className='chipBtn'+(i===idx?' active':''); b.textContent=ad.title?ad.title:`Ad ${i+1}`;
+    const b=document.createElement('button');
+    b.className='chipBtn'+(i===idx?' active':'');
+    b.textContent=ad.title?ad.title:`Ad ${i+1}`;
     b.onclick=()=>{ idx=i; snipIdx=0; imgIdx=0; render(); renderPicker(); };
     wrap.appendChild(b);
   });
 }
 
-function topHeads(ad){ return (ad.h||[]).slice(0,3); }
-
+/* ===== SERP rendering ===== */
 function render(){
   if(!P) return;
   document.documentElement.setAttribute('data-theme', P.theme || 'dark');
   $('themePill').textContent = (P.theme||'dark');
-
-  let ad = null;
-  if(isMulti){
-    ad = (P.ads||[])[idx] || {};
-  } else {
-    // map single-ad schema to multi-like
-    ad = { q:P.q||'', p1:P.p1||'', p2:P.p2||'', h:(P.h||[]).map(x=>x.t||x), d:P.d||[], c:P.c||[], sv:P.sv||[], imgs:P.imgs||[] };
-  }
-
-  // back link to the builder with same hash
   $('backLink').href = `${pickBuilderUrl()}${location.hash}`;
 
-  // Previews
-  $('searchDesk').value = ad.q || '';
-  $('searchMob').value  = ad.q || '';
+  // choose the ad
+  let ad = isMulti ? ((P.ads||[])[idx]||{}) :
+            { q:P.q||'', p1:P.p1||'', p2:P.p2||'',
+              h:(P.h||[]).map(x=>x.t||x), d:P.d||[], c:P.c||[],
+              sv:(P.sv||[]), sh:P.sh||'Services',
+              msv:(P.msv||[]), sl:P.sl||[], pr:P.pr||[],
+              promo:P.promo||'', phone:P.phone||'', loc:P.loc||'',
+              imgs:P.imgs||[] };
+
+  // paths
   $('pPath1').textContent = ad.p1||''; $('pPath2').textContent = ad.p2||'';
   $('pSlash1').textContent = (ad.p1 && ad.p2)?'/':'';
   $('pPath1M').textContent = ad.p1||''; $('pPath2M').textContent = ad.p2||'';
   $('pSlash1M').textContent = (ad.p1 && ad.p2)?'/':'';
 
+  // title = the 3 heads joined like Google/Karooya
   const H = topHeads(ad);
-  const fillH = el => { el.innerHTML=''; if(!H.length){el.innerHTML='<span class="serp-h">Add a headline…</span>'; return;} H.forEach(t=>{ const s=document.createElement('span'); s.className='serp-h'; s.textContent=t; el.appendChild(s); }); };
-  fillH($('pHeadsDesk')); fillH($('pHeadsMob'));
+  const title = H.length ? H.join(' | ') : 'Add a headline…';
+  $('pTitle').textContent = title;
+  $('pTitleM').textContent = title;
 
+  // descriptions
   const D1=(ad.d||[])[0]||'', D2=(ad.d||[])[1]||'';
-  const desc = D2?`${D1}  ${D2}`:D1;
-  $('pDescsDesk').textContent = desc; $('pDescsMob').textContent = desc;
+  const desc = D2 ? `${D1}  ${D2}` : D1;
+  $('pDescsDesk').textContent = desc;
+  $('pDescsMob').textContent  = desc;
 
-  // callouts: show in groups of 4 using snipIdx as pager too
+  // callouts muted dot-separated (max 4 at a time if long)
   const groupSize=4;
   const totalGroups=Math.max(1, Math.ceil((ad.c||[]).length/groupSize));
-  const g = Math.min(snipIdx % totalGroups, totalGroups-1);
-  const callsSlice = (ad.c||[]).slice(g*groupSize, g*groupSize+groupSize);
-  const callsTxt = callsSlice.join('  ·  ');
-  $('pCalloutsDesk').textContent=callsTxt; $('pCalloutsMob').textContent=callsTxt;
+  const g=Math.min(snipIdx % totalGroups, totalGroups-1);
+  const callsSlice=(ad.c||[]).slice(g*groupSize, g*groupSize+groupSize);
+  const callsTxt=callsSlice.join(' · ');
+  $('pCalloutsDesk').textContent=callsTxt;
+  $('pCalloutsMob').textContent=callsTxt;
 
-  // snippets: show only one set at a time
-  const set = (ad.sv||[])[snipIdx%4] || [];
-  const headers = ['Services','Types','Brands','Styles'];
-  const snipText = set.length ? `${headers[snipIdx%4]}: ${set.join(' • ')}` : '';
-  $('pSnippetDesk').textContent = snipText; $('pSnippetMob').textContent = snipText;
-
-  // images: show one + thumbs
-  const imgs = ad.imgs||[];
-  const ii = imgs.length? imgIdx % imgs.length : 0;
-  function draw(el){
-    el.innerHTML='';
-    if(imgs.length){
-      const main=document.createElement('img'); main.src=imgs[ii]; main.alt='Ad image'; main.style.width='100px'; main.style.height='100px'; main.style.objectFit='cover'; main.style.borderRadius='10px'; main.style.border='1px solid #e4e7ef';
-      el.appendChild(main);
-      imgs.forEach((u,i)=>{ const im=document.createElement('img'); im.src=u; im.alt='thumb'; if(i===ii){ im.style.outline='2px solid #6DBE45'; } el.appendChild(im); });
-    }
+  // structured snippet (either legacy sv/sh or first item of msv)
+  let snipText='';
+  if (Array.isArray(ad.msv) && ad.msv.length){
+    const set = ad.msv[snipIdx % ad.msv.length];
+    if ((set.values||[]).length) snipText = `${set.header||'Services'}: ${(set.values||[]).join(' • ')}`;
+  } else if ((ad.sv||[]).length){
+    snipText = `${ad.sh||'Services'}: ${(ad.sv||[]).join(' • ')}`;
   }
-  draw($('pImgsDesk')); draw($('pImgsMob'));
+  $('pSnippetDesk').textContent = snipText;
+  $('pSnippetMob').textContent  = snipText;
 
-  // FULL DETAILS
-  const UL = (id,arr,fmt=x=>esc(x))=>{ const el=$(id); el.innerHTML=''; (arr||[]).forEach(v=>{ const li=document.createElement('li'); li.innerHTML=fmt(v); el.appendChild(li); }); };
-  UL('dHeads', ad.h||[], h=>`<span class="mono">${esc(h)}</span>`);
-  UL('dDescs', ad.d||[], d=>`<span class="mono">${esc(d)}</span>`);
-  UL('dCalls', ad.c||[], c=>`<span class="mono">${esc(c)}</span>`);
-  const dSnips = $('dSnips'); dSnips.innerHTML='';
-  (ad.sv||[]).forEach((set,i)=>{
+  // sitelinks (if any) — show titles only like SERP block links
+  function drawSL(el){
+    el.innerHTML='';
+    (ad.sl||[]).slice(0,4).forEach(sl=>{
+      const a=document.createElement('a');
+      a.href='javascript:void(0)';
+      a.textContent=sl.t || '';
+      el.appendChild(a);
+    });
+  }
+  drawSL($('pSLDesk')); drawSL($('pSLMob'));
+
+  /* ---- Full details panel ---- */
+  const UL=(id,arr,fmt=x=>esc(x))=>{ const el=$(id); el.innerHTML=''; (arr||[]).forEach(v=>{ const li=document.createElement('li'); li.innerHTML=fmt(v); el.appendChild(li); }); };
+  UL('dHeads', H, h=>`<span class="mono" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px">${esc(h)}</span>`);
+  UL('dDescs', ad.d||[], d=>`<span class="mono" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px">${esc(d)}</span>`);
+  UL('dCalls', ad.c||[], c=>`<span class="mono" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px">${esc(c)}</span>`);
+
+  const dSnips=$('dSnips'); dSnips.innerHTML='';
+  if (Array.isArray(ad.msv) && ad.msv.length){
+    ad.msv.forEach((s,i)=>{
+      const div=document.createElement('div');
+      div.innerHTML = `<b>${esc(s.header||'Services')}:</b> <span class="mono" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px">${esc((s.values||[]).join(' • '))}</span>`;
+      dSnips.appendChild(div);
+    });
+  } else if ((ad.sv||[]).length){
     const div=document.createElement('div');
-    const headers=['Services','Types','Brands','Styles'];
-    div.innerHTML = `<b>${headers[i]}:</b> <span class="mono">${esc((set||[]).join(' • '))}</span>`;
+    div.innerHTML = `<b>${esc(ad.sh||'Services')}:</b> <span class="mono" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px">${esc((ad.sv||[]).join(' • '))}</span>`;
     dSnips.appendChild(div);
-  });
-  $('dPath1').textContent = ad.p1||''; $('dPath2').textContent= ad.p2||''; $('dSlash1').textContent=(ad.p1&&ad.p2)?'/':'';
+  }
+
+  $('dPath1').textContent = ad.p1||''; $('dPath2').textContent = ad.p2||''; $('dSlash1').textContent=(ad.p1&&ad.p2)?'/':'';
   $('dQ').textContent = ad.q || '';
-  UL('dImgs', ad.imgs||[], u=>`<span class="mono">${esc(u)}</span>`);
+  UL('dImgs', ad.imgs||[], u=>`<span class="mono" style="font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12px">${esc(u)}</span>`);
 }
 
-function init(){
+/* ===== init & controls ===== */
+(function init(){
   try{ P = dec(location.hash.slice(1)); }catch(e){ P = {}; }
   isMulti = !!P.ads;
   idx = P.idx || 0;
@@ -276,8 +271,7 @@ function init(){
 
   $('cycleSnipBtn').onclick = ()=>{ snipIdx=(snipIdx+1)%4; render(); };
   $('switchImgBtn').onclick = ()=>{ imgIdx+=1; render(); };
-}
-init();
+})();
 </script>
 </body>
 </html>
